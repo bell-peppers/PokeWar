@@ -7,7 +7,7 @@ const useStyles = makeStyles(() => ({
     fontFamily: "Courier New, monospace",
     display: "flex",
     backgroundColor: "blue",
-    width: "20vw",
+    width: "100%",
     height: "100%",
     justifyContent: "flex-end",
   },

@@ -1,30 +1,37 @@
-import React, {useState, useEffect} from "react";
-import {connect} from "react-redux";
-import Gameboard from "./Gameboard";
-import Actionbar from "./Actionbar";
-import Sidebar from "./Sidebar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
-import {makeStyles} from "@material-ui/core";
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
+import Gameboard from './Gameboard';
+import Actionbar from './Actionbar';
+import Sidebar from './Sidebar';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import {makeStyles} from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   main: {
-    fontFamily: "Courier New, monospace",
-    display: "flex",
-    backgroundColor: "red",
-    width: "100vw",
-    height: "80vh",
-    justifyContent: "space-between",
+    fontFamily: 'Courier New, monospace',
+    display: 'flex',
+    backgroundColor: 'red',
+    width: '100vw',
+    height: '80vh',
+    maxHeight: '1200px',
+    minWidth: '800px',
+    justifyContent: 'space-between',
+    minHeight: '600px',
   },
   board: {
-    fontFamily: "Courier New, monospace",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "green",
-    width: "100%",
-    height: "100%",
-    justifyContent: "space-between",
+    fontFamily: 'Courier New, monospace',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'green',
+    width: '75%',
+    height: '100%',
+    justifyContent: 'space-between',
+  },
+  side: {
+    width: '25%',
+    height: '100%',
   },
 }));
 
@@ -44,7 +51,7 @@ const Main = (props) => {
           <Gameboard />
           <Actionbar />
         </div>
-        <div>
+        <div className={classes.side}>
           <Sidebar />
         </div>
       </Container>
