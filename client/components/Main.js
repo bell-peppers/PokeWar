@@ -14,14 +14,15 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     backgroundColor: "red",
     width: "100vw",
-    height: "100%",
+    height: "80vh",
     justifyContent: "space-between",
   },
   board: {
     fontFamily: "Courier New, monospace",
     display: "flex",
-    backgroundColor: "red",
-    width: "100vw",
+    flexDirection: "column",
+    backgroundColor: "green",
+    width: "100%",
     height: "100%",
     justifyContent: "space-between",
   },
@@ -34,12 +35,11 @@ const Main = (props) => {
     <React.Fragment>
       <CssBaseline />
       <Container className={classes.main}>
-        <Typography
+        {/* <Typography
           component="div"
           style={{backgroundColor: "#cfe8fc", height: "100vh"}}
-        />
+        /> */}
 
-        <h1>Heading</h1>
         <div className={classes.board}>
           <Gameboard />
           <Actionbar />
