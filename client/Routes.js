@@ -2,8 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Main from './components/Main';
-import { Login, Signup } from './components/AuthForm';
-import Home from './components/Home';
+// import { Login, Signup } from './components/AuthForm';
 import { me } from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
@@ -22,27 +21,21 @@ class Routes extends Component {
 
     return (
       <div>
-        {isLoggedIn ? (
+        {/* {isLoggedIn ? (
           <Switch>
-            <Route path='/home' component={Home} />
-            <Redirect to='/home' />
+            <Route path='/' component={MatchSearch} />
+            <Redirect to='/' />
           </Switch>
-        ) : (
-          // <Switch>
-          //   <Route path="/" exact component={AllPokemon} />
-          //   <Route path='/' exact component={ Login } />
-          //   <Route path="/login" component={Login} />
-          //   <Route path="/signup" component={Signup} />
-          // </Switch>
-          <Switch>
-            <Route path='/' exact component={Main} />
-            <Route path='/login' exact component={LoginPage} />
-            <Route path='/myprofile' exact component={UserProfile} />
-            <Route path='/matchsearch' exact component={MatchSearch} />
-            <Route path='/login' component={Login} />
-            <Route path='/signup' component={Signup} />
-          </Switch>
-        )}
+        ) : ( */}
+        <Switch>
+          <Route path='/' exact component={MatchSearch} />
+          <Route path='/login' exact component={LoginPage} />
+          <Route path='/myprofile' exact component={UserProfile} />
+          <Route path='/gameboard' exact component={Main} />
+          {/* <Route path='/login' component={Login} /> */}
+          {/* <Route path='/signup' component={Signup} /> */}
+        </Switch>
+        {/* )} */}
       </div>
     );
   }
