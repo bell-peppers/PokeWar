@@ -6,7 +6,7 @@ import { CardContent, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { colorTypeGradients } from '../../utils/ColorGradientFunc';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import CardInfoModal from './CardInfoModal';
+import Modal from '@material-ui/core/Modal';
 
 /**
  * COMPONENT
@@ -17,52 +17,43 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    // backgroundColor: '#495057',
     width: '200px',
     margin: '10px',
   },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    border: '2px solid #000',
+    // boxShadow: theme.shadows[5],
+    // padding: theme.spacing(2, 4, 3),
+  },
 }));
-
-function CardInfoModal(props) {
-  const classes = useStyles();
-  const { isOpen, setOpen } = props;
-
-  const body = (
-    <div className={classes.paper}>
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-    </div>
-  );
-
-  return (
-    <div>
-      <Modal
-        open={isOpen}
-        onClose={setOpen(!isOpen)}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {body}
-      </Modal>
-    </div>
-  );
-}
 
 export default function AllPokemon(props) {
   const pokemon = useSelector(state => state.pokemon);
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
+  const [selectedPokemon, setSelectedPokemon] = React.useState({});
+  const [pokeColor, setPokeColor] = React.useState([]);
+
+  const handleOpen = (pokemon, color) => {
+    setOpen(true);
+    setSelectedPokemon(pokemon);
+    setPokeColor(color);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedPokemon({});
+    setPokeColor([]);
+  };
 
   useEffect(() => {
     dispatch(fetchPokemon());
   }, [dispatch]);
 
-  const classes = useStyles();
-  // console.log(pokemon);
-  console.log(open);
   return (
     <div className="main">
       {pokemon.map(poke => {
@@ -83,7 +74,7 @@ export default function AllPokemon(props) {
         }
 
         return (
-          <React.Fragment>
+          <React.Fragment key={poke.id}>
             <Card
               className={classes.PokeCards}
               key={poke.id}
@@ -100,7 +91,7 @@ export default function AllPokemon(props) {
                 >
                   #{poke.id}{' '}
                   <InfoOutlinedIcon
-                    onClick={() => setOpen(!open)}
+                    onClick={() => handleOpen(poke, finalColor)}
                     style={{
                       cursor: 'pointer',
                     }}
@@ -145,7 +136,90 @@ export default function AllPokemon(props) {
           </React.Fragment>
         );
       })}
-      {open && <CardInfoModal isOpen={open} setOpen={setOpen} />}
+      {selectedPokemon.id && (
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          <div
+            className={classes.paper}
+            style={{
+              background: `linear-gradient(${pokeColor[0]}, ${pokeColor[1]})`,
+            }}
+          >
+            <h2 style={{ textAlign: 'center' }}>{selectedPokemon.name}</h2>
+            <h3 style={{ marginLeft: '2rem' }}>Abilities:</h3>
+            <ul style={{ display: 'inline-block', listStyle: 'none' }}>
+              {selectedPokemon.abilities[0] && (
+                <li>{selectedPokemon.abilities[0].ability.name}</li>
+              )}
+              {selectedPokemon.abilities[1] && (
+                <li>{selectedPokemon.abilities[1].ability.name}</li>
+              )}
+            </ul>
+            <ul style={{ display: 'inline-block', listStyle: 'none' }}>
+              {selectedPokemon.abilities[2] && (
+                <li>{selectedPokemon.abilities[2].ability.name}</li>
+              )}
+              {selectedPokemon.abilities[3] && (
+                <li>{selectedPokemon.abilities[3].ability.name}</li>
+              )}
+            </ul>
+            <h3 style={{ marginLeft: '2rem' }}>Base Stats:</h3>
+            <ul style={{ display: 'inline-block', listStyle: 'none' }}>
+              <li>HP {selectedPokemon.stats[0].base_stat}</li>
+              <li>ATK {selectedPokemon.stats[1].base_stat}</li>
+            </ul>
+            <ul style={{ display: 'inline-block', listStyle: 'none' }}>
+              <li>DEF {selectedPokemon.stats[2].base_stat}</li>
+              <li>SP ATK {selectedPokemon.stats[3].base_stat}</li>
+            </ul>
+            <ul style={{ display: 'inline-block', listStyle: 'none' }}>
+              <li>SP DEF {selectedPokemon.stats[4].base_stat}</li>
+              <li>SPD {selectedPokemon.stats[5].base_stat}</li>
+            </ul>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              {selectedPokemon.types ? (
+                selectedPokemon.types.length === 2 ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '100px',
+                      height: '20px',
+                      marginTop: '4px',
+                      // marginLeft: '20%',
+                      justifyContent: 'space-evenly',
+                    }}
+                  >
+                    <img
+                      src={`assets/${selectedPokemon.types[0].type.name}.png`}
+                    />
+                    <img
+                      src={`assets/${selectedPokemon.types[1].type.name}.png`}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '20px',
+                      height: '20px',
+                      marginTop: '4px',
+                      // marginLeft: '60%',
+                    }}
+                  >
+                    <img
+                      src={`assets/${selectedPokemon.types[0].type.name}.png`}
+                    />
+                  </div>
+                )
+              ) : null}
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
