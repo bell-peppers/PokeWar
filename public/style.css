@@ -19,3 +19,18 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.cardPic {
+  height: auto;
+  width: 100%;
+}
+
+.data {
+  text-align: center;
+}
