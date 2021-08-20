@@ -17,12 +17,13 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 3.5rem;
 }
 
 nav a {
   display: inline-block;
   cursor: pointer;
-  margin: 1em;
+  margin: 0;
   padding: 0;
 }
 
