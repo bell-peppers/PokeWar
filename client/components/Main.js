@@ -18,7 +18,10 @@ const useStyles = makeStyles(() => ({
     maxHeight: '1200px',
     minWidth: '800px',
     justifyContent: 'space-between',
-    minHeight: '600px',
+    minHeight: '800px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'black',
   },
   board: {
     fontFamily: 'Courier New, monospace',

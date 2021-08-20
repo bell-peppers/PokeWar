@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import {Button, makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import {_selectAttack} from '../store/pokemon';
+import MoveBlock from './MoveBlock';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -34,13 +36,19 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     marginBottom: '20px',
   },
+  selected: {
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'black',
+  },
 }));
 const Actionbar = (props) => {
-  const {playerPokemon} = props;
+  const {playerPokemon, selectAttack} = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
     moves: [],
   });
+  const [selectedMove, setSelectedMove] = useState({});
 
   useEffect(() => {
     if (playerPokemon.length > 0) {
@@ -51,6 +59,12 @@ const Actionbar = (props) => {
   }, []);
   function selectPokemon(pokemon) {
     setSelectedPlayerPokemon(pokemon);
+  }
+
+  function selectMove(move) {
+    setSelectedMove(move);
+    selectAttack(move);
+    console.log(move);
   }
 
   return (
@@ -106,14 +120,25 @@ const Actionbar = (props) => {
           style={{display: 'flex', justifyContent: 'center'}}
           spacing={3}
         >
-          {!!selectedPlayerPokemon.moves &&
-            selectedPlayerPokemon.moves.map((value) => (
-              <Grid key={value.id} item>
-                <Paper className={classes.skill}>
-                  <p>{value.move}</p>
-                </Paper>
-              </Grid>
-            ))}
+          {selectedPlayerPokemon.moves.length > 0
+            ? selectedPlayerPokemon.moves.map((value, i) => (
+                <Grid key={i} item>
+                  <MoveBlock move={value} selectMove={selectMove} />
+                  {/* <Paper
+                    className={classes.skill}
+                    onClick={() => selectMove(value)}
+                  >
+                    <p>{value.move}</p>
+                  </Paper> */}
+                </Grid>
+              ))
+            : [1, 2, 3].map((value) => (
+                <Grid key={value} item>
+                  <Paper className={classes.skill}>
+                    <p></p>
+                  </Paper>
+                </Grid>
+              ))}
         </Grid>
       </Grid>
       <Grid
@@ -143,6 +168,6 @@ const mapState = (state) => {
   };
 };
 const mapDispatch = (dispatch) => {
-  return {};
+  return {selectAttack: (move) => dispatch(_selectAttack(move))};
 };
 export default connect(mapState, mapDispatch)(Actionbar);

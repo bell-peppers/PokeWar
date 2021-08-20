@@ -1,139 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {makeStyles} from '@material-ui/core';
-import {fetchPlayerOnePokemon} from '../store/pokemon';
-
-const playerOnePokemon = [
-  {
-    name: 'p1',
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/9.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        damage: 5,
-      },
-      {
-        move: 'blizzard',
-        damage: 25,
-      },
-      {
-        move: 'hydro-pump',
-        damage: 15,
-      },
-    ],
-    stats: {'hp': 60},
-  },
-  {
-    name: 'p2',
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/35.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        damage: 5,
-      },
-      {
-        move: 'rage',
-        damage: 25,
-      },
-      {
-        move: 'skull-bash',
-        damage: 15,
-      },
-    ],
-    stats: {'hp': 50},
-  },
-  {
-    name: 'p3',
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/94.png',
-    moves: [
-      {
-        move: 'mega-punch',
-        damage: 5,
-      },
-      {
-        move: 'fire-punch',
-        damage: 25,
-      },
-      {
-        move: 'head-butt',
-        damage: 15,
-      },
-    ],
-    stats: {'hp': 40},
-  },
-];
-
-const playerTwoPokemon = [
-  {
-    name: 'p1',
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        damage: 5,
-      },
-      {
-        move: 'blizzard',
-        damage: 25,
-      },
-      {
-        move: 'hydro-pump',
-        damage: 15,
-      },
-    ],
-    stats: {'hp': 60},
-  },
-  {
-    name: 'p2',
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        damage: 5,
-      },
-      {
-        move: 'rage',
-        damage: 25,
-      },
-      {
-        move: 'skull-bash',
-        damage: 15,
-      },
-    ],
-    stats: {'hp': 50},
-  },
-  {
-    name: 'p3',
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png',
-    moves: [
-      {
-        move: 'mega-punch',
-        damage: 5,
-      },
-      {
-        move: 'fire-punch',
-        damage: 25,
-      },
-      {
-        move: 'head-butt',
-        damage: 15,
-      },
-    ],
-    stats: {'hp': 40},
-  },
-];
+import {
+  fetchPlayerOnePokemon,
+  fetchPlayerTwoPokemon,
+  attackOpponent,
+} from '../store/pokemon';
+import {_selectAttack} from '../store/pokemon';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -150,6 +23,9 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'orange',
     display: 'flex',
     justifyContent: 'flex-start',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'black',
   },
   opponentSide: {
     height: '50%',
@@ -157,10 +33,13 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'black',
   },
   playerSprites: {
     maxWidth: '100%',
-    width: '250px',
+    width: '270px',
     height: 'auto',
     objectFit: 'contain',
     alignSelf: 'flex-end',
@@ -175,7 +54,7 @@ const useStyles = makeStyles(() => ({
   pokemonContainer: {
     alignSelf: 'flex-end',
     display: 'flex',
-    width: '30%',
+    width: '32%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
@@ -197,47 +76,61 @@ const useStyles = makeStyles(() => ({
     // borderStyle: "solid",
     // borderColor: "black",
   },
+  hp: {
+    fontSize: '30px',
+  },
 }));
 
 const Gameboard = (props) => {
   const classes = useStyles();
-  const {getPlayerPokemon, playerPokemon} = props;
+  const {
+    getPlayerPokemon,
+    getOpponentPokemon,
+    opponentPokemon,
+    playerPokemon,
+    attackOpponent,
+    selectedAttack,
+    resetAttack,
+  } = props;
   useEffect(() => {
     if (playerPokemon.length === 0) {
       getPlayerPokemon();
+      getOpponentPokemon();
     }
   });
+
+  function clickHandle(pk) {
+    console.log('select', selectedAttack);
+    attackOpponent(pk, selectedAttack);
+    resetAttack();
+  }
   return (
     <div className={classes.main}>
       <div className={classes.opponentSide}>
         <div className={classes.playerName}>
           <h1>Opponent</h1>
         </div>
-        <div className={classes.pokemonContainer}>
-          <img
-            className={classes.opponentSprites}
-            src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png'
-          />
-        </div>
-        <div className={classes.pokemonContainer}>
-          <img
-            className={classes.opponentSprites}
-            src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png'
-          />
-        </div>
-        <div className={classes.pokemonContainer}>
-          <img
-            className={classes.opponentSprites}
-            src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png'
-          />
-        </div>
+        {opponentPokemon.length > 0 &&
+          opponentPokemon.map((pk) => {
+            return (
+              <div
+                className={classes.pokemonContainer}
+                key={pk.id}
+                onClick={() => clickHandle(pk)}
+              >
+                <img className={classes.opponentSprites} src={pk.frontImg} />
+                <p className={classes.hp}>hp: {pk.stats.hp}</p>
+              </div>
+            );
+          })}
       </div>
       <div className={classes.playerSide}>
         {playerPokemon.length > 0 &&
           playerPokemon.map((pk) => {
             return (
-              <div className={classes.pokemonContainer} key={pk.key}>
+              <div className={classes.pokemonContainer} key={pk.id}>
                 <img className={classes.playerSprites} src={pk.imgUrl} />
+                <p className={classes.hp}>hp: {pk.stats.hp}</p>
               </div>
             );
           })}
@@ -252,11 +145,19 @@ const mapState = (state) => {
   return {
     isLoggedIn: !!state.auth.id,
     playerPokemon: state.pokemon.playerOnePokemon,
+    opponentPokemon: state.pokemon.playerTwoPokemon,
+    selectedAttack: state.pokemon.playerAttack,
   };
 };
 
 const mapDispatch = (dispatch) => {
-  return {getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon())};
+  return {
+    getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
+    getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
+    attackOpponent: (pokemon, attack) =>
+      dispatch(attackOpponent(pokemon, attack)),
+    resetAttack: () => dispatch(_selectAttack({damage: 0})),
+  };
 };
 
 export default connect(mapState, mapDispatch)(Gameboard);
