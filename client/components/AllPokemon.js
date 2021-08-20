@@ -144,10 +144,14 @@ export default function AllPokemon(props) {
           aria-describedby="simple-modal-description"
         >
           <div
-            className={classes.paper}
             style={{
               background: `linear-gradient(${pokeColor[0]}, ${pokeColor[1]})`,
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              outline: 0,
             }}
+            className={classes.paper}
           >
             <h2 style={{ textAlign: 'center' }}>{selectedPokemon.name}</h2>
             <h3 style={{ marginLeft: '2rem' }}>Abilities:</h3>
@@ -180,7 +184,12 @@ export default function AllPokemon(props) {
               <li>SP DEF {selectedPokemon.stats[4].base_stat}</li>
               <li>SPD {selectedPokemon.stats[5].base_stat}</li>
             </ul>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
               {selectedPokemon.types ? (
                 selectedPokemon.types.length === 2 ? (
                   <div
@@ -188,8 +197,7 @@ export default function AllPokemon(props) {
                       display: 'flex',
                       width: '100px',
                       height: '20px',
-                      marginTop: '4px',
-                      // marginLeft: '20%',
+                      margin: '6px',
                       justifyContent: 'space-evenly',
                     }}
                   >
@@ -206,8 +214,7 @@ export default function AllPokemon(props) {
                       display: 'flex',
                       width: '20px',
                       height: '20px',
-                      marginTop: '4px',
-                      // marginLeft: '60%',
+                      margin: '6px',
                     }}
                   >
                     <img
