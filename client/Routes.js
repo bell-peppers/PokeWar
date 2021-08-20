@@ -1,10 +1,10 @@
-import React, {Component, Fragment} from 'react';
-import {connect} from 'react-redux';
-import {withRouter, Route, Switch, Redirect} from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Main from './components/Main';
-import {Login, Signup} from './components/AuthForm';
+import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
-import {me} from './store';
+import { me } from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
@@ -18,30 +18,31 @@ class Routes extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.props;
+    const { isLoggedIn } = this.props;
 
     return (
       <div>
-        {/* {isLoggedIn ? (
+        {isLoggedIn ? (
           <Switch>
-            <Route path="/home" component={Home} />
-            <Redirect to="/home" />
+            <Route path='/home' component={Home} />
+            <Redirect to='/home' />
           </Switch>
         ) : (
+          // <Switch>
+          //   <Route path="/" exact component={AllPokemon} />
+          //   <Route path='/' exact component={ Login } />
+          //   <Route path="/login" component={Login} />
+          //   <Route path="/signup" component={Signup} />
+          // </Switch>
           <Switch>
-            <Route path="/" exact component={AllPokemon} />
-            {/* <Route path='/' exact component={ Login } /> */}
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-          </Switch> */}
-        <Switch>
-          <Route path='/' exact component={Main} />
-          <Route path='/login' exact component={LoginPage} />
-          <Route path='/myprofile' exact component={UserProfile} />
-          <Route path='/matchsearch' exact component={MatchSearch} />
-          <Route path='/login' component={Login} />
-          <Route path='/signup' component={Signup} />
-        </Switch>
+            <Route path='/' exact component={Main} />
+            <Route path='/login' exact component={LoginPage} />
+            <Route path='/myprofile' exact component={UserProfile} />
+            <Route path='/matchsearch' exact component={MatchSearch} />
+            <Route path='/login' component={Login} />
+            <Route path='/signup' component={Signup} />
+          </Switch>
+        )}
       </div>
     );
   }
@@ -50,7 +51,7 @@ class Routes extends Component {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
+const mapState = state => {
   return {
     // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
     // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
@@ -58,7 +59,7 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(me());
