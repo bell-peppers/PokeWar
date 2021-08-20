@@ -9,6 +9,7 @@ import game from './game';
 const reducer = combineReducers({auth, pokemon, game});
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
+
 );
 const store = createStore(reducer, middleware);
 
