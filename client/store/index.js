@@ -1,13 +1,15 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {createLogger} from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import {composeWithDevTools} from 'redux-devtools-extension';
 import auth from './auth';
-import pokemon from './allPokemon';
+import pokemon from './pokemon';
+import game from './game';
 
-const reducer = combineReducers({ auth, pokemon });
+const reducer = combineReducers({auth, pokemon, game});
 const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
+  applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
+
 );
 const store = createStore(reducer, middleware);
 
