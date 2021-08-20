@@ -5,8 +5,10 @@ import {
   fetchPlayerOnePokemon,
   fetchPlayerTwoPokemon,
   attackOpponent,
+  _selectAttackedPokemon,
 } from '../store/pokemon';
 import {_selectAttack} from '../store/pokemon';
+import {getPlayerMoves} from '../store/game';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -91,18 +93,22 @@ const Gameboard = (props) => {
     attackOpponent,
     selectedAttack,
     resetAttack,
+    selectAttacked,
+    getOpponentMoves,
   } = props;
   useEffect(() => {
     if (playerPokemon.length === 0) {
       getPlayerPokemon();
       getOpponentPokemon();
     }
+    getOpponentMoves();
   });
 
   function clickHandle(pk) {
-    console.log('select', selectedAttack);
-    attackOpponent(pk, selectedAttack);
-    resetAttack();
+    // console.log('select', selectedAttack);
+    // attackOpponent(pk, selectedAttack);
+    // resetAttack();
+    selectAttacked(pk.name);
   }
   return (
     <div className={classes.main}>
@@ -157,6 +163,8 @@ const mapDispatch = (dispatch) => {
     attackOpponent: (pokemon, attack) =>
       dispatch(attackOpponent(pokemon, attack)),
     resetAttack: () => dispatch(_selectAttack({damage: 0})),
+    selectAttacked: (pk) => dispatch(_selectAttackedPokemon(pk)),
+    getOpponentMoves: () => dispatch(getPlayerMoves()),
   };
 };
 

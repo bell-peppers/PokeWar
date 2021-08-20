@@ -6,6 +6,8 @@ import {Login, Signup} from './components/AuthForm';
 import Home from './components/Home';
 import {me} from './store';
 import MatchSearch from './components/MatchSearch';
+import LoginPage from './components/LoginPage';
+import UserProfile from './components/UserProfile';
 
 /**
  * COMPONENT
@@ -33,6 +35,8 @@ class Routes extends Component {
           </Switch> */}
         <Switch>
           <Route path='/' exact component={Main} />
+          <Route path='/login' exact component={LoginPage} />
+          <Route path='/myprofile' exact component={UserProfile} />
           <Route path='/matchsearch' exact component={MatchSearch} />
           <Route path='/login' component={Login} />
           <Route path='/signup' component={Signup} />

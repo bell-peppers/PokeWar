@@ -6,6 +6,9 @@ const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_PLAYERTWO_POKEMON = 'GET_PLAYERTWO_POKEMON';
 const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
 const SELECT_ATTACK = 'SELECT_ATTACK';
+const CLEAR_PLAYER_TURN = 'CLEAR_PLAYER_TURN';
+const SELECT_ATTACKED_POKEMON = 'SELECT_ATTACKED_POKEMON';
+const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
 
 const playerOnePokemon = [
   {
@@ -177,6 +180,12 @@ export const _selectAttack = (attack) => {
   };
 };
 
+export const _clearPlayerTurn = () => {
+  return {
+    type: CLEAR_PLAYER_TURN,
+  };
+};
+
 const _getPlayerOnePokemon = (pokemon) => {
   return {
     type: GET_PLAYERONE_POKEMON,
@@ -196,6 +205,24 @@ const _attackOpponent = (pokemon) => {
     type: ATTACK_OPPONENT,
     pokemon,
   };
+};
+
+export const _selectAttackedPokemon = (pokemon) => {
+  return {
+    type: SELECT_ATTACKED_POKEMON,
+    pokemon,
+  };
+};
+
+export const _clearAttackedPokemon = () => {
+  return {
+    type: CLEAR_ATTACKED_POKEMON,
+  };
+};
+
+export const selectAttack = (selectedPokemon, attack) => (dispatch) => {
+  const attackObj = {pokemon: selectedPokemon.name, attack: attack};
+  return dispatch(_selectAttack(attackObj));
 };
 
 export const attackOpponent = (pokemon, attack) => (dispatch) => {
@@ -245,6 +272,8 @@ export default function (
     playerOnePokemon: [],
     playerTwoPokemon: [],
     playerAttack: {},
+    playerTurn: [],
+    attackedPokemon: [],
   },
   action
 ) {
@@ -261,7 +290,16 @@ export default function (
       });
       return {...state, playerTwoPokemon: newPoke};
     case SELECT_ATTACK:
-      return {...state, playerAttack: action.attack};
+      return {...state, playerTurn: [...state.playerTurn, action.attack]};
+    case SELECT_ATTACKED_POKEMON:
+      return {
+        ...state,
+        attackedPokemon: [...state.attackedPokemon, action.pokemon],
+      };
+    case CLEAR_PLAYER_TURN:
+      return {...state, playerTurn: []};
+    case CLEAR_ATTACKED_POKEMON:
+      return {...state, attackedPokemon: []};
     default:
       return state;
   }
