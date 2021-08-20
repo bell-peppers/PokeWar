@@ -4,8 +4,9 @@ import thunkMiddleware from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import auth from './auth';
 import pokemon from './pokemon';
+import game from './game';
 
-const reducer = combineReducers({auth, pokemon});
+const reducer = combineReducers({auth, pokemon, game});
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 );

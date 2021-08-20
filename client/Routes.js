@@ -1,10 +1,11 @@
-import React, {Component, Fragment} from "react";
-import {connect} from "react-redux";
-import {withRouter, Route, Switch, Redirect} from "react-router-dom";
-import Main from "./components/Main";
-import {Login, Signup} from "./components/AuthForm";
-import Home from "./components/Home";
-import {me} from "./store";
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
+import {withRouter, Route, Switch, Redirect} from 'react-router-dom';
+import Main from './components/Main';
+import {Login, Signup} from './components/AuthForm';
+import Home from './components/Home';
+import {me} from './store';
+import MatchSearch from './components/MatchSearch';
 
 /**
  * COMPONENT
@@ -31,9 +32,10 @@ class Routes extends Component {
             <Route path="/signup" component={Signup} />
           </Switch> */}
         <Switch>
-          <Route path="/" exact component={Main} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
+          <Route path='/' exact component={Main} />
+          <Route path='/matchsearch' exact component={MatchSearch} />
+          <Route path='/login' component={Login} />
+          <Route path='/signup' component={Signup} />
         </Switch>
       </div>
     );

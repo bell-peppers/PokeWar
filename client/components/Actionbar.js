@@ -123,13 +123,13 @@ const Actionbar = (props) => {
           {selectedPlayerPokemon.moves.length > 0
             ? selectedPlayerPokemon.moves.map((value, i) => (
                 <Grid key={i} item>
-                  <MoveBlock move={value} selectMove={selectMove} />
-                  {/* <Paper
+                  {/* <MoveBlock move={value} selectMove={selectMove} /> */}
+                  <Paper
                     className={classes.skill}
                     onClick={() => selectMove(value)}
                   >
                     <p>{value.move}</p>
-                  </Paper> */}
+                  </Paper>
                 </Grid>
               ))
             : [1, 2, 3].map((value) => (
