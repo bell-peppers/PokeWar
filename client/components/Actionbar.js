@@ -90,7 +90,8 @@ const Actionbar = (props) => {
   }
 
   function completeTurnHandler() {
-    sendMoves(playerTurn, attackedPokemon);
+    const user = 'player1';
+    sendMoves(playerTurn, attackedPokemon, user);
     clearPlayerTurn();
     clearAttackedPokemon();
   }
@@ -200,7 +201,8 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     selectAttack: (pk, move) => dispatch(selectAttack(pk, move)),
-    sendMoves: (moves, attacked) => dispatch(sendPlayerMoves(moves, attacked)),
+    sendMoves: (moves, attacked, user) =>
+      dispatch(sendPlayerMoves(moves, attacked, user)),
     clearPlayerTurn: () => dispatch(_clearPlayerTurn()),
     clearAttackedPokemon: () => dispatch(_clearAttackedPokemon()),
   };

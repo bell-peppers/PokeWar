@@ -9,6 +9,7 @@ const SELECT_ATTACK = 'SELECT_ATTACK';
 const CLEAR_PLAYER_TURN = 'CLEAR_PLAYER_TURN';
 const SELECT_ATTACKED_POKEMON = 'SELECT_ATTACKED_POKEMON';
 const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
+const APPLY_OPPONENT_MOVES = 'APPLY_OPPONENT_MOVES';
 
 const playerOnePokemon = [
   {
@@ -220,6 +221,28 @@ export const _clearAttackedPokemon = () => {
   };
 };
 
+const _applyOpponentMoves = (pokemon) => {
+  return {
+    type: APPLY_OPPONENT_MOVES,
+    pokemon,
+  };
+};
+
+export const applyOpponentMoves = (moves, playerPokemon) => (dispatch) => {
+  console.log('player', playerPokemon);
+  const updated = playerPokemon.map((pk) => {
+    console.log('pk', pk);
+    moves.forEach((move) => {
+      if (move.attackedPokemon === pk.name) {
+        pk.stats.hp = pk.stats.hp - move.attack.damage;
+      }
+    });
+    return pk;
+  });
+  console.log('player', playerPokemon);
+  dispatch(_applyOpponentMoves(playerPokemon));
+};
+
 export const selectAttack = (selectedPokemon, attack) => (dispatch) => {
   const attackObj = {pokemon: selectedPokemon.name, attack: attack};
   return dispatch(_selectAttack(attackObj));
@@ -300,6 +323,8 @@ export default function (
       return {...state, playerTurn: []};
     case CLEAR_ATTACKED_POKEMON:
       return {...state, attackedPokemon: []};
+    case APPLY_OPPONENT_MOVES:
+      return {...state, playerOnePokemon: action.pokemon};
     default:
       return state;
   }

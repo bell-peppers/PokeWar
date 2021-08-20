@@ -17,26 +17,20 @@ const _getPlayerMoves = (moves) => {
   };
 };
 
-export const getPlayerMoves = () => async (dispatch) => {
-  try {
-    const opponentMoves = await axios.get(
-      'https://poke-war-4483c-default-rtdb.firebaseio.com/Match/Match1/Player1/.json'
-    );
-    console.log(opponentMoves.data);
-    return dispatch(_getPlayerMoves(opponentMoves));
-  } catch (error) {
-    console.error(error);
-  }
+export const getPlayerMoves = (newMoves) => (dispatch) => {
+  const opponentMoves = newMoves;
+  console.log(opponentMoves);
+  return dispatch(_getPlayerMoves(opponentMoves));
 };
 
-export const sendPlayerMoves = (moves, attacked) => (dispatch) => {
+export const sendPlayerMoves = (moves, attacked, user) => (dispatch) => {
   try {
     const sendMoves = moves.map((move, index) => {
       return {...move, attackedPokemon: attacked[index]};
     });
     console.log(sendMoves);
     axios.post(
-      'https://poke-war-4483c-default-rtdb.firebaseio.com/Match/Match1/Player1/.json',
+      `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/Match1/moves/${user}/.json`,
       sendMoves
     );
 

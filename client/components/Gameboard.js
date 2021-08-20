@@ -6,9 +6,11 @@ import {
   fetchPlayerTwoPokemon,
   attackOpponent,
   _selectAttackedPokemon,
+  applyOpponentMoves,
 } from '../store/pokemon';
 import {_selectAttack} from '../store/pokemon';
 import {getPlayerMoves} from '../store/game';
+import {FIREDB} from '../App';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -95,14 +97,36 @@ const Gameboard = (props) => {
     resetAttack,
     selectAttacked,
     getOpponentMoves,
+    opponentMoves,
+    applyOpponentMoves,
   } = props;
   useEffect(() => {
     if (playerPokemon.length === 0) {
       getPlayerPokemon();
       getOpponentPokemon();
     }
-    getOpponentMoves();
-  });
+    const match = 'Match1';
+    const opponent = 'player2';
+    //firebase looking for updates to this match
+    const dbUpdates = FIREDB.ref(`Match/${match}/moves/${opponent}`);
+
+    dbUpdates.on('child_added', (snapshot) => {
+      const newMoves = snapshot.val();
+      console.log(newMoves, opponentMoves);
+      if (newMoves !== opponentMoves) {
+        console.log(playerPokemon);
+        if (playerPokemon.length !== 0) {
+          handleNewOpponentMoves(newMoves);
+        }
+      }
+    });
+  }, []);
+
+  function handleNewOpponentMoves(newMoves) {
+    getOpponentMoves(newMoves);
+    console.log(playerPokemon);
+    applyOpponentMoves(opponentMoves, playerPokemon);
+  }
 
   function clickHandle(pk) {
     // console.log('select', selectedAttack);
@@ -153,6 +177,7 @@ const mapState = (state) => {
     playerPokemon: state.pokemon.playerOnePokemon,
     opponentPokemon: state.pokemon.playerTwoPokemon,
     selectedAttack: state.pokemon.playerAttack,
+    opponentMoves: state.game.opponentMoves,
   };
 };
 
@@ -164,7 +189,9 @@ const mapDispatch = (dispatch) => {
       dispatch(attackOpponent(pokemon, attack)),
     resetAttack: () => dispatch(_selectAttack({damage: 0})),
     selectAttacked: (pk) => dispatch(_selectAttackedPokemon(pk)),
-    getOpponentMoves: () => dispatch(getPlayerMoves()),
+    getOpponentMoves: (newMoves) => dispatch(getPlayerMoves(newMoves)),
+    applyOpponentMoves: (oppMoves, pk) =>
+      dispatch(applyOpponentMoves(oppMoves, pk)),
   };
 };
 
