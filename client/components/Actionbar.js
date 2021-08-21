@@ -7,7 +7,9 @@ import {
   selectAttack,
   _clearPlayerTurn,
   _clearAttackedPokemon,
-} from '../store/pokemon';
+} from '../store/playerTurn';
+
+import {attackOpponent} from '../store/pokemon';
 import MoveBlock from './MoveBlock';
 import {sendPlayerMoves} from '../store/game';
 
@@ -56,6 +58,9 @@ const Actionbar = (props) => {
     clearPlayerTurn,
     attackedPokemon,
     clearAttackedPokemon,
+    opponentPokemon,
+    attackOpponent,
+    playerMoves,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
@@ -91,7 +96,15 @@ const Actionbar = (props) => {
 
   function completeTurnHandler() {
     const user = 'player1';
-    sendMoves(playerTurn, attackedPokemon, user);
+    const sendMove = playerTurn.map((move, index) => {
+      return {...move, attackedPokemon: attackedPokemon[index]};
+    });
+
+    // sendMoves(playerTurn, attackedPokemon, user);
+    sendMoves(sendMove, user);
+    // attackOpponent(opponentPokemon, playerMoves);
+    attackOpponent(opponentPokemon, sendMove);
+
     clearPlayerTurn();
     clearAttackedPokemon();
   }
@@ -194,8 +207,10 @@ const mapState = (state) => {
   return {
     isLoggedIn: !!state.auth.id,
     playerPokemon: state.pokemon.playerOnePokemon,
-    playerTurn: state.pokemon.playerTurn,
-    attackedPokemon: state.pokemon.attackedPokemon,
+    playerTurn: state.playerTurn.playerTurn,
+    playerMoves: state.game.playerMoves,
+    attackedPokemon: state.playerTurn.attackedPokemon,
+    opponentPokemon: state.pokemon.playerTwoPokemon,
   };
 };
 const mapDispatch = (dispatch) => {
@@ -205,6 +220,8 @@ const mapDispatch = (dispatch) => {
       dispatch(sendPlayerMoves(moves, attacked, user)),
     clearPlayerTurn: () => dispatch(_clearPlayerTurn()),
     clearAttackedPokemon: () => dispatch(_clearAttackedPokemon()),
+    attackOpponent: (opponentPokemon, playerMoves) =>
+      dispatch(attackOpponent(opponentPokemon, playerMoves)),
   };
 };
 export default connect(mapState, mapDispatch)(Actionbar);

@@ -1,15 +1,16 @@
 import axios from 'axios';
 import history from '../history';
 
-const GET_SINGLE_POKEMON = 'GET_SINGLE_POKEMON';
 const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_PLAYERTWO_POKEMON = 'GET_PLAYERTWO_POKEMON';
-const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
-const SELECT_ATTACK = 'SELECT_ATTACK';
-const CLEAR_PLAYER_TURN = 'CLEAR_PLAYER_TURN';
-const SELECT_ATTACKED_POKEMON = 'SELECT_ATTACKED_POKEMON';
-const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
+// const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
+// const SELECT_ATTACK = 'SELECT_ATTACK';
+// const CLEAR_PLAYER_TURN = 'CLEAR_PLAYER_TURN';
+// const SELECT_ATTACKED_POKEMON = 'SELECT_ATTACKED_POKEMON';
+// const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
 const APPLY_OPPONENT_MOVES = 'APPLY_OPPONENT_MOVES';
+const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
+// const UPDATE_POKEMON = 'UPDATE_POKEMON';
 
 const playerOnePokemon = [
   {
@@ -167,25 +168,24 @@ const playerTwoPokemon = [
   },
 ];
 
-const _getSinglePokemon = (pokemon) => {
-  return {
-    type: GET_SINGLE_POKEMON,
-    pokemon,
-  };
-};
+// export const _updatePokemon = () => {
+//   return {
+//     type: UPDATE_POKEMON,
+//   };
+// };
 
-export const _selectAttack = (attack) => {
-  return {
-    type: SELECT_ATTACK,
-    attack,
-  };
-};
+// export const _selectAttack = (attack) => {
+//   return {
+//     type: SELECT_ATTACK,
+//     attack,
+//   };
+// };
 
-export const _clearPlayerTurn = () => {
-  return {
-    type: CLEAR_PLAYER_TURN,
-  };
-};
+// export const _clearPlayerTurn = () => {
+//   return {
+//     type: CLEAR_PLAYER_TURN,
+//   };
+// };
 
 const _getPlayerOnePokemon = (pokemon) => {
   return {
@@ -208,18 +208,18 @@ const _attackOpponent = (pokemon) => {
   };
 };
 
-export const _selectAttackedPokemon = (pokemon) => {
-  return {
-    type: SELECT_ATTACKED_POKEMON,
-    pokemon,
-  };
-};
+// export const _selectAttackedPokemon = (pokemon) => {
+//   return {
+//     type: SELECT_ATTACKED_POKEMON,
+//     pokemon,
+//   };
+// };
 
-export const _clearAttackedPokemon = () => {
-  return {
-    type: CLEAR_ATTACKED_POKEMON,
-  };
-};
+// export const _clearAttackedPokemon = () => {
+//   return {
+//     type: CLEAR_ATTACKED_POKEMON,
+//   };
+// };
 
 const _applyOpponentMoves = (pokemon) => {
   return {
@@ -229,48 +229,50 @@ const _applyOpponentMoves = (pokemon) => {
 };
 
 export const applyOpponentMoves = (moves, playerPokemon) => (dispatch) => {
-  console.log('player', playerPokemon);
-  const updated = playerPokemon.map((pk) => {
-    console.log('pk', pk);
-    moves.forEach((move) => {
-      if (move.attackedPokemon === pk.name) {
-        pk.stats.hp = pk.stats.hp - move.attack.damage;
+  // playerPokemon.forEach((pk) => {
+  //   for (let i = 0; i < moves.length; i++) {
+  //     if (moves[i].attackedPokemon === pk.name) {
+  //       pk.stats.hp -= moves[i].attack.damage;
+  //     }
+  //   }
+  // });
+
+  const updatedPk = playerPokemon.map((pk) => {
+    for (let i = 0; i < moves.length; i++) {
+      if (moves[i].attackedPokemon === pk.name) {
+        pk.stats.hp -= moves[i].attack.damage;
       }
-    });
+    }
     return pk;
   });
-  console.log('player', playerPokemon);
-  dispatch(_applyOpponentMoves(playerPokemon));
+  dispatch(_applyOpponentMoves(updatedPk));
 };
 
-export const selectAttack = (selectedPokemon, attack) => (dispatch) => {
-  const attackObj = {pokemon: selectedPokemon.name, attack: attack};
-  return dispatch(_selectAttack(attackObj));
-};
+// export const selectAttack = (selectedPokemon, attack) => (dispatch) => {
+//   const attackObj = {pokemon: selectedPokemon.name, attack: attack};
+//   return dispatch(_selectAttack(attackObj));
+// };
 
-export const attackOpponent = (pokemon, attack) => (dispatch) => {
-  console.log(pokemon, attack);
-  const updatedHp = pokemon.stats.hp - attack.damage;
-  const updatedPokemon = {...pokemon, stats: {hp: updatedHp}};
-  return dispatch(_attackOpponent(updatedPokemon));
-};
+// export const attackOpponent = (pokemon, attack) => (dispatch) => {
+//   console.log(pokemon, attack);
+//   const updatedHp = pokemon.stats.hp - attack.damage;
+//   const updatedPokemon = {...pokemon, stats: {hp: updatedHp}};
+//   return dispatch(_attackOpponent(updatedPokemon));
+// };
 
-export const fetchSinglePokemon = (name) => async (dispatch) => {
-  try {
-    const response = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon/${name}`
-    );
+export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
+  const updatedPk = oppPokemon.map((pk) => {
+    for (let i = 0; i < turn.length; i++) {
+      if (turn[i].attackedPokemon === pk.name) {
+        pk.stats.hp -= turn[i].attack.damage;
+      }
+      return pk;
+    }
+  });
 
-    const pokemon = {
-      name: response.data.name,
-      pokemonType: response.data.types[0].type.name,
-      imgUrl: response.data.sprites.front_default,
-    };
-    console.log(pokemon);
-    return dispatch(_getSinglePokemon(singlePokemon));
-  } catch (error) {
-    console.error(error);
-  }
+  // const updatedHp = pokemon.stats.hp - attack.damage;
+  // const updatedPokemon = {...pokemon, stats: {hp: updatedHp}};
+  return dispatch(_attackOpponent(updatedPk));
 };
 
 export const fetchPlayerOnePokemon = () => async (dispatch) => {
@@ -294,37 +296,42 @@ export default function (
     singlePokemon: {},
     playerOnePokemon: [],
     playerTwoPokemon: [],
-    playerAttack: {},
-    playerTurn: [],
-    attackedPokemon: [],
+    // playerAttack: {},
+    // playerTurn: [],
+    // attackedPokemon: [],
   },
   action
 ) {
   switch (action.type) {
-    case GET_SINGLE_POKEMON:
-      return {...state, singlePokemon: action.pokemon};
     case GET_PLAYERONE_POKEMON:
       return {...state, playerOnePokemon: action.pokemon};
     case GET_PLAYERTWO_POKEMON:
       return {...state, playerTwoPokemon: action.pokemon};
+    // case ATTACK_OPPONENT:
+    //   let newPoke = state.playerTwoPokemon.map((pk) => {
+    //     return pk.name !== action.pokemon.name ? pk : action.pokemon;
+    //   });
     case ATTACK_OPPONENT:
-      let newPoke = state.playerTwoPokemon.map((pk) => {
-        return pk.name !== action.pokemon.name ? pk : action.pokemon;
-      });
-      return {...state, playerTwoPokemon: newPoke};
-    case SELECT_ATTACK:
-      return {...state, playerTurn: [...state.playerTurn, action.attack]};
-    case SELECT_ATTACKED_POKEMON:
-      return {
-        ...state,
-        attackedPokemon: [...state.attackedPokemon, action.pokemon],
-      };
-    case CLEAR_PLAYER_TURN:
-      return {...state, playerTurn: []};
-    case CLEAR_ATTACKED_POKEMON:
-      return {...state, attackedPokemon: []};
+      // let newPoke = state.playerTwoPokemon.map((pk) => {
+      //   return pk.name !== action.pokemon.name ? pk : action.pokemon;
+      // });
+      return {...state, playerTwoPokemon: action.pokemon};
+    //   return {...state, playerTwoPokemon: newPoke};
+    // case SELECT_ATTACK:
+    //   return {...state, playerTurn: [...state.playerTurn, action.attack]};
+    // case SELECT_ATTACKED_POKEMON:
+    //   return {
+    //     ...state,
+    //     attackedPokemon: [...state.attackedPokemon, action.pokemon],
+    //   };
+    // case CLEAR_PLAYER_TURN:
+    //   return {...state, playerTurn: []};
+    // case CLEAR_ATTACKED_POKEMON:
+    //   return {...state, attackedPokemon: []};
     case APPLY_OPPONENT_MOVES:
       return {...state, playerOnePokemon: action.pokemon};
+    // case UPDATE_POKEMON:
+    //   return state;
     default:
       return state;
   }

@@ -7,6 +7,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import {makeStyles} from '@material-ui/core';
+import {
+  fetchPlayerOnePokemon,
+  fetchPlayerTwoPokemon,
+  attackOpponent,
+  _selectAttackedPokemon,
+  applyOpponentMoves,
+} from '../store/pokemon';
+import {getPlayerMoves} from '../store/game';
+import {FIREDB} from '../App';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -40,18 +49,23 @@ const useStyles = makeStyles(() => ({
 
 //<Grid className={classes.main}>
 const Main = (props) => {
+  const {getPlayerPokemon, getOpponentPokemon, opponentPokemon, playerPokemon} =
+    props;
+
+  useEffect(() => {
+    getPlayerPokemon();
+    getOpponentPokemon();
+  }, []);
   const classes = useStyles();
   return (
     <React.Fragment>
       <CssBaseline />
       <Container className={classes.main}>
-        {/* <Typography
-          component="div"
-          style={{backgroundColor: "#cfe8fc", height: "100vh"}}
-        /> */}
-
         <div className={classes.board}>
-          <Gameboard />
+          <Gameboard
+            playerPokemon={playerPokemon}
+            opponentPokemon={opponentPokemon}
+          />
           <Actionbar />
         </div>
         <div className={classes.side}>
@@ -64,11 +78,16 @@ const Main = (props) => {
 const mapState = (state) => {
   return {
     isLoggedIn: !!state.auth.id,
+    playerPokemon: state.pokemon.playerOnePokemon,
+    opponentPokemon: state.pokemon.playerTwoPokemon,
   };
 };
 
 const mapDispatch = (dispatch) => {
-  return {};
+  return {
+    getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
+    getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
+  };
 };
 
 export default connect(mapState, mapDispatch)(Main);
