@@ -4,7 +4,7 @@ import {makeStyles} from '@material-ui/core';
 import {applyOpponentMoves, attackOpponent} from '../store/pokemon';
 import {_selectAttackedPokemon, _selectAttack} from '../store/playerTurn';
 import {getPlayerMoves} from '../store/game';
-import {FIREDB} from '../App';
+import {FIREDB} from '../../utils/firebase';
 
 const useStyles = makeStyles(() => ({
   main: {
