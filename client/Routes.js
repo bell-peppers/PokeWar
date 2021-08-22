@@ -1,13 +1,14 @@
-import React, {Component, Fragment} from 'react';
-import {connect} from 'react-redux';
-import {withRouter, Route, Switch, Redirect} from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Main from './components/Main';
-import {Login, Signup} from './components/AuthForm';
+import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
-import {me} from './store';
+import { me } from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
+import temp from './components/PracticeFile';
 
 /**
  * COMPONENT
@@ -18,7 +19,7 @@ class Routes extends Component {
   }
 
   render() {
-    const {isLoggedIn} = this.props;
+    const { isLoggedIn } = this.props;
 
     return (
       <div>
@@ -30,7 +31,7 @@ class Routes extends Component {
         ) : (
           <Switch>
             <Route path="/" exact component={AllPokemon} />
-            {/* <Route path='/' exact component={ Login } /> */}
+            <Route path='/' exact component={ Login } />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
           </Switch> */}
@@ -41,6 +42,7 @@ class Routes extends Component {
           <Route path='/matchsearch' exact component={MatchSearch} />
           <Route path='/login' component={Login} />
           <Route path='/signup' component={Signup} />
+          <Route path='/dev/setup' component={temp} />
         </Switch>
       </div>
     );
