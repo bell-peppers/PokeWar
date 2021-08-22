@@ -37,7 +37,6 @@ export default function temp(props) {
   };
 
   const Delete = (user) => {
-    console.log(id);
     const trainerRef = firebase.database().ref('Trainers').child(user.id);
     trainerRef.remove();
   };
