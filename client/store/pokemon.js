@@ -5,6 +5,8 @@ const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_PLAYERTWO_POKEMON = 'GET_PLAYERTWO_POKEMON';
 const APPLY_OPPONENT_MOVES = 'APPLY_OPPONENT_MOVES';
 const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
+const FETCH_SINGLE_POKEMON = 'FETCH_SINGLE_POKEMON';
+const FETCH_MOVES_INFO = 'UPDATE_MOVES_INFO';
 
 const playerOnePokemon = [
   {
@@ -190,6 +192,29 @@ const _applyOpponentMoves = (pokemon) => {
   };
 };
 
+const _fetchSinglePokemon = (pokemon) => {
+  return {
+    type: FETCH_SINGLE_POKEMON,
+    pokemon,
+  };
+};
+
+const _fetchMovesInfo = (moves) => {
+  return {
+    type: FETCH_MOVES_INFO,
+    moves,
+  };
+};
+
+export const fetchSinglePokemon = (id) => async (dispatch) => {
+  try {
+    const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    return dispatch(_fetchSinglePokemon(pk));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const applyOpponentMoves = (moves, playerPokemon) => (dispatch) => {
   const updatedPk = playerPokemon.map((pk) => {
     for (let i = 0; i < moves.length; i++) {
@@ -219,14 +244,43 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
   return dispatch(_attackOpponent(updatedPk));
 };
 
-export const fetchPlayerOnePokemon = () => async (dispatch) => {
+export const fetchPlayerOnePokemon = (pkId) => async (dispatch) => {
   try {
-    return dispatch(_getPlayerOnePokemon(playerOnePokemon));
+    const playerPk = [];
+    await pkId.forEach(async (id) => {
+      const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+      const movesArr = [pk.data.moves[0], pk.data.moves[1], pk.data.moves[2]];
+
+      console.log(movesArr);
+      await movesArr.forEach(async (move) => {
+        const getMove = await axios.get(`${move.move.url}`);
+        move.moveData = getMove.data;
+      });
+      pk.data.moves = movesArr;
+      playerPk.push(pk.data);
+    });
+
+    return dispatch(_getPlayerOnePokemon(playerPk));
   } catch (error) {
     console.error(error);
   }
 };
 
+export const fetchMovesInfo = (pokemon) => async (dispatch) => {
+  try {
+    const updatedPk = await pokemon.map(async (pk) => {
+      const newMoves = await pk.moves.map(async (move) => {
+        const getMove = await axios.get(`${move.move.url}`);
+        return {...move, moveData: getMove.data};
+      });
+      return newMoves;
+    });
+    console.log(updatedPk);
+    return dispatch(_fetchMovesInfo(updatedPk));
+  } catch (error) {
+    console.error(error);
+  }
+};
 export const fetchPlayerTwoPokemon = () => async (dispatch) => {
   try {
     return dispatch(_getPlayerTwoPokemon(playerTwoPokemon));

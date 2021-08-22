@@ -80,6 +80,7 @@ const Actionbar = (props) => {
   }
 
   function selectMove(move) {
+    console.log('move', move);
     const alreadyPicked = playerTurn.filter(
       (turn) => turn.pokemon === selectedPlayerPokemon.name
     );
@@ -130,7 +131,7 @@ const Actionbar = (props) => {
                   }}
                 >
                   <p>{value.name}</p>
-                  <img src={value.frontImg} />
+                  <img src={value.sprites.front_default} />
                 </Paper>
               </Grid>
             ))}
@@ -167,9 +168,9 @@ const Actionbar = (props) => {
                   {/* <MoveBlock move={value} selectMove={selectMove} /> */}
                   <Paper
                     className={classes.skill}
-                    onClick={() => selectMove(value)}
+                    onClick={() => selectMove(value.move)}
                   >
-                    <p>{value.move}</p>
+                    <p>{value.move.name}</p>
                   </Paper>
                 </Grid>
               ))
