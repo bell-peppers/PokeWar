@@ -149,7 +149,10 @@ const Gameboard = (props) => {
           playerPokemon.map((pk) => {
             return (
               <div className={classes.pokemonContainer} key={pk.id}>
-                <img className={classes.playerSprites} src={pk.imgUrl} />
+                <img
+                  className={classes.playerSprites}
+                  src={pk.sprites.back_default}
+                />
                 <p className={classes.hp}>hp: {pk.stats.hp}</p>
               </div>
             );

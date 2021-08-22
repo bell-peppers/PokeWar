@@ -13,6 +13,7 @@ import {
   attackOpponent,
   _selectAttackedPokemon,
   applyOpponentMoves,
+  fetchMovesInfo,
 } from '../store/pokemon';
 import {getPlayerMoves} from '../store/game';
 
@@ -48,11 +49,18 @@ const useStyles = makeStyles(() => ({
 
 //<Grid className={classes.main}>
 const Main = (props) => {
-  const {getPlayerPokemon, getOpponentPokemon, opponentPokemon, playerPokemon} =
-    props;
+  const {
+    getPlayerPokemon,
+    getOpponentPokemon,
+    opponentPokemon,
+    playerPokemon,
+    getMoves,
+  } = props;
+  const playerPkIds = [1, 2, 3];
 
   useEffect(() => {
-    getPlayerPokemon();
+    getPlayerPokemon(playerPkIds);
+    // getMoves(playerPokemon);
     getOpponentPokemon();
   }, []);
   const classes = useStyles();
@@ -84,8 +92,9 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
+    getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
     getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
+    getMoves: (playerPk) => dispatch(fetchMovesInfo(playerPk)),
   };
 };
 
