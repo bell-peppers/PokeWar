@@ -7,6 +7,9 @@ module.exports = app;
 // logging middleware
 app.use(morgan('dev'));
 
+// body parsing middleware
+app.use(express.json());
+
 app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '..', 'public/index.html'))
 );
