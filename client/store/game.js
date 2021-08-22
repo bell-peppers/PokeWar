@@ -22,28 +22,8 @@ export const getPlayerMoves = (newMoves) => (dispatch) => {
   return dispatch(_getPlayerMoves(opponentMoves));
 };
 
-// export const sendPlayerMoves = (moves, attacked, user) => (dispatch) => {
-//   try {
-//     const sendMoves = moves.map((move, index) => {
-//       return {...move, attackedPokemon: attacked[index]};
-//     });
-//     console.log(sendMoves);
-//     axios.post(
-//       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/Match1/moves/${user}/.json`,
-//       sendMoves
-//     );
-
-//     return dispatch(_sendPlayerMoves(sendMoves));
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
 export const sendPlayerMoves = (sendMoves, user) => (dispatch) => {
   try {
-    // const sendMoves = moves.map((move, index) => {
-    //   return {...move, attackedPokemon: attacked[index]};
-    // });
-    // console.log(sendMoves);
     axios.post(
       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/Match1/moves/${user}/.json`,
       sendMoves

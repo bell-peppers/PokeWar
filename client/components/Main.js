@@ -15,7 +15,6 @@ import {
   applyOpponentMoves,
 } from '../store/pokemon';
 import {getPlayerMoves} from '../store/game';
-import {FIREDB} from '../App';
 
 const useStyles = makeStyles(() => ({
   main: {
