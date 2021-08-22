@@ -8,9 +8,9 @@ import {
   _clearPlayerTurn,
   _clearAttackedPokemon,
 } from '../store/playerTurn';
-
+import {_selectedPlayerPokemon} from '../store/playerTurn';
 import {attackOpponent} from '../store/pokemon';
-import MoveBlock from './MoveBlock';
+//import MoveBlock from './MoveBlock';
 import {sendPlayerMoves} from '../store/game';
 
 const useStyles = makeStyles(() => ({
@@ -36,6 +36,11 @@ const useStyles = makeStyles(() => ({
     height: 50,
     width: 50,
   },
+  selectedSkill: {
+    height: 50,
+    width: 50,
+    boxShadow: '1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue',
+  },
   actionBar: {
     display: 'flex',
     position: 'relative',
@@ -44,9 +49,9 @@ const useStyles = makeStyles(() => ({
     marginBottom: '20px',
   },
   selected: {
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    height: 140,
+    width: 100,
+    boxShadow: '1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue',
   },
 }));
 const Actionbar = (props) => {
@@ -60,54 +65,45 @@ const Actionbar = (props) => {
     clearAttackedPokemon,
     opponentPokemon,
     attackOpponent,
-    playerMoves,
+    selectedPlayerPk,
+    selectPlayerPokemon,
+    playerAttack,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
     moves: [],
   });
-  const [selectedMove, setSelectedMove] = useState({});
 
-  useEffect(() => {
-    if (playerPokemon.length > 0) {
-      console.log(playerPokemon);
-      setSelectedPlayerPokemon(playerPokemon[0]);
-      console.log(selectedPlayerPokemon);
-    }
-  }, []);
+  useEffect(() => {}, []);
   function selectPokemon(pokemon) {
     setSelectedPlayerPokemon(pokemon);
+    selectPlayerPokemon(pokemon);
   }
 
   function selectMove(move) {
-    console.log('move', move);
+    console.log(move, playerAttack);
     const alreadyPicked = playerTurn.filter(
       (turn) => turn.pokemon === selectedPlayerPokemon.name
     );
-    console.log(alreadyPicked.length);
     if (alreadyPicked.length > 0) {
       alert('you have already chosen a move for this pokemon');
     } else if (playerTurn.length === 3) {
       alert("you can't chose more than three moves!");
     } else {
-      setSelectedMove(move);
       selectAttack(selectedPlayerPokemon, move);
     }
   }
 
   function completeTurnHandler() {
     const user = 'player1';
-    const sendMove = playerTurn.map((move, index) => {
-      return {...move, attackedPokemon: attackedPokemon[index]};
-    });
-
-    // sendMoves(playerTurn, attackedPokemon, user);
-    sendMoves(sendMove, user);
-    // attackOpponent(opponentPokemon, playerMoves);
-    attackOpponent(opponentPokemon, sendMove);
-
+    // const sendMove = playerTurn.map((move, index) => {
+    //   return {...move, attackedPokemon: attackedPokemon[index]};
+    // });
+    sendMoves(playerTurn, user);
+    attackOpponent(opponentPokemon, playerTurn);
     clearPlayerTurn();
     clearAttackedPokemon();
+    selectPlayerPokemon({});
   }
   return (
     <div className={classes.actionBar}>
@@ -116,7 +112,6 @@ const Actionbar = (props) => {
           My deck:
         </Grid>
         <Grid item xs={12}>
-          {/* 5, 7, 9*/}
           <Grid
             container
             style={{display: 'flex', flexWrap: 'nowrap'}}
@@ -125,13 +120,19 @@ const Actionbar = (props) => {
             {playerPokemon.map((value) => (
               <Grid key={value.id} item>
                 <Paper
-                  className={classes.card}
+                  className={
+                    value === selectedPlayerPk ? classes.selected : classes.card
+                  }
                   onClick={() => {
                     selectPokemon(value);
                   }}
                 >
                   <p>{value.name}</p>
-                  <img src={value.sprites.front_default} />
+                  {/* <img src={value.sprites.front_default} /> */}
+                  <img
+                    style={{maxWidth: 100, maxHeight: 140}}
+                    src={value.sprites.other['official-artwork'].front_default}
+                  />
                 </Paper>
               </Grid>
             ))}
@@ -167,8 +168,12 @@ const Actionbar = (props) => {
                 <Grid key={i} item>
                   {/* <MoveBlock move={value} selectMove={selectMove} /> */}
                   <Paper
-                    className={classes.skill}
-                    onClick={() => selectMove(value.move)}
+                    className={
+                      value === playerAttack
+                        ? classes.selectedSkill
+                        : classes.skill
+                    }
+                    onClick={() => selectMove(value)}
                   >
                     <p>{value.move.name}</p>
                   </Paper>
@@ -206,12 +211,13 @@ const Actionbar = (props) => {
 };
 const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id,
     playerPokemon: state.pokemon.playerOnePokemon,
     playerTurn: state.playerTurn.playerTurn,
     playerMoves: state.game.playerMoves,
     attackedPokemon: state.playerTurn.attackedPokemon,
     opponentPokemon: state.pokemon.playerTwoPokemon,
+    selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
+    playerAttack: state.playerTurn.playerAttack.attack,
   };
 };
 const mapDispatch = (dispatch) => {
@@ -223,6 +229,7 @@ const mapDispatch = (dispatch) => {
     clearAttackedPokemon: () => dispatch(_clearAttackedPokemon()),
     attackOpponent: (opponentPokemon, playerMoves) =>
       dispatch(attackOpponent(opponentPokemon, playerMoves)),
+    selectPlayerPokemon: (pokemon) => dispatch(_selectedPlayerPokemon(pokemon)),
   };
 };
 export default connect(mapState, mapDispatch)(Actionbar);

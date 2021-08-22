@@ -2,7 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {makeStyles} from '@material-ui/core';
 import {applyOpponentMoves, attackOpponent} from '../store/pokemon';
-import {_selectAttackedPokemon, _selectAttack} from '../store/playerTurn';
+import {
+  selectAttackedPokemon,
+  _selectAttack,
+  _selectedPlayerPokemon,
+} from '../store/playerTurn';
 import {getPlayerMoves} from '../store/game';
 import {FIREDB} from '../../utils/firebase';
 
@@ -56,9 +60,6 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'black',
   },
   playerName: {
     position: 'absolute',
@@ -70,9 +71,6 @@ const useStyles = makeStyles(() => ({
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'black',
-    // borderWidth: "1px",
-    // borderStyle: "solid",
-    // borderColor: "black",
   },
   hp: {
     fontSize: '30px',
@@ -82,17 +80,15 @@ const useStyles = makeStyles(() => ({
 const Gameboard = (props) => {
   const classes = useStyles();
   const {
-    getPlayerPokemon,
-    getOpponentPokemon,
     opponentPokemon,
     playerPokemon,
-    attackOpponent,
-    selectedAttack,
     resetAttack,
     selectAttacked,
     getOpponentMoves,
-    opponentMoves,
     applyOpponentMoves,
+    selectedPlayerPk,
+    playerAttack,
+    resetPlayerPokemon,
   } = props;
 
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
@@ -118,10 +114,14 @@ const Gameboard = (props) => {
   }
 
   function clickHandle(pk) {
-    // console.log('select', selectedAttack);
-    // attackOpponent(pk, selectedAttack);
-    // resetAttack();
-    selectAttacked(pk.name);
+    if (playerAttack && selectedPlayerPk) {
+      selectAttacked(pk.name, playerAttack.attack, selectedPlayerPk.name);
+      console.log(
+        `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
+      );
+      resetAttack();
+      resetPlayerPokemon();
+    }
   }
 
   return (
@@ -153,7 +153,7 @@ const Gameboard = (props) => {
                   className={classes.playerSprites}
                   src={pk.sprites.back_default}
                 />
-                <p className={classes.hp}>hp: {pk.stats.hp}</p>
+                <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
               </div>
             );
           })}
@@ -166,23 +166,23 @@ const Gameboard = (props) => {
 };
 const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id,
-    selectedAttack: state.pokemon.playerAttack,
     opponentMoves: state.game.opponentMoves,
+    selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
+    playerAttack: state.playerTurn.playerAttack,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
-    // getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
-    //getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
     attackOpponent: (pokemon, attack) =>
       dispatch(attackOpponent(pokemon, attack)),
-    resetAttack: () => dispatch(_selectAttack({damage: 0})),
-    selectAttacked: (pk) => dispatch(_selectAttackedPokemon(pk)),
+    resetAttack: () => dispatch(_selectAttack({})),
+    selectAttacked: (atkdpk, atk, pk) =>
+      dispatch(selectAttackedPokemon(atkdpk, atk, pk)),
     getOpponentMoves: (newMoves) => dispatch(getPlayerMoves(newMoves)),
     applyOpponentMoves: (oppMoves, pk) =>
       dispatch(applyOpponentMoves(oppMoves, pk)),
+    resetPlayerPokemon: () => dispatch(_selectedPlayerPokemon({})),
   };
 };
 
