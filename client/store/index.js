@@ -5,11 +5,11 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import auth from './auth';
 import pokemon from './pokemon';
 import game from './game';
+import playerTurn from './playerTurn';
 
-const reducer = combineReducers({auth, pokemon, game});
+const reducer = combineReducers({auth, pokemon, game, playerTurn});
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
-
 );
 const store = createStore(reducer, middleware);
 

@@ -8,7 +8,11 @@ import { me } from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
+
+import AllPokemon from './components/AllPokemon';
+
 import temp from './components/PracticeFile';
+
 
 /**
  * COMPONENT
@@ -32,11 +36,13 @@ class Routes extends Component {
           <Switch>
             <Route path="/" exact component={AllPokemon} />
             <Route path='/' exact component={ Login } />
+
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
           </Switch> */}
         <Switch>
-          <Route path='/' exact component={Main} />
+          <Route path='/' exact component={AllPokemon} />
+          <Route path='/game' exact component={Main} />
           <Route path='/login' exact component={LoginPage} />
           <Route path='/myprofile' exact component={UserProfile} />
           <Route path='/matchsearch' exact component={MatchSearch} />
