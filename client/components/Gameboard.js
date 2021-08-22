@@ -1,14 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {makeStyles} from '@material-ui/core';
-import {
-  fetchPlayerOnePokemon,
-  fetchPlayerTwoPokemon,
-  attackOpponent,
-  _selectAttackedPokemon,
-} from '../store/pokemon';
-import {_selectAttack} from '../store/pokemon';
+import {applyOpponentMoves, attackOpponent} from '../store/pokemon';
+import {_selectAttackedPokemon, _selectAttack} from '../store/playerTurn';
 import {getPlayerMoves} from '../store/game';
+import {FIREDB} from '../../utils/firebase';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -95,14 +91,31 @@ const Gameboard = (props) => {
     resetAttack,
     selectAttacked,
     getOpponentMoves,
+    opponentMoves,
+    applyOpponentMoves,
   } = props;
+
+  const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
+
   useEffect(() => {
-    if (playerPokemon.length === 0) {
-      getPlayerPokemon();
-      getOpponentPokemon();
-    }
-    getOpponentMoves();
-  });
+    listenForOpponentMoves();
+  }, [playerPokemon]);
+
+  function listenForOpponentMoves() {
+    const match = 'Match1';
+    const opponent = 'player2';
+    //firebase looking for updates to this match
+    const dbUpdates = FIREDB.ref(`Match/${match}/moves/${opponent}`);
+    dbUpdates.limitToLast(1).on('child_added', (snapshot) => {
+      const newMoves = snapshot.val();
+
+      if (playerPokemon.length > 0 && opponentMovesLoaded == false) {
+        setOpponentMovesLoaded(true);
+        getOpponentMoves(newMoves);
+        applyOpponentMoves(newMoves, playerPokemon);
+      }
+    });
+  }
 
   function clickHandle(pk) {
     // console.log('select', selectedAttack);
@@ -110,6 +123,7 @@ const Gameboard = (props) => {
     // resetAttack();
     selectAttacked(pk.name);
   }
+
   return (
     <div className={classes.main}>
       <div className={classes.opponentSide}>
@@ -150,21 +164,22 @@ const Gameboard = (props) => {
 const mapState = (state) => {
   return {
     isLoggedIn: !!state.auth.id,
-    playerPokemon: state.pokemon.playerOnePokemon,
-    opponentPokemon: state.pokemon.playerTwoPokemon,
     selectedAttack: state.pokemon.playerAttack,
+    opponentMoves: state.game.opponentMoves,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
-    getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
-    getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
+    // getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
+    //getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
     attackOpponent: (pokemon, attack) =>
       dispatch(attackOpponent(pokemon, attack)),
     resetAttack: () => dispatch(_selectAttack({damage: 0})),
     selectAttacked: (pk) => dispatch(_selectAttackedPokemon(pk)),
-    getOpponentMoves: () => dispatch(getPlayerMoves()),
+    getOpponentMoves: (newMoves) => dispatch(getPlayerMoves(newMoves)),
+    applyOpponentMoves: (oppMoves, pk) =>
+      dispatch(applyOpponentMoves(oppMoves, pk)),
   };
 };
 

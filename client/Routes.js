@@ -2,11 +2,12 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Main from './components/Main';
-// import { Login, Signup } from './components/AuthForm';
 import { me } from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
+import AllPokemon from './components/AllPokemon';
+import temp from './components/PracticeFile';
 
 /**
  * COMPONENT
@@ -17,26 +18,17 @@ class Routes extends Component {
   }
 
   render() {
-    const { isLoggedIn } = this.props;
+    // const { isLoggedIn } = this.props;
 
     return (
-      <div>
-        {/* {isLoggedIn ? (
-          <Switch>
-            <Route path='/' component={MatchSearch} />
-            <Redirect to='/' />
-          </Switch>
-        ) : ( */}
-        <Switch>
-          <Route path='/' exact component={MatchSearch} />
-          <Route path='/login' exact component={LoginPage} />
-          <Route path='/myprofile' exact component={UserProfile} />
-          <Route path='/gameboard' exact component={Main} />
-          {/* <Route path='/login' component={Login} /> */}
-          {/* <Route path='/signup' component={Signup} /> */}
-        </Switch>
-        {/* )} */}
-      </div>
+      <Switch>
+        <Route path='/' exact component={MatchSearch} />
+        <Route path='/login' exact component={LoginPage} />
+        <Route path='/myprofile' exact component={UserProfile} />
+        <Route path='/gameboard' exact component={Main} />
+        <Route path='/dev/setup' component={temp} />
+        <Route path='/allpokemon' exact component={AllPokemon} />
+      </Switch>
     );
   }
 }
