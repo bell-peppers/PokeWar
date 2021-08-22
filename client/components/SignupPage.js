@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
   },
 }));
-const LoginPage = (props) => {
+const SignupPage = (props) => {
   const classes = useStyles();
   return (
     <div>
@@ -43,6 +43,16 @@ const LoginPage = (props) => {
         </Grid>
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <form className={classes.form} noValidate autoComplete='off'>
+            <TextField
+              label='Username'
+              id='filled-start-adornment'
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'> </InputAdornment>
+                ),
+              }}
+              variant='filled'
+            />
             <TextField
               label='E-mail'
               id='filled-start-adornment'
@@ -63,12 +73,22 @@ const LoginPage = (props) => {
               }}
               variant='filled'
             />
+            <TextField
+              label='Password confirmation'
+              id='filled-start-adornment'
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'> </InputAdornment>
+                ),
+              }}
+              variant='filled'
+            />
             <Button
               variant='contained'
               style={{width: '100px', position: 'relative', left: '125px'}}
             >
               Log in
-            </Button><Grid>Forgot password</Grid><Grid>Need an account? <a href='/signup'>Sign up</a></Grid>
+            </Button><Grid>Already have an account? <a href='/login'>Login</a></Grid>
           </form>
         </Grid>
       </Grid>
@@ -83,4 +103,4 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {};
 };
-export default connect(mapState, mapDispatch)(LoginPage);
+export default connect(mapState, mapDispatch)(SignupPage);

@@ -206,7 +206,6 @@ const Actionbar = (props) => {
 };
 const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id,
     playerPokemon: state.pokemon.playerOnePokemon,
     playerTurn: state.playerTurn.playerTurn,
     playerMoves: state.game.playerMoves,

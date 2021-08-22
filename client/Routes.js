@@ -10,6 +10,7 @@ import UserProfile from './components/UserProfile';
 import AllPokemon from './components/AllPokemon';
 
 import temp from './components/PracticeFile';
+import SignupPage from './components/SignupPage';
 
 /**
  * COMPONENT
@@ -27,6 +28,7 @@ class Routes extends Component {
           <Route path='/myprofile' exact component={UserProfile} />
           <Route path='/matchsearch' exact component={MatchSearch} />
           <Route path='/dev/setup' component={temp} />
+          <Route path='/signup' exact component={SignupPage}/>
         </Switch>
       </div>
     );

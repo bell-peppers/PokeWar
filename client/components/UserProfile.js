@@ -16,6 +16,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Avatar from '@material-ui/core/Avatar';
 import {CardMedia} from '@material-ui/core';
 import Image from 'material-ui-image';
+import fetchPlayerOnePokemon from '../store/pokemon';
+import getTheCards from '../store/userProfile'
+import firebase from 'firebase/app';
+
 const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
@@ -74,6 +78,7 @@ const rows = [
   createData(15, 'Peter', 8515767),
 ];
 const UserProfile = (props) => {
+  const {iGetTheCards} = props;
   const classes = useStyles();
   const [page, setPage] = React.useState(2);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -91,6 +96,8 @@ const UserProfile = (props) => {
           style={{display: 'flex', justifyContent: 'center', padding: '10px'}}
         >
           POKEWARS
+          {/* {iGetTheCards('taya')} */}
+          {/* {props.playerPokemon && console.log(props.playerPokemon)} */}
         </Grid>
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           Leaderboard position: 34532523
@@ -180,16 +187,20 @@ const UserProfile = (props) => {
             />
           </Paper>
         </Grid>
+
       </Grid>
     </div>
   );
 };
 const mapState = (state) => {
   return {
-    playerPokemon: state.pokemon.playerOnePokemon,
+    // playerPokemon: state.pokemon.playerOnePokemon,
   };
 };
 const mapDispatch = (dispatch) => {
-  return {};
+  return {
+   iGetTheCards: (user) => dispatch(getTheCards(user))
+    // getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
+  };
 };
 export default connect(mapState, mapDispatch)(UserProfile);

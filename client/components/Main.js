@@ -84,7 +84,6 @@ const Main = (props) => {
 };
 const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id,
     playerPokemon: state.pokemon.playerOnePokemon,
     opponentPokemon: state.pokemon.playerTwoPokemon,
   };
