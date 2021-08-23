@@ -10,9 +10,6 @@ import {makeStyles} from '@material-ui/core';
 import {
   fetchPlayerOnePokemon,
   fetchPlayerTwoPokemon,
-  attackOpponent,
-  _selectAttackedPokemon,
-  applyOpponentMoves,
   fetchMovesInfo,
 } from '../store/pokemon';
 import {getPlayerMoves} from '../store/game';
@@ -56,11 +53,10 @@ const Main = (props) => {
     playerPokemon,
     getMoves,
   } = props;
-  const playerPkIds = [1, 2, 3];
+  const playerPkIds = [45, 23, 98];
 
   useEffect(() => {
     getPlayerPokemon(playerPkIds);
-    // getMoves(playerPokemon);
     getOpponentPokemon();
   }, []);
   const classes = useStyles();

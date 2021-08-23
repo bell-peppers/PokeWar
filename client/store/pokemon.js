@@ -250,8 +250,6 @@ export const fetchPlayerOnePokemon = (pkId) => async (dispatch) => {
     await pkId.forEach(async (id) => {
       const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
       const movesArr = [pk.data.moves[0], pk.data.moves[1], pk.data.moves[2]];
-
-      console.log(movesArr);
       await movesArr.forEach(async (move) => {
         const getMove = await axios.get(`${move.move.url}`);
         move.moveData = getMove.data;

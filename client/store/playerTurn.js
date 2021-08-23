@@ -3,6 +3,14 @@ const SELECT_ATTACK = 'SELECT_ATTACK';
 const CLEAR_PLAYER_TURN = 'CLEAR_PLAYER_TURN';
 const SELECT_ATTACKED_POKEMON = 'SELECT_ATTACKED_POKEMON';
 const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
+const SELECTED_PLAYER_POKEMON = 'SELECTED_PLAYER_POKEMON';
+
+export const _selectedPlayerPokemon = (pokemon) => {
+  return {
+    type: SELECTED_PLAYER_POKEMON,
+    pokemon,
+  };
+};
 
 export const _selectAttack = (attack) => {
   return {
@@ -17,10 +25,10 @@ export const _clearPlayerTurn = () => {
   };
 };
 
-export const _selectAttackedPokemon = (pokemon) => {
+export const _selectAttackedPokemon = (turn) => {
   return {
     type: SELECT_ATTACKED_POKEMON,
-    pokemon,
+    turn,
   };
 };
 
@@ -35,23 +43,39 @@ export const selectAttack = (selectedPokemon, attack) => (dispatch) => {
   return dispatch(_selectAttack(attackObj));
 };
 
+export const selectAttackedPokemon =
+  (attackedPokemon, attack, attackingPk) => (dispatch) => {
+    const turn = {
+      attackedPokemon: attackedPokemon,
+      pokemon: attackingPk,
+      attack: attack,
+    };
+    console.log(turn);
+    return dispatch(_selectAttackedPokemon(turn));
+  };
+
 export default function (
   state = {
     playerAttack: {},
     playerTurn: [],
     attackedPokemon: [],
+    selectedPlayerPokemon: {},
   },
   action
 ) {
   switch (action.type) {
     case SELECT_ATTACK:
-      return {...state, playerTurn: [...state.playerTurn, action.attack]};
+      return {
+        ...state,
+        playerAttack: action.attack,
+      };
     case SELECT_ATTACKED_POKEMON:
       return {
         ...state,
-        attackedPokemon: [...state.attackedPokemon, action.pokemon],
+        playerTurn: [...state.playerTurn, action.turn],
       };
-
+    case SELECTED_PLAYER_POKEMON:
+      return {...state, selectedPlayerPokemon: action.pokemon};
     case CLEAR_PLAYER_TURN:
       return {...state, playerTurn: []};
     case CLEAR_ATTACKED_POKEMON:
