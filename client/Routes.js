@@ -28,7 +28,7 @@ class Routes extends Component {
 
 		return (
 			<Router>
-				<AuthProvider>
+				{/* <AuthProvider> */}
 					<Switch>
 						<Route path='/' exact component={MatchSearch} />
 						<Route path='/allpokemon' exact component={AllPokemon} />
@@ -39,7 +39,7 @@ class Routes extends Component {
 						<Route path='/dev/setup' component={temp} />
 						<Route path='/signup' exact component={SignupPage} />
 					</Switch>
-				</AuthProvider>
+				{/* </AuthProvider> */}
 			</Router>
 		);
 	}
