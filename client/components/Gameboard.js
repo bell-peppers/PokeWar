@@ -125,11 +125,10 @@ const Gameboard = (props) => {
   }
 
   return (
-
     <div className={classes.main}>
       <div className={classes.opponentSide}>
         <div className={classes.playerName}>
-          <h1>Opponent</h1> {console.log(playerPokemon)}
+          <h1>Opponent</h1>
         </div>
         {opponentPokemon.length > 0 &&
           opponentPokemon.map((pk) => {
