@@ -48,15 +48,14 @@ const LoginPage = (props) => {
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
 
-	function handleSubmit(e) {
+ function handleSubmit(e) {
 		e.preventDefault();
 
 		try {
 			setError('');
 			setLoading(true);
-      //we had await here, but deleted it because of memory leak error
-			login(emailRef.current.value, passwordRef.current.value);
-			history.push('/');
+		  login(emailRef.current.value, passwordRef.current.value);
+       history.push('/')
 		} catch {
 			setError('Failed to log in');
 		}

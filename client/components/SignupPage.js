@@ -75,7 +75,7 @@ const SignupPage = (props) => {
 					POKEWARS
 				</Grid>
 				{currentUser && currentUser.email}
-				{console.log(usernameRef)}
+				{/* {console.log(usernameRef)} */}
 				{error && (
 					<Alert severity='error'>
 						<div>{error.message}</div>
