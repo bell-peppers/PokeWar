@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { auth } from '../../utils/firebase_production';
+import { auth } from '../../utils/firebase';
 import firebase from 'firebase/app';
 
 const AuthContext = React.createContext();
@@ -9,14 +9,17 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-	const [currentUser, setCurrentUser] = useState();
+	const [currentUser, setCurrentUser] = useState(null);
 
 	//when we call signup, auth.onAuthStateChanged is gonna be called for us
 	function signup(email, password) {
-    auth.createUserWithEmailAndPassword(email, password);
+    return auth.createUserWithEmailAndPassword(email, password);
 		// firebase.auth().createUserWithEmailAndPassword(email, password);
 	}
 
+  function login(email, password) {
+    return auth.signInWithEmailAndPassword(email, password)
+  }
 	//we dont want it to be in render, we want it to be in useEffect because
 	//we only want it to run once when we mount our component
 	useEffect(() => {
@@ -31,6 +34,7 @@ export function AuthProvider({ children }) {
 
 	const value = {
 		currentUser,
+    login,
 		signup,
 	};
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

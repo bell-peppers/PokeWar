@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { useAuth } from '../../src/contexts/AuthContext';
 import Alert from '@material-ui/lab/Alert';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
 	main: {
@@ -46,8 +47,9 @@ const SignupPage = (props) => {
 	const { signup, currentUser } = useAuth();
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
+	const history = useHistory();
 
-	async function handleSubmit(e) {
+	function handleSubmit(e) {
 		e.preventDefault();
 
 		if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
@@ -57,7 +59,9 @@ const SignupPage = (props) => {
 		try {
 			setError('');
 			setLoading(true);
-			await signup(emailRef.current.value, passwordRef.current.value);
+			//we had await here, but deleted it because of memory leak error
+			signup(emailRef.current.value, passwordRef.current.value);
+			history.push('/');
 		} catch {
 			setError('Failed to create an account');
 		}
@@ -70,11 +74,16 @@ const SignupPage = (props) => {
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					POKEWARS
 				</Grid>
-        {currentUser && currentUser.email}
-				{error && <Alert severity="error">{error}</Alert>}
+				{currentUser && currentUser.email}
+				{console.log(usernameRef)}
+				{error && (
+					<Alert severity='error'>
+						<div>{error.message}</div>
+					</Alert>
+				)}
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<form className={classes.form} onSubmit={handleSubmit}>
-						{/* <TextField
+						<TextField
 							inputRef={usernameRef}
 							label='Username'
 							id='filled-start-adornment'
@@ -84,8 +93,9 @@ const SignupPage = (props) => {
 								),
 							}}
 							variant='filled'
-						/> */}
+						/>
 						<TextField
+							// inputRef={el => this.emailRef = el}
 							inputRef={emailRef}
 							label='E-mail'
 							id='filled-start-adornment'
@@ -121,14 +131,15 @@ const SignupPage = (props) => {
 						<Button
 							variant='contained'
 							disabled={loading}
+							type='submit'
 							style={{ width: '100px', position: 'relative', left: '125px' }}
 						>
-							Sign in
+							Sign In
 						</Button>
-						<Grid>
-							Already have an account? <a href='/login'>Log In</a>
-						</Grid>
 					</form>
+					<Grid>
+						Already have an account? <a href='/login'>Log In</a>
+					</Grid>
 				</Grid>
 			</Grid>
 		</div>
