@@ -50,7 +50,6 @@ export const selectAttackedPokemon =
       pokemon: attackingPk,
       attack: attack,
     };
-    console.log(turn);
     return dispatch(_selectAttackedPokemon(turn));
   };
 

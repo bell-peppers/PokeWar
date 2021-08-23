@@ -78,32 +78,37 @@ const MatchSearch = (props) => {
     setPage(0);
   };
   return (
-    <div>
-      <Grid
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      {/* <Grid
         style={{
           display: 'flex',
           justifyContent: 'center',
           backgroundColor: 'green',
         }}
       >
-        Leaderboard position: 34532523
-      </Grid>
+
+      // </Grid> */}
+      <h3 style={{textAlign: 'center'}}>Leaderboard position: 34532523</h3>
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
           <Button style={{backgroundColor: 'red'}}>Create Match</Button>
-          <Button Button style={{backgroundColor: 'red'}}>
-            Join Random Match
-          </Button>
+          <Button style={{backgroundColor: 'red'}}>Join Random Match</Button>
         </Grid>
         <Paper className={classes.root}>
+          <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
           <TableContainer className={classes.container}>
-            <TableRow>Leaderboard</TableRow>
             <Table stickyHeader aria-label='sticky table'>
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns.map((column, i) => (
                     <TableCell
-                      key={column.id}
+                      key={i}
                       align={column.align}
                       style={{minWidth: column.minWidth}}
                     >
@@ -115,14 +120,9 @@ const MatchSearch = (props) => {
               <TableBody>
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
+                  .map((row, i) => {
                     return (
-                      <TableRow
-                        hover
-                        role='checkbox'
-                        tabIndex={-1}
-                        key={row.code}
-                      >
+                      <TableRow hover role='checkbox' tabIndex={-1} key={i}>
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (

@@ -81,7 +81,6 @@ const Actionbar = (props) => {
   }
 
   function selectMove(move) {
-    console.log(move, playerAttack);
     const alreadyPicked = playerTurn.filter(
       (turn) => turn.pokemon === selectedPlayerPokemon.name
     );
