@@ -38,12 +38,13 @@ const useStyles = makeStyles(() => ({
 	},
 }));
 
-const LoginPage = (props) => {
+const SignupPage = (props) => {
 	const classes = useStyles();
 	const usernameRef = useRef();
 	const emailRef = useRef();
 	const passwordRef = useRef();
-	const { login } = useAuth();
+	const passwordConfirmationRef = useRef();
+	const { signup, currentUser } = useAuth();
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
@@ -51,14 +52,18 @@ const LoginPage = (props) => {
 	function handleSubmit(e) {
 		e.preventDefault();
 
+		if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
+			return setError('Passwords do not match');
+		}
+
 		try {
 			setError('');
 			setLoading(true);
-      //we had await here, but deleted it because of memory leak error
-			login(emailRef.current.value, passwordRef.current.value);
+			//we had await here, but deleted it because of memory leak error
+			signup(emailRef.current.value, passwordRef.current.value);
 			history.push('/');
 		} catch {
-			setError('Failed to log in');
+			setError('Failed to create an account');
 		}
 		setLoading(false);
 	}
@@ -69,6 +74,8 @@ const LoginPage = (props) => {
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					POKEWARS
 				</Grid>
+				{currentUser && currentUser.email}
+				{console.log(usernameRef)}
 				{error && (
 					<Alert severity='error'>
 						<div>{error.message}</div>
@@ -76,7 +83,7 @@ const LoginPage = (props) => {
 				)}
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<form className={classes.form} onSubmit={handleSubmit}>
-						{/* <TextField
+						<TextField
 							inputRef={usernameRef}
 							label='Username'
 							id='filled-start-adornment'
@@ -86,7 +93,7 @@ const LoginPage = (props) => {
 								),
 							}}
 							variant='filled'
-						/> */}
+						/>
 						<TextField
 							// inputRef={el => this.emailRef = el}
 							inputRef={emailRef}
@@ -110,17 +117,28 @@ const LoginPage = (props) => {
 							}}
 							variant='filled'
 						/>
+						<TextField
+							inputRef={passwordConfirmationRef}
+							label='Password confirmation'
+							id='filled-start-adornment'
+							InputProps={{
+								startAdornment: (
+									<InputAdornment position='start'> </InputAdornment>
+								),
+							}}
+							variant='filled'
+						/>
 						<Button
 							variant='contained'
 							disabled={loading}
 							type='submit'
 							style={{ width: '100px', position: 'relative', left: '125px' }}
 						>
-							Log In
+							Sign In
 						</Button>
 					</form>
 					<Grid>
-						Need an account? <a href='/signup'>Sign In</a>
+						Already have an account? <a href='/login'>Log In</a>
 					</Grid>
 				</Grid>
 			</Grid>
@@ -135,4 +153,4 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
 	return {};
 };
-export default connect(mapState, mapDispatch)(LoginPage);
+export default connect(mapState, mapDispatch)(SignupPage);

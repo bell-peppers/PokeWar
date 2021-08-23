@@ -41,7 +41,6 @@ const Sidebar = (props) => {
 };
 const mapState = (state) => {
   return {
-    //username: state.auth.username,
   };
 };
 const mapDispatch = (dispatch) => {
