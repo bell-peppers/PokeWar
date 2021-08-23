@@ -41,8 +41,7 @@ const Sidebar = (props) => {
 };
 const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id,
-    username: state.auth.username,
+    //username: state.auth.username,
   };
 };
 const mapDispatch = (dispatch) => {
