@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import { Typography, Grid } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { useAuth } from '../../src/contexts/AuthContext';
-import firebase from 'firebase/app';
+import { auth } from '../../utils/firebase';
+// import firebase from 'firebase/app';
 
 const useStyles = makeStyles(() => ({
 	navbar: {
@@ -41,19 +42,22 @@ const Navbar = () => {
 	const [error, setError] = useState('');
 	const classes = useStyles();
 	const { currentUser, logout } = useAuth();
-
-	console.log(firebase.auth());
+	const history = useHistory();
 	// const { currentUser } = firebase.auth();
 
-	function handleLogout() {}
-	// useEffect(() => {
+	async function handleLogout() {
+		setError('');
 
-	// });
+		try {
+			await logout();
+			history.push('/login');
+		} catch {
+			setError('Failed to log out');
+		}
+	}
+
 	return (
-		<AppBar position='fixed' className={classes.navbar}>
-			{/* {console.log(currentUser)} */}
-			{/* {console.log(currentUser)} */}
-			{/* {currentUser && currentUser.email} */}
+		<AppBar position='static' className={classes.navbar}>
 			{error && console.log(error)}
 			<div>{error && <Alert>{error.message}</Alert>}</div>
 			<Toolbar className={classes.cart}>
@@ -64,9 +68,9 @@ const Navbar = () => {
 					<a className={classes.p} href='/allpokemon'>
 						All Pokemon
 					</a>
-					<a className={classes.p} href='/myprofile'>
+          {currentUser && <a className={classes.p} href='/myprofile'>
 						My Profile
-					</a>
+					</a>}
 				</Grid>
 				<Button onClick={handleLogout}>Sign Out</Button>
 			</Toolbar>

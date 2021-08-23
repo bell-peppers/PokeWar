@@ -37,6 +37,9 @@ export function AuthProvider({children}) {
     return user;
   }
 
+	function logout () {
+		return auth.signOut();
+	}
   // function getUserData(uid) {
   //   FIREDB.ref('users/' + uid).once('value', (snap) => {
   //     console.log(snap.val());
@@ -59,6 +62,7 @@ export function AuthProvider({children}) {
     currentUser,
     login,
     signup,
+		logout
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

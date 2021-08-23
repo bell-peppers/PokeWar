@@ -17,34 +17,46 @@ import AllPokemon from './components/AllPokemon';
 
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
-import { AuthProvider } from '../src/contexts/AuthContext';
+import { useAuth } from '../src/contexts/AuthContext';
 
 /**
  * COMPONENT
  */
-class Routes extends Component {
-	render() {
-		const { isLoggedIn } = this.props;
+const Routes = () => {
+	const { currentUser } = useAuth();
+	return (
+		<Router>
+			<Switch>
+				<Route path='/' exact component={MatchSearch} />
+				<Route path='/allpokemon' exact component={AllPokemon} />
+				<Route path='/game' exact component={Main} />
 
-		return (
-			<Router>
-				{/* <AuthProvider> */}
-					<Switch>
-						<Route path='/' exact component={MatchSearch} />
-						<Route path='/allpokemon' exact component={AllPokemon} />
-						<Route path='/game' exact component={Main} />
+				<Route path='/dev/setup' component={temp} />
+				{!currentUser ? (
+					<div>
 						<Route path='/login' exact component={LoginPage} />
-						<Route path='/myprofile' exact component={UserProfile} />
-
-						<Route path='/dev/setup' component={temp} />
 						<Route path='/signup' exact component={SignupPage} />
-					</Switch>
-				{/* </AuthProvider> */}
-			</Router>
-		);
-	}
-}
+					</div>
+				) : (
+					<div>
+						<Route path='/myprofile' exact component={UserProfile} />
+						<Route path='/login' exact component={AlreadyLoggedIn} />
+						<Route path='/signup' exact component={AlreadyLoggedIn} />
+					</div>
+				)}
+				<Route path='*' component={FourOhFour} />
+			</Switch>
+		</Router>
+	);
+};
 
+const AlreadyLoggedIn = () => {
+	return <div>Sorry, it seems like you are already logged in!</div>;
+};
+
+const FourOhFour = () => {
+	return <div>Sorry, this page doesn't exist</div>;
+};
 // The `withRouter` wrapper makes sure that updates are not blocked
 // when the url changes
 export default withRouter(connect(null, null)(Routes));
