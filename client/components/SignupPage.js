@@ -73,6 +73,7 @@ const SignupPage = (props) => {
     setLoading(false);
   }
 
+
   return (
     <div>
       <Grid className={classes.main}>
@@ -147,6 +148,7 @@ const SignupPage = (props) => {
       </Grid>
     </div>
   );
+
 };
 const mapState = (state) => {
   return {

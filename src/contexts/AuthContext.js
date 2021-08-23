@@ -9,8 +9,10 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+
 export function AuthProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null);
+
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
   async function signup(email, password, username) {
