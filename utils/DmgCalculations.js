@@ -1,30 +1,63 @@
+import { damageClass } from './TypeEffectiveness';
+
 export function calcDamage(move, target, attacker) {
   const D_class = move.damage_class;
-  const Power = move.damage;
+  const Power = move.power;
   const crit = Math.floor(Math.random() * 10) + 1 === 10 ? 2 : 1;
-  const rand = ((Math.random() * 9 + 1) / 10).toFixed(2);
+  const rand = (Math.random() * (1.0 - 0.85) + 0.85).toFixed(2);
+  let A = 0;
+  let D = 0;
+  let STAB = 0;
+  let Type = 0;
+  let Class = '';
 
   if (attacker.types.length === 2) {
-    const STAB =
-      move.type.name === attacker.types[0] ||
-      move.type.name === attacker.types[1]
+    STAB =
+      move.type.name === attacker.types[0].type.name ||
+      move.type.name === attacker.types[1].type.name
         ? 1.5
         : 1;
   } else {
-    const STAB = move.type.name === attacker.types[0] ? 1.5 : 1;
+    STAB = move.type.name === attacker.types[0].type.name ? 1.5 : 1;
+  }
+
+  if (target.types.length === 2) {
+    const dmg1 = damageClass(move.type.name, target.types[0].type.name);
+    const dmg2 = damageClass(move.type.name, target.types[1].type.name);
+
+    Type = (dmg1.damage + dmg2.damage).toFixed(2);
+    Class = dmg1.damage >= dmg2.damage ? dmg1.class : dmg2.class;
+  } else {
+    const dmg = damageClass(move.type.name, target.types[0].type.name);
+    Type = dmg.damage;
+    Class = dmg.class;
   }
 
   // to find if this is a special move or not so we use the correct stats
-  if (D_class.name === special) {
-    const A = attacker.stats[3].base_stat;
-    const D = target.stats[4].base_stat;
+  if (D_class.name === 'special') {
+    A = attacker.stats[3].base_stat;
+    D = target.stats[4].base_stat;
   } else {
-    const A = attacker.stats[1].base_stat;
-    const D = target.stats[2].base_stat;
+    A = attacker.stats[1].base_stat;
+    D = target.stats[2].base_stat;
   }
+  console.log(Type);
 
   let Damage =
-    (((2 / 5 + 2) * Power * A) / D / 50 + 2).toFixed(2) * crit * rand * STAB;
+    (((2 / 5 + 2) * Power * A) / D / 50 + 2) * crit * rand * STAB * Type;
+
+  Damage = Damage.toFixed(2);
+
+  let report = {
+    Damage,
+    Class,
+  };
+
+  if (crit === 2) {
+    report.isCrit = true;
+  }
+
+  return report;
 }
 
 /**Damage Calculation

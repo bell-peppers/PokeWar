@@ -369,6 +369,16 @@ const typeEffect = {
 };
 
 export const damageClass = (attackerMoveType, targetType) => {
+  if (!typeEffect.hasOwnProperty(attackerMoveType)) {
+    return {
+      error: 'invalid',
+    };
+  } else if (!typeEffect[attackerMoveType].hasOwnProperty(targetType)) {
+    return {
+      error: 'invalid',
+    };
+  }
+
   const damageValue = typeEffect[attackerMoveType][targetType];
 
   switch (damageValue) {
@@ -394,7 +404,7 @@ export const damageClass = (attackerMoveType, targetType) => {
       };
     default:
       return {
-        error: invalid,
+        error: 'invalid',
       };
   }
 };
