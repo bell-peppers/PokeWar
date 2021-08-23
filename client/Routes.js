@@ -11,6 +11,7 @@ import AllPokemon from './components/AllPokemon';
 
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
+import { AuthProvider } from '../src/contexts/AuthContext';
 
 /**
  * COMPONENT
@@ -20,7 +21,7 @@ class Routes extends Component {
     const { isLoggedIn } = this.props;
 
     return (
-      <div>
+      // <AuthProvider>
         <Switch>
           <Route path='/' exact component={AllPokemon} />
           <Route path='/game' exact component={Main} />
@@ -30,7 +31,7 @@ class Routes extends Component {
           <Route path='/dev/setup' component={temp} />
           <Route path='/signup' exact component={SignupPage}/>
         </Switch>
-      </div>
+      // </AuthProvider>
     );
   }
 }
