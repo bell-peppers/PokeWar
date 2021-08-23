@@ -74,7 +74,7 @@ const SignupPage = (props) => {
 				{error && <Alert severity="error">{error}</Alert>}
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<form className={classes.form} onSubmit={handleSubmit}>
-						<TextField
+						{/* <TextField
 							inputRef={usernameRef}
 							label='Username'
 							id='filled-start-adornment'
@@ -84,7 +84,7 @@ const SignupPage = (props) => {
 								),
 							}}
 							variant='filled'
-						/>
+						/> */}
 						<TextField
 							inputRef={emailRef}
 							label='E-mail'

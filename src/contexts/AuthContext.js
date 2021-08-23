@@ -13,7 +13,8 @@ export function AuthProvider({ children }) {
 
 	//when we call signup, auth.onAuthStateChanged is gonna be called for us
 	function signup(email, password) {
-		firebase.auth().createUserWithEmailAndPassword(email, password);
+    auth.createUserWithEmailAndPassword(email, password);
+		// firebase.auth().createUserWithEmailAndPassword(email, password);
 	}
 
 	//we dont want it to be in render, we want it to be in useEffect because
@@ -22,7 +23,7 @@ export function AuthProvider({ children }) {
 		//this func returns a method and when we call this method,
 		//when we call this method its gonna unsubscribe
 		//auth.onAuthStateChanged event
-		const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+		const unsubscribe = auth.onAuthStateChanged((user) => {
 			setCurrentUser(user);
 		});
 		return unsubscribe;
