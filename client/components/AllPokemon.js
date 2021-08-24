@@ -11,7 +11,7 @@ import Modal from '@material-ui/core/Modal';
 /**
  * COMPONENT
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   PokeCards: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function AllPokemon(props) {
-  const pokemon = useSelector(state => state.pokemon);
+  const pokemon = useSelector((state) => state.allPokemon);
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -55,93 +55,94 @@ export default function AllPokemon(props) {
   }, [dispatch]);
 
   return (
-    <div className="main">
-      {pokemon.map(poke => {
-        let finalColor;
+    <div className='main'>
+      {pokemon[0] &&
+        pokemon.map((poke) => {
+          let finalColor;
 
-        if (poke.types.length === 2) {
-          finalColor = colorTypeGradients(
-            poke.types[0].type.name,
-            poke.types[1].type.name,
-            poke.types.length
-          );
-        } else {
-          finalColor = colorTypeGradients(
-            poke.types[0].type.name,
-            poke.types[0].type.name,
-            poke.types.length
-          );
-        }
+          if (poke.types.length === 2) {
+            finalColor = colorTypeGradients(
+              poke.types[0].type.name,
+              poke.types[1].type.name,
+              poke.types.length
+            );
+          } else {
+            finalColor = colorTypeGradients(
+              poke.types[0].type.name,
+              poke.types[0].type.name,
+              poke.types.length
+            );
+          }
 
-        return (
-          <React.Fragment key={poke.id}>
-            <Card
-              className={classes.PokeCards}
-              key={poke.id}
-              style={{
-                background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
-              }}
-            >
-              <CardContent>
-                <Typography
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  #{poke.id}{' '}
-                  <InfoOutlinedIcon
-                    onClick={() => handleOpen(poke, finalColor)}
-                    style={{
-                      cursor: 'pointer',
-                    }}
-                  />
-                </Typography>
-                <Typography>
-                  <img
-                    className="cardPic"
-                    src={poke.sprites.other['official-artwork'].front_default}
-                  />
-                </Typography>
-                <Typography className="data">{poke.name}</Typography>
-                {poke.types.length === 2 ? (
+          return (
+            <React.Fragment key={poke.id}>
+              <Card
+                className={classes.PokeCards}
+                key={poke.id}
+                style={{
+                  background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
+                }}
+              >
+                <CardContent>
                   <Typography
                     style={{
                       display: 'flex',
-                      width: '100px',
-                      height: '20px',
-                      marginTop: '4px',
-                      marginLeft: '20%',
-                      justifyContent: 'space-evenly',
+                      justifyContent: 'space-between',
                     }}
                   >
-                    <img src={`assets/${poke.types[0].type.name}.png`} />
-                    <img src={`assets/${poke.types[1].type.name}.png`} />
+                    #{poke.id}{' '}
+                    <InfoOutlinedIcon
+                      onClick={() => handleOpen(poke, finalColor)}
+                      style={{
+                        cursor: 'pointer',
+                      }}
+                    />
                   </Typography>
-                ) : (
-                  <Typography
-                    style={{
-                      display: 'flex',
-                      width: '20px',
-                      height: '20px',
-                      marginTop: '4px',
-                      marginLeft: '45%',
-                    }}
-                  >
-                    <img src={`assets/${poke.types[0].type.name}.png`} />
+                  <Typography>
+                    <img
+                      className='cardPic'
+                      src={poke.sprites.other['official-artwork'].front_default}
+                    />
                   </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </React.Fragment>
-        );
-      })}
+                  <Typography className='data'>{poke.name}</Typography>
+                  {poke.types.length === 2 ? (
+                    <Typography
+                      style={{
+                        display: 'flex',
+                        width: '100px',
+                        height: '20px',
+                        marginTop: '4px',
+                        marginLeft: '20%',
+                        justifyContent: 'space-evenly',
+                      }}
+                    >
+                      <img src={`assets/${poke.types[0].type.name}.png`} />
+                      <img src={`assets/${poke.types[1].type.name}.png`} />
+                    </Typography>
+                  ) : (
+                    <Typography
+                      style={{
+                        display: 'flex',
+                        width: '20px',
+                        height: '20px',
+                        marginTop: '4px',
+                        marginLeft: '45%',
+                      }}
+                    >
+                      <img src={`assets/${poke.types[0].type.name}.png`} />
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
+            </React.Fragment>
+          );
+        })}
       {selectedPokemon.id && (
         <Modal
           open={open}
           onClose={handleClose}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'
         >
           <div
             style={{
@@ -156,20 +157,12 @@ export default function AllPokemon(props) {
             <h2 style={{ textAlign: 'center' }}>{selectedPokemon.name}</h2>
             <h3 style={{ marginLeft: '2rem' }}>Abilities:</h3>
             <ul style={{ display: 'inline-block', listStyle: 'none' }}>
-              {selectedPokemon.abilities[0] && (
-                <li>{selectedPokemon.abilities[0].ability.name}</li>
-              )}
-              {selectedPokemon.abilities[1] && (
-                <li>{selectedPokemon.abilities[1].ability.name}</li>
-              )}
+              <li>{selectedPokemon.moves[0].move.name}</li>
+              <li>{selectedPokemon.moves[1].move.name}</li>
             </ul>
             <ul style={{ display: 'inline-block', listStyle: 'none' }}>
-              {selectedPokemon.abilities[2] && (
-                <li>{selectedPokemon.abilities[2].ability.name}</li>
-              )}
-              {selectedPokemon.abilities[3] && (
-                <li>{selectedPokemon.abilities[3].ability.name}</li>
-              )}
+              <li>{selectedPokemon.moves[2].move.name}</li>
+              <li>{selectedPokemon.moves[3].move.name}</li>
             </ul>
             <h3 style={{ marginLeft: '2rem' }}>Base Stats:</h3>
             <ul style={{ display: 'inline-block', listStyle: 'none' }}>

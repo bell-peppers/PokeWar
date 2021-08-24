@@ -10,9 +10,7 @@ import {makeStyles} from '@material-ui/core';
 import {
   fetchPlayerOnePokemon,
   fetchPlayerTwoPokemon,
-  attackOpponent,
-  _selectAttackedPokemon,
-  applyOpponentMoves,
+  fetchMovesInfo,
 } from '../store/pokemon';
 import {getPlayerMoves} from '../store/game';
 
@@ -48,11 +46,17 @@ const useStyles = makeStyles(() => ({
 
 //<Grid className={classes.main}>
 const Main = (props) => {
-  const {getPlayerPokemon, getOpponentPokemon, opponentPokemon, playerPokemon} =
-    props;
+  const {
+    getPlayerPokemon,
+    getOpponentPokemon,
+    opponentPokemon,
+    playerPokemon,
+    getMoves,
+  } = props;
+  const playerPkIds = [45, 23, 98];
 
   useEffect(() => {
-    getPlayerPokemon();
+    getPlayerPokemon(playerPkIds);
     getOpponentPokemon();
   }, []);
   const classes = useStyles();
@@ -76,7 +80,6 @@ const Main = (props) => {
 };
 const mapState = (state) => {
   return {
-    isLoggedIn: !!state.auth.id,
     playerPokemon: state.pokemon.playerOnePokemon,
     opponentPokemon: state.pokemon.playerTwoPokemon,
   };
@@ -84,8 +87,9 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    getPlayerPokemon: () => dispatch(fetchPlayerOnePokemon()),
+    getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
     getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
+    getMoves: (playerPk) => dispatch(fetchMovesInfo(playerPk)),
   };
 };
 
