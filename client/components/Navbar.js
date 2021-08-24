@@ -58,8 +58,12 @@ const Navbar = () => {
 
 	return (
 		<AppBar position='static' className={classes.navbar}>
-			{error && console.log(error)}
-			<div>{error && <Alert>{error.message}</Alert>}</div>
+			{console.log(currentUser)}
+			{error && (
+				<Alert severity='error'>
+					{error}
+				</Alert>
+			)}
 			<Toolbar className={classes.cart}>
 				<a className={classes.p} href='/'>
 					Poke Wars
@@ -68,9 +72,11 @@ const Navbar = () => {
 					<a className={classes.p} href='/allpokemon'>
 						All Pokemon
 					</a>
-          {currentUser && <a className={classes.p} href='/myprofile'>
-						My Profile
-					</a>}
+					{currentUser && (
+						<a className={classes.p} href='/myprofile'>
+							My Profile
+						</a>
+					)}
 				</Grid>
 				<Button onClick={handleLogout}>Sign Out</Button>
 			</Toolbar>

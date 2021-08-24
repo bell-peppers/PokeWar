@@ -18,6 +18,7 @@ import {CardMedia} from '@material-ui/core';
 import Image from 'material-ui-image';
 import fetchPlayerOnePokemon from '../store/pokemon';
 import getTheCards from '../store/userProfile'
+import {useAuth} from '../../src/contexts/AuthContext';
 import firebase from 'firebase/app';
 
 const useStyles = makeStyles((theme) => ({
@@ -79,6 +80,7 @@ const rows = [
 ];
 const UserProfile = (props) => {
   const {iGetTheCards} = props;
+  const {currentUser, username} = useAuth();
   const classes = useStyles();
   const [page, setPage] = React.useState(2);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -96,8 +98,7 @@ const UserProfile = (props) => {
           style={{display: 'flex', justifyContent: 'center', padding: '10px'}}
         >
           POKEWARS
-          {/* {iGetTheCards('taya')} */}
-          {/* {props.playerPokemon && console.log(props.playerPokemon)} */}
+{console.log(currentUser.username)}
         </Grid>
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           Leaderboard position: 34532523
