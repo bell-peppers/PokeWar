@@ -62,18 +62,19 @@ const SignupPage = (props) => {
       setError('');
       setLoading(true);
       //we had await here, but deleted it because of memory leak error
-      await signup(
+      signup(
         emailRef.current.value,
         passwordRef.current.value,
         usernameRef.current.value
       );
-      console.log(currentUser);
-      getUserData(currentUser.uid);
+
       history.push('/');
     } catch (error) {
       console.log(error);
       setError('Failed to create an account');
     }
+    console.log(currentUser);
+    // await getUserData(currentUser.uid);
     setLoading(false);
   }
 

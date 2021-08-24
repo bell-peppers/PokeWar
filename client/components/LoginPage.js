@@ -61,7 +61,7 @@ const LoginPage = (props) => {
       setLoading(true);
       //we had await here, but deleted it because of memory leak error
       login(emailRef.current.value, passwordRef.current.value);
-      getUserData(currentUser.uid);
+      //getUserData(currentUser.uid);
 
       history.push('/');
     } catch (error) {

@@ -17,6 +17,8 @@ import {useHistory} from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import FindMatch from './FindMatch';
 import {fetchPlayerOnePokemon} from '../store/pokemon';
+import {useAuth} from '../../src/contexts/AuthContext';
+import {getUserData} from '../store/userData';
 
 function getModalStyle() {
   const top = 50;
@@ -100,9 +102,17 @@ const MatchSearch = (props) => {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
-  const {newGame, user, joinGame, findGame, availableGames, fetchPokemon} =
-    props;
-  const joinMatchId = useRef();
+  const {
+    newGame,
+    user,
+    joinGame,
+    findGame,
+    availableGames,
+    fetchPokemon,
+    getUserData,
+  } = props;
+  //const joinMatchId = useRef();
+  const {currentUser} = useAuth();
 
   const handleOpen = async () => {
     if (user.uid) {
@@ -169,11 +179,13 @@ const MatchSearch = (props) => {
     }
   }
   useEffect(() => {
-    console.log(user);
+    if (currentUser && currentUser.uid !== user.uid) {
+      getUserData(currentUser.uid);
+    }
     if (user.pokemon) {
       fetchPokemon(user.pokemon);
     }
-  }, [user]);
+  }, [user, currentUser]);
   return (
     <div
       style={{
@@ -289,6 +301,7 @@ const mapDispatch = (dispatch) => {
     joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
     findGame: () => dispatch(findGame()),
     fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
+    getUserData: (uid) => dispatch(getUserData(uid)),
   };
 };
 export default connect(mapState, mapDispatch)(MatchSearch);

@@ -7,6 +7,7 @@ const APPLY_OPPONENT_MOVES = 'APPLY_OPPONENT_MOVES';
 const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
 const FETCH_SINGLE_POKEMON = 'FETCH_SINGLE_POKEMON';
 const FETCH_MOVES_INFO = 'UPDATE_MOVES_INFO';
+const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
 
 const playerOnePokemon = [
   {
@@ -164,6 +165,13 @@ const playerTwoPokemon = [
   },
 ];
 
+const _choosePlayerPokemon = (pokemon) => {
+  return {
+    type: CHOOSE_PLAYER_POKEMON,
+    pokemon,
+  };
+};
+
 const _getPlayerOnePokemon = (pokemon) => {
   return {
     type: GET_PLAYERONE_POKEMON,
@@ -204,6 +212,10 @@ const _fetchMovesInfo = (moves) => {
     type: FETCH_MOVES_INFO,
     moves,
   };
+};
+
+export const choosePlayerPokemon = (pk) => (dispatch) => {
+  return dispatch(_choosePlayerPokemon(pk));
 };
 
 export const fetchSinglePokemon = (id) => async (dispatch) => {
@@ -249,7 +261,12 @@ export const fetchPlayerOnePokemon = (pkId) => async (dispatch) => {
     const playerPk = [];
     await pkId.forEach(async (id) => {
       const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
-      const movesArr = [pk.data.moves[0], pk.data.moves[1], pk.data.moves[2]];
+      const movesArr = [
+        pk.data.moves[0],
+        pk.data.moves[1],
+        pk.data.moves[2],
+        pk.data.moves[3],
+      ];
       await movesArr.forEach(async (move) => {
         const getMove = await axios.get(`${move.move.url}`);
         move.moveData = getMove.data;
@@ -292,6 +309,7 @@ export default function (
     singlePokemon: {},
     playerOnePokemon: [],
     playerTwoPokemon: [],
+    chosenPokemon: [],
   },
   action
 ) {
@@ -304,6 +322,11 @@ export default function (
       return {...state, playerTwoPokemon: action.pokemon};
     case APPLY_OPPONENT_MOVES:
       return {...state, playerOnePokemon: action.pokemon};
+    case CHOOSE_PLAYER_POKEMON:
+      return {
+        ...state,
+        chosenPokemon: [...state.chosenPokemon, action.pokemon],
+      };
     default:
       return state;
   }
