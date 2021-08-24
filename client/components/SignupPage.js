@@ -66,11 +66,11 @@ const SignupPage = (props) => {
 				passwordRef.current.value,
 				usernameRef.current.value
 			);
-			currentUser.photoURL = 'pics/default.png';
 			history.push('/');
 		} catch (error) {
 			console.log(error);
-			setError('Failed to create an account');
+			setError(error.message);
+			// setError('Failed to create an account');
 		}
 		setLoading(false);
 	}
@@ -81,11 +81,7 @@ const SignupPage = (props) => {
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<h2> Create a new account</h2>
 				</Grid>
-				{error && (
-					<Alert severity='error'>
-            {error}
-					</Alert>
-				)}
+				{error && <Alert severity='error'>{error}</Alert>}
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<form className={classes.form} onSubmit={handleSubmit}>
 						<TextField

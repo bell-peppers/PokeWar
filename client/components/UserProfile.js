@@ -98,7 +98,7 @@ const UserProfile = (props) => {
           style={{display: 'flex', justifyContent: 'center', padding: '10px'}}
         >
           POKEWARS
-{console.log(currentUser.username)}
+{/* {console.log(currentUser.username)} */}
         </Grid>
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           Leaderboard position: 34532523
@@ -112,8 +112,8 @@ const UserProfile = (props) => {
         >
           <Grid>
             <Grid>
-              <CardMedia style={{width: '140px', border: '5px solid blue'}}>
-                <Image src='/pics/taya.jpg' />
+              <CardMedia style={{width: '150px', height: '150px',border: '5px solid blue'}}>
+                {currentUser.photoUrl ? <Image src={currentUser.photoUrl}/> : <Image src='/pics/default.png' />}
               </CardMedia>
               taya_papaya
             </Grid>
