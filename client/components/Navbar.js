@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid, CardContent } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { useAuth } from '../../src/contexts/AuthContext';
+import { auth } from '../../utils/firebase';
 import firebase from 'firebase/app';
+import 'firebase/database';
+import 'firebase/auth';
+import { FIREDB } from '../../utils/firebase';
+
+// import firebase from 'firebase/app';
 
 const useStyles = makeStyles(() => ({
 	navbar: {
@@ -41,21 +48,24 @@ const Navbar = () => {
 	const [error, setError] = useState('');
 	const classes = useStyles();
 	const { currentUser, logout } = useAuth();
-
-	console.log(firebase.auth());
+	const history = useHistory();
 	// const { currentUser } = firebase.auth();
 
-	function handleLogout() {}
-	// useEffect(() => {
+	async function handleLogout() {
+		setError('');
 
-	// });
+		try {
+			await logout();
+			history.push('/login');
+		} catch {
+			setError('Failed to log out');
+		}
+	}
+
 	return (
-		<AppBar position='fixed' className={classes.navbar}>
+		<AppBar position='static' className={classes.navbar}>
 			{/* {console.log(currentUser)} */}
-			{/* {console.log(currentUser)} */}
-			{/* {currentUser && currentUser.email} */}
-			{error && console.log(error)}
-			<div>{error && <Alert>{error.message}</Alert>}</div>
+			{error && <Alert severity='error'>{error}</Alert>}
 			<Toolbar className={classes.cart}>
 				<a className={classes.p} href='/'>
 					Poke Wars
@@ -64,9 +74,11 @@ const Navbar = () => {
 					<a className={classes.p} href='/allpokemon'>
 						All Pokemon
 					</a>
-					<a className={classes.p} href='/myprofile'>
-						My Profile
-					</a>
+					{currentUser && (
+						<a className={classes.p} href='/myprofile'>
+							My Profile
+						</a>
+					)}
 				</Grid>
 				<Button onClick={handleLogout}>Sign Out</Button>
 			</Toolbar>

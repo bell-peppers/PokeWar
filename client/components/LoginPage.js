@@ -79,7 +79,7 @@ const LoginPage = (props) => {
         </Grid>
         {error && (
           <Alert severity='error'>
-            <div>{error}</div>
+            {error}
           </Alert>
         )}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
