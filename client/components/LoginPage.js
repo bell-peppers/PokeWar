@@ -17,6 +17,8 @@ import {useAuth} from '../../src/contexts/AuthContext';
 import Alert from '@material-ui/lab/Alert';
 import {useHistory} from 'react-router-dom';
 import {getUserData} from '../store/userData';
+import {fetchPlayerOnePokemon} from '../store/pokemon';
+import {ContactSupportOutlined} from '@material-ui/icons';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -45,14 +47,13 @@ const LoginPage = (props) => {
   const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const {login, currentUser} = useAuth();
+  const {login, currentUser, user} = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const history = useHistory();
-  const {getUserData} = props;
+  const {getUserData, fetchPokemon} = props;
 
-
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     try {
@@ -60,8 +61,8 @@ const LoginPage = (props) => {
       setLoading(true);
       //we had await here, but deleted it because of memory leak error
       login(emailRef.current.value, passwordRef.current.value);
-      console.log(currentUser.uid);
       getUserData(currentUser.uid);
+
       history.push('/');
     } catch (error) {
       console.error(error);
@@ -69,7 +70,6 @@ const LoginPage = (props) => {
     }
     setLoading(false);
   }
-
 
   return (
     <div>
@@ -79,7 +79,7 @@ const LoginPage = (props) => {
         </Grid>
         {error && (
           <Alert severity='error'>
-            <div>{error.message}</div>
+            <div>{error}</div>
           </Alert>
         )}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
@@ -138,9 +138,13 @@ const LoginPage = (props) => {
 const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
+    user: state.userData,
   };
 };
 const mapDispatch = (dispatch) => {
-  return {getUserData: (uid) => dispatch(getUserData(uid))};
+  return {
+    getUserData: (uid) => dispatch(getUserData(uid)),
+    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
+  };
 };
 export default connect(mapState, mapDispatch)(LoginPage);

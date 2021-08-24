@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import {useHistory} from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import FindMatch from './FindMatch';
+import {fetchPlayerOnePokemon} from '../store/pokemon';
 
 function getModalStyle() {
   const top = 50;
@@ -99,7 +100,8 @@ const MatchSearch = (props) => {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
-  const {newGame, user, joinGame, findGame, availableGames} = props;
+  const {newGame, user, joinGame, findGame, availableGames, fetchPokemon} =
+    props;
   const joinMatchId = useRef();
 
   const handleOpen = async () => {
@@ -166,6 +168,12 @@ const MatchSearch = (props) => {
       alert('Please enter a valid match id');
     }
   }
+  useEffect(() => {
+    console.log(user);
+    if (user.pokemon) {
+      fetchPokemon(user.pokemon);
+    }
+  }, [user]);
   return (
     <div
       style={{
@@ -280,6 +288,7 @@ const mapDispatch = (dispatch) => {
     newGame: (uid, name) => dispatch(createNewGame(uid, name)),
     joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
     findGame: () => dispatch(findGame()),
+    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
   };
 };
 export default connect(mapState, mapDispatch)(MatchSearch);
