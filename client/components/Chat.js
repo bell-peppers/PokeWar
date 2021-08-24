@@ -14,45 +14,46 @@ const Chat = () => {
   const [msg, setMsg] = useState('');
 
   useEffect(() => {
-    FIREDB.collection('messages')
-      .orderBy('createdAt')
-      .limit(50)
-      .onSnapshot(snapshot => {
-        setMessages(snapshot.docs.map(doc => doc.data()));
-        console.log(snapshot.docs);
-      });
+    const messageRef = FIREDB.ref('Match/-MhprQDsdLsk5tzwWn2H/messages');
+
+    messageRef.on('value', snapshot => {
+      const messages = snapshot.val();
+      console.log(messages);
+      let allMessages = [];
+      for (let id in messages) {
+        allMessages.push({ id, ...messages[id] });
+      }
+      setMessages(allMessages);
+      console.log(allMessages);
+    });
   }, []);
 
   async function sendMessage(e) {
     e.preventDefault();
-    const { uid, photoURL } = auth.currentUser;
 
-    await db.collection('messages').add({
-      text: msg,
-      photoURL,
-      uid,
-      createAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    const messageRef = firebase
+      .database()
+      .ref('Match/-MhprQDsdLsk5tzwWn2H/messages');
+    const Message = {
+      user: 'test',
+      message: msg,
+    };
 
+    messageRef.push(Message);
     setMsg('');
   }
 
   return (
     <div>
       <h1>CHAT</h1>
-      {messages.map(({ id, uid, text, photoURL }) => (
-        <div
-          key={id}
-          className={`msg ${
-            uid === auth.currentUser.uid ? 'sent' : 'received'
-          }`}
-        >
-          <img src={photoURL} alt='avatar' />
-          <p>{text}</p>
+      {messages.map(({ id, user, message }) => (
+        <div key={id}>
+          <h4>{user}</h4>
+          <p>{message}</p>
         </div>
       ))}
 
-      <form onSubmit={sendMessage}>
+      <form onSubmit={e => sendMessage(e)}>
         <Input
           value={msg}
           type='text'
