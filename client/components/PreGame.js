@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import {cancelGame, setOpponentInfo} from '../store/game';
 import {useHistory} from 'react-router-dom';
+//import bgImage from '../../public/pics/pregamegym.png';
 
 const useStyles = makeStyles(() => ({
   game: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
+    // backgroundImage: `url(${bgImage})`,
     backgroundColor: 'red',
     width: '100vw',
     height: '80vh',
