@@ -1,17 +1,27 @@
 import { Button } from '@material-ui/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 // import firebase from '../../utils/firebase';
 // import { damageClass } from '../../utils/TypeEffectiveness';
 import { calcDamage } from '../../utils/DmgCalculations';
+import allPokemon, { fetchPokemon } from '../store/allPokemon';
+import { PokemonOrder } from '../../utils/orderCalculation';
 
 export default function temp(props) {
   // const [name, setName] = useState('');
   // const [Trainers, setTrainers] = useState([]);
+  const pokemon = useSelector((state) => state.allPokemon);
   const [pokemonOne, setPokemonOne] = useState('pikachu');
   const [pokemonTwo, setPokemonTwo] = useState('charizard');
   const [moveOne, setMoveOne] = useState('thunder-punch');
   const [Stats, setStats] = useState({});
+  const [sortedPokemon, setSortedPokemon] = useState(pokemon);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchPokemon());
+  }, [dispatch]);
 
   const onSubmit = async (evt) => {
     evt.preventDefault();
@@ -31,6 +41,9 @@ export default function temp(props) {
       setStats(calcDamage(move.data, target.data, attacker.data));
       // setPokemonOne('');
       // setPokemonTwo('');
+      const data = PokemonOrder([...pokemon]);
+      console.log('data ==>', data);
+      setSortedPokemon(data);
     } catch (error) {
       console.log(error);
       return setStats({ error: 'invalid pokemon or moves' });
@@ -76,7 +89,6 @@ export default function temp(props) {
   //   const trainerRef = firebase.database().ref('Trainers').child(user.id);
   //   trainerRef.update({ numOfPokemon: user.numOfPokemon + 1 });
   // };
-
   return (
     <div>
       {/* <h1>THIS BETTER WORK!</h1>
@@ -141,11 +153,20 @@ CLICK ME!
           Get Stats
         </Button>
       </form>
-      {console.log(Stats)}
+      {/* {console.log(Stats)} */}
       <div>{Stats.Damage}</div>
       {Stats.isCrit && <div>CRITICAL HIT!</div>}
       <div>{Stats.Class}</div>
       <div style={{ color: 'red', textAlign: 'center' }}>{Stats.error}</div>
+      <div>===============================================</div>
+      {pokemon.map((poke) => {
+        return <div key={poke.id}>{poke.name}</div>;
+      })}
+      <div>=========================================</div>
+      {sortedPokemon[0] &&
+        sortedPokemon.map((poke) => {
+          return <div key={poke.id}>{poke.name}</div>;
+        })}
     </div>
   );
 }
