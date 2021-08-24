@@ -8,6 +8,7 @@ const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
 const FETCH_SINGLE_POKEMON = 'FETCH_SINGLE_POKEMON';
 const FETCH_MOVES_INFO = 'UPDATE_MOVES_INFO';
 const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
+const UNCHOOSE_PLAYER_POKEMON = 'UNCHOOSE_PLAYER_POKEMON';
 
 const playerOnePokemon = [
   {
@@ -172,6 +173,13 @@ const _choosePlayerPokemon = (pokemon) => {
   };
 };
 
+const _unchoosePlayerPokemon = (pokemon) => {
+  return {
+    type: UNCHOOSE_PLAYER_POKEMON,
+    pokemon,
+  };
+};
+
 const _getPlayerOnePokemon = (pokemon) => {
   return {
     type: GET_PLAYERONE_POKEMON,
@@ -216,6 +224,10 @@ const _fetchMovesInfo = (moves) => {
 
 export const choosePlayerPokemon = (pk) => (dispatch) => {
   return dispatch(_choosePlayerPokemon(pk));
+};
+
+export const unchoosePlayerPokemon = (pk) => (dispatch) => {
+  return dispatch(_unchoosePlayerPokemon(pk));
 };
 
 export const fetchSinglePokemon = (id) => async (dispatch) => {
@@ -327,6 +339,15 @@ export default function (
         ...state,
         chosenPokemon: [...state.chosenPokemon, action.pokemon],
       };
+    case UNCHOOSE_PLAYER_POKEMON:
+      const updated = [];
+      state.chosenPokemon.map((pk) => {
+        if (pk.name !== action.pokemon.name) {
+          updated.push(pk);
+        }
+      });
+      return {...state, chosenPokemon: updated};
+
     default:
       return state;
   }
