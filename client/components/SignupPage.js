@@ -17,6 +17,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import AlertTitle from '@material-ui/lab/AlertTitle';
+import { getUserData } from '../store/userData';
 
 const useStyles = makeStyles(() => ({
 	main: {
@@ -45,12 +46,13 @@ const SignupPage = (props) => {
 	const emailRef = useRef();
 	const passwordRef = useRef();
 	const passwordConfirmationRef = useRef();
-	const { currentUser, signup } = useAuth();
+	const { signup, currentUser } = useAuth();
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
+	const { getUserData } = props;
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault();
 
 		if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
@@ -61,16 +63,17 @@ const SignupPage = (props) => {
 			setError('');
 			setLoading(true);
 			//we had await here, but deleted it because of memory leak error
-			signup(
+			await signup(
 				emailRef.current.value,
 				passwordRef.current.value,
 				usernameRef.current.value
 			);
+			console.log(currentUser);
+			getUserData(currentUser.uid);
 			history.push('/');
 		} catch (error) {
 			console.log(error);
-			setError(error.message);
-			// setError('Failed to create an account');
+			setError('Failed to create an account');
 		}
 		setLoading(false);
 	}
@@ -133,9 +136,9 @@ const SignupPage = (props) => {
 							variant='contained'
 							disabled={loading}
 							type='submit'
-							style={{ width: '100px', position: 'relative', left: '125px' }}
+							style={{ width: '150px', position: 'relative', left: '125px' }}
 						>
-							Sign In
+							Create Account
 						</Button>
 					</form>
 				</Grid>
@@ -152,6 +155,6 @@ const mapState = (state) => {
 	};
 };
 const mapDispatch = (dispatch) => {
-	return {};
+	return { getUserData: (uid) => dispatch(getUserData(uid)) };
 };
 export default connect(mapState, mapDispatch)(SignupPage);

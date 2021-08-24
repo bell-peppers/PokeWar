@@ -73,7 +73,7 @@ export default function AllPokemon(props) {
               poke.types.length
             );
           }
-
+console.log(pokemon)
           return (
             <React.Fragment key={poke.id}>
               <Card

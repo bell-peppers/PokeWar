@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid, CardContent } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { auth } from '../../utils/firebase';
+import firebase from 'firebase/app';
+import 'firebase/database';
+import 'firebase/auth';
+import { FIREDB } from '../../utils/firebase';
+import fetchPokemon from '../store/allPokemon';
+import AllPokemon from './AllPokemon';
+import Card from '@material-ui/core/Card';
+import { colorTypeGradients } from '../../utils/ColorGradientFunc';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import Modal from '@material-ui/core/Modal';
+
 // import firebase from 'firebase/app';
 
 const useStyles = makeStyles(() => ({
@@ -58,12 +70,8 @@ const Navbar = () => {
 
 	return (
 		<AppBar position='static' className={classes.navbar}>
-			{console.log(currentUser)}
-			{error && (
-				<Alert severity='error'>
-					{error}
-				</Alert>
-			)}
+			{/* {console.log(currentUser)} */}
+			{error && <Alert severity='error'>{error}</Alert>}
 			<Toolbar className={classes.cart}>
 				<a className={classes.p} href='/'>
 					Poke Wars
@@ -85,3 +93,22 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+export function MyPokemon() {
+	const dispatch = useDispatch();
+	const ref = FIREDB.ref('users');
+	ref.on('value', gotData, errData);
+
+	function gotData(data) {
+		let users = data.val();
+		let user = users['03ltHLv0SPQvT9YlU7bTpfuPPnF3'].pokemon;
+		console.log(user);
+	}
+
+	function errData(err) {
+		console.log(err);
+	}
+
+	console.log(dispatch)
+	return(<div>hi</div>)
+}

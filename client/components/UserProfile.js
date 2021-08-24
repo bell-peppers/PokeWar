@@ -20,6 +20,8 @@ import fetchPlayerOnePokemon from '../store/pokemon';
 import getTheCards from '../store/userProfile'
 import {useAuth} from '../../src/contexts/AuthContext';
 import firebase from 'firebase/app';
+import axios from 'axios';
+import FIREDB from '../../utils/firebase'
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -79,7 +81,6 @@ const rows = [
   createData(15, 'Peter', 8515767),
 ];
 const UserProfile = (props) => {
-  const {iGetTheCards} = props;
   const {currentUser, username} = useAuth();
   const classes = useStyles();
   const [page, setPage] = React.useState(2);
@@ -188,20 +189,11 @@ const UserProfile = (props) => {
             />
           </Paper>
         </Grid>
-
       </Grid>
     </div>
   );
 };
-const mapState = (state) => {
-  return {
-    // playerPokemon: state.pokemon.playerOnePokemon,
-  };
-};
-const mapDispatch = (dispatch) => {
-  return {
-   iGetTheCards: (user) => dispatch(getTheCards(user))
-    // getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
-  };
-};
-export default connect(mapState, mapDispatch)(UserProfile);
+
+export default UserProfile;
+
+

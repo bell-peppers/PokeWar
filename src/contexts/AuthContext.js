@@ -27,7 +27,7 @@ export function AuthProvider({children}) {
     FIREDB.ref('users/' + uid).set({
       uid: uid,
       email: email,
-      pokemon: [1, 2, 3, 4, 5, 6],
+      pokemon: [68, 44, 58],
       username: name,
     });
   }
@@ -62,7 +62,7 @@ export function AuthProvider({children}) {
     currentUser,
     login,
     signup,
-		logout
+    logout
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

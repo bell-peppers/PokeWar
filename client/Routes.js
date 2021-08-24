@@ -1,20 +1,19 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import {
-	withRouter,
-	Route,
-	Switch,
-	Redirect,
-	BrowserRouter as Router,
+  withRouter,
+  Route,
+  Switch,
+  Redirect,
+  BrowserRouter as Router,
 } from 'react-router-dom';
 import Main from './components/Main';
 import Home from './components/Home';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
-
+import PreGame from './components/PreGame';
 import AllPokemon from './components/AllPokemon';
-
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
 import { useAuth } from '../src/contexts/AuthContext';
