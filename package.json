@@ -33,6 +33,7 @@
     "material-ui-image": "^3.3.2",
     "morgan": "^1.9.1",
     "pg": "^8.5.1",
+    "react-firebase-hooks": "^3.0.4",
     "sequelize": "^6.3.5"
   },
   "devDependencies": {
