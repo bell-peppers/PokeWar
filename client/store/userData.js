@@ -19,12 +19,12 @@ export const getUserData = (uid) => async (dispatch) => {
     console.error(error);
   }
 };
-const initialState = {userData: {}};
+const initialState = {user: {}};
 
 export default function (state = initialState, action) {
   switch (action.type) {
     case GET_USER_DATA:
-      return {...state, userData: action.user};
+      return {...state, user: action.user};
     default:
       return state;
   }

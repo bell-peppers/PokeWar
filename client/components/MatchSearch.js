@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {connect} from 'react-redux';
 import {Button, makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
@@ -11,6 +11,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Container from '@material-ui/core/Container';
+import {createNewGame, joinGame, findGame} from '../store/game';
+import TextField from '@material-ui/core/TextField';
+import {useHistory} from 'react-router-dom';
+
 const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
@@ -67,9 +71,12 @@ const rows = [
   createData(15, 'Peter', 8515767),
 ];
 const MatchSearch = (props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const {newGame, user, joinGame, findGame} = props;
+  const joinMatchId = useRef();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -77,6 +84,27 @@ const MatchSearch = (props) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  function handleNewMatchClick() {
+    if (user.uid) {
+      newGame(user.uid, user.username);
+      history.push('/pregame');
+    } else {
+      history.push('/login');
+      alert('You must be logged in to create a new game!');
+    }
+  }
+  function handleJoinClick() {
+    //const matchId = '-MhpRo167oCYp3cT5O7-';
+    const matchId = joinMatchId.current.value;
+    if (user.uid !== '') {
+      joinGame(matchId, user);
+      history.push('/pregame');
+    } else {
+      history.push('/login');
+      alert('You must be logged in to create a new game!');
+    }
+  }
   return (
     <div
       style={{
@@ -97,8 +125,26 @@ const MatchSearch = (props) => {
       <h3 style={{textAlign: 'center'}}>Leaderboard position: 34532523</h3>
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
-          <Button style={{backgroundColor: 'red'}}>Create Match</Button>
-          <Button style={{backgroundColor: 'red'}}>Join Random Match</Button>
+          <Button
+            style={{backgroundColor: 'red'}}
+            onClick={() => handleNewMatchClick()}
+          >
+            Create Match
+          </Button>
+          <Button style={{backgroundColor: 'red'}} onClick={() => findGame()}>
+            Find Open Games
+          </Button>
+          <Button
+            style={{backgroundColor: 'red'}}
+            onClick={() => handleJoinClick()}
+          >
+            Join Match By Id
+          </Button>
+          <TextField
+            id='join-match-id'
+            inputRef={joinMatchId}
+            variant='outlined'
+          />
         </Grid>
         <Paper className={classes.root}>
           <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
@@ -156,9 +202,14 @@ const MatchSearch = (props) => {
 const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
+    user: state.userData.user,
   };
 };
 const mapDispatch = (dispatch) => {
-  return {};
+  return {
+    newGame: (uid, name) => dispatch(createNewGame(uid, name)),
+    joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
+    findGame: () => dispatch(findGame()),
+  };
 };
 export default connect(mapState, mapDispatch)(MatchSearch);

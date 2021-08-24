@@ -9,10 +9,8 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-
 export function AuthProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null);
-
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
   async function signup(email, password, username) {
@@ -27,7 +25,7 @@ export function AuthProvider({children}) {
     FIREDB.ref('users/' + uid).set({
       uid: uid,
       email: email,
-      pokemon: [1, 2, 3, 4, 5, 6],
+      pokemon: [68, 44, 58],
       username: name,
     });
   }
