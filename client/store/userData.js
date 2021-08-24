@@ -13,7 +13,6 @@ export const getUserData = (uid) => async (dispatch) => {
   try {
     await FIREDB.ref('users/' + uid).once('value', (snap) => {
       const data = snap.val();
-      console.log(data);
       return dispatch(_getUserData(data));
     });
   } catch (error) {

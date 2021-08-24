@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import {cancelGame, setOpponentInfo} from '../store/game';
 import {useHistory} from 'react-router-dom';
+import ChoosePokemon from './ChoosePokemon';
 //import bgImage from '../../public/pics/pregamegym.png';
 
 const useStyles = makeStyles(() => ({
@@ -40,10 +41,12 @@ const useStyles = makeStyles(() => ({
 
 const PreGame = (props) => {
   const classes = useStyles();
-  const {matchId, username, cancelGame, setOppInfo, opponent} = props;
+  const {matchId, username, cancelGame, setOppInfo, opponent, playerPokemon} =
+    props;
   const history = useHistory();
 
   const [playerJoined, setPlayerJoined] = useState(false);
+  const [choosePk, setChoosePk] = useState(false);
 
   useEffect(() => {
     listenForNewPlayer();
@@ -71,7 +74,7 @@ const PreGame = (props) => {
     history.push('/');
   }
 
-  return (
+  return !choosePk ? (
     <React.Fragment>
       <CssBaseline />
       <Container className={classes.main}>
@@ -91,18 +94,25 @@ const PreGame = (props) => {
                 }}
               >
                 <h3>Waiting for a player to join...</h3>
-                <Button onClick={() => cancelClick()}>Cancel</Button>
+                {/* <Button onClick={() => cancelClick()}>Cancel</Button> */}
+                <Button onClick={() => setChoosePk(true)}>Choose</Button>
               </div>
             ) : (
               <div>
                 <h3>{opponent.userName} joined!</h3>
-                <Button>Choose your Pokemon!</Button>
+                <Button onClick={() => setChoosePk(true)}>
+                  Choose your Pokemon!
+                </Button>
               </div>
             )}
           </div>
         </div>
       </Container>
     </React.Fragment>
+  ) : (
+    <div>
+      <ChoosePokemon playerPokemon={playerPokemon} />
+    </div>
   );
 };
 const mapState = (state) => {
@@ -110,6 +120,7 @@ const mapState = (state) => {
     matchId: state.game.matchId,
     username: state.userData.username,
     opponent: state.game.opponentInfo,
+    playerPokemon: state.pokemon.playerOnePokemon,
   };
 };
 

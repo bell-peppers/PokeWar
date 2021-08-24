@@ -17,7 +17,6 @@ export function AuthProvider({children}) {
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
   async function signup(email, password, username) {
     const user = await auth.createUserWithEmailAndPassword(email, password);
-    console.log(user);
     createNewAccount(user.user.uid, user.user.email, username);
     return user;
     // firebase.auth().createUserWithEmailAndPassword(email, password);
