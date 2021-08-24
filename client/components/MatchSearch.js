@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {connect} from 'react-redux';
 import {Button, makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
@@ -11,7 +11,25 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Container from '@material-ui/core/Container';
-const useStyles = makeStyles(() => ({
+import {createNewGame, joinGame, findGame} from '../store/game';
+import TextField from '@material-ui/core/TextField';
+import {useHistory} from 'react-router-dom';
+import Modal from '@material-ui/core/Modal';
+import FindMatch from './FindMatch';
+import {fetchPlayerOnePokemon} from '../store/pokemon';
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -34,6 +52,14 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     justifyContent: 'space-around',
     padding: '120px 0 120px 0',
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
 }));
 const columns = [
@@ -67,9 +93,31 @@ const rows = [
   createData(15, 'Peter', 8515767),
 ];
 const MatchSearch = (props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+
+  const {newGame, user, joinGame, findGame, availableGames, fetchPokemon} =
+    props;
+  const joinMatchId = useRef();
+
+  const handleOpen = async () => {
+    if (user.uid) {
+      await findGame();
+      setOpen(true);
+    } else {
+      history.push('/login');
+      alert('You must be logged in to join a game!');
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -77,33 +125,113 @@ const MatchSearch = (props) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  function handleNewMatchClick() {
+    if (user.uid) {
+      newGame(user.uid, user.username);
+      history.push('/pregame');
+    } else {
+      history.push('/login');
+      alert('You must be logged in to create a new game!');
+    }
+  }
+  // async function handleFindClick() {
+  //   await findGame();
+  //   if (availableGames.length > 0) {
+  //     console.log(availableGames);
+  //   }
+  // }
+
+  const modalBody = (
+    <div style={modalStyle} className={classes.paper}>
+      <FindMatch
+        availableGames={availableGames}
+        joinGame={joinGame}
+        user={user}
+      />
+    </div>
+  );
+  function handleJoinClick() {
+    //const matchId = '-MhpRo167oCYp3cT5O7-';
+    //const matchId = joinMatchId.current.value;
+    let matchId = prompt('Please enter a match id');
+    if (matchId !== '') {
+      if (user.uid !== '') {
+        console.log(matchId);
+        joinGame(matchId, user);
+        history.push('/pregame');
+      } else {
+        history.push('/login');
+        alert('You must be logged in to create a new game!');
+      }
+    } else {
+      alert('Please enter a valid match id');
+    }
+  }
+  useEffect(() => {
+    console.log(user);
+    if (user.pokemon) {
+      fetchPokemon(user.pokemon);
+    }
+  }, [user]);
   return (
-    <div>
-      <Grid
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      {/* <Grid
         style={{
           display: 'flex',
           justifyContent: 'center',
           backgroundColor: 'green',
         }}
       >
-        Leaderboard position: 34532523
-      </Grid>
+
+      // </Grid> */}
+      <h3 style={{textAlign: 'center'}}>Leaderboard position: 34532523</h3>
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
-          <Button style={{backgroundColor: 'red'}}>Create Match</Button>
-          <Button Button style={{backgroundColor: 'red'}}>
-            Join Random Match
+          <Button
+            style={{backgroundColor: 'red'}}
+            onClick={() => handleNewMatchClick()}
+          >
+            Create Match
           </Button>
+          <Button style={{backgroundColor: 'red'}} onClick={handleOpen}>
+            Find Games
+          </Button>
+          <Button
+            style={{backgroundColor: 'red'}}
+            onClick={() => handleJoinClick()}
+          >
+            Join By Match Id
+          </Button>
+          {/* <TextField
+            id='join-match-id'
+            inputRef={joinMatchId}
+            variant='outlined'
+          /> */}
         </Grid>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'
+        >
+          {modalBody}
+        </Modal>
         <Paper className={classes.root}>
+          <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
           <TableContainer className={classes.container}>
-            <TableRow>Leaderboard</TableRow>
             <Table stickyHeader aria-label='sticky table'>
               <TableHead>
                 <TableRow>
-                  {columns.map((column) => (
+                  {columns.map((column, i) => (
                     <TableCell
-                      key={column.id}
+                      key={i}
                       align={column.align}
                       style={{minWidth: column.minWidth}}
                     >
@@ -115,14 +243,9 @@ const MatchSearch = (props) => {
               <TableBody>
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
+                  .map((row, i) => {
                     return (
-                      <TableRow
-                        hover
-                        role='checkbox'
-                        tabIndex={-1}
-                        key={row.code}
-                      >
+                      <TableRow hover role='checkbox' tabIndex={-1} key={i}>
                         {columns.map((column) => {
                           const value = row[column.id];
                           return (
@@ -156,9 +279,16 @@ const MatchSearch = (props) => {
 const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
+    user: state.userData.user,
+    availableGames: state.game.availableGames,
   };
 };
 const mapDispatch = (dispatch) => {
-  return {};
+  return {
+    newGame: (uid, name) => dispatch(createNewGame(uid, name)),
+    joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
+    findGame: () => dispatch(findGame()),
+    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
+  };
 };
 export default connect(mapState, mapDispatch)(MatchSearch);
