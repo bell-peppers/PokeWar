@@ -14,8 +14,22 @@ import Container from '@material-ui/core/Container';
 import {createNewGame, joinGame, findGame} from '../store/game';
 import TextField from '@material-ui/core/TextField';
 import {useHistory} from 'react-router-dom';
+import Modal from '@material-ui/core/Modal';
+import FindMatch from './FindMatch';
+import {fetchPlayerOnePokemon} from '../store/pokemon';
 
-const useStyles = makeStyles(() => ({
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -38,6 +52,14 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     justifyContent: 'space-around',
     padding: '120px 0 120px 0',
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
 }));
 const columns = [
@@ -75,8 +97,27 @@ const MatchSearch = (props) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const {newGame, user, joinGame, findGame} = props;
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+
+  const {newGame, user, joinGame, findGame, availableGames, fetchPokemon} =
+    props;
   const joinMatchId = useRef();
+
+  const handleOpen = async () => {
+    if (user.uid) {
+      await findGame();
+      setOpen(true);
+    } else {
+      history.push('/login');
+      alert('You must be logged in to join a game!');
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -94,17 +135,45 @@ const MatchSearch = (props) => {
       alert('You must be logged in to create a new game!');
     }
   }
+  // async function handleFindClick() {
+  //   await findGame();
+  //   if (availableGames.length > 0) {
+  //     console.log(availableGames);
+  //   }
+  // }
+
+  const modalBody = (
+    <div style={modalStyle} className={classes.paper}>
+      <FindMatch
+        availableGames={availableGames}
+        joinGame={joinGame}
+        user={user}
+      />
+    </div>
+  );
   function handleJoinClick() {
     //const matchId = '-MhpRo167oCYp3cT5O7-';
-    const matchId = joinMatchId.current.value;
-    if (user.uid !== '') {
-      joinGame(matchId, user);
-      history.push('/pregame');
+    //const matchId = joinMatchId.current.value;
+    let matchId = prompt('Please enter a match id');
+    if (matchId !== '') {
+      if (user.uid !== '') {
+        console.log(matchId);
+        joinGame(matchId, user);
+        history.push('/pregame');
+      } else {
+        history.push('/login');
+        alert('You must be logged in to create a new game!');
+      }
     } else {
-      history.push('/login');
-      alert('You must be logged in to create a new game!');
+      alert('Please enter a valid match id');
     }
   }
+  useEffect(() => {
+    console.log(user);
+    if (user.pokemon) {
+      fetchPokemon(user.pokemon);
+    }
+  }, [user]);
   return (
     <div
       style={{
@@ -131,21 +200,29 @@ const MatchSearch = (props) => {
           >
             Create Match
           </Button>
-          <Button style={{backgroundColor: 'red'}} onClick={() => findGame()}>
-            Find Open Games
+          <Button style={{backgroundColor: 'red'}} onClick={handleOpen}>
+            Find Games
           </Button>
           <Button
             style={{backgroundColor: 'red'}}
             onClick={() => handleJoinClick()}
           >
-            Join Match By Id
+            Join By Match Id
           </Button>
-          <TextField
+          {/* <TextField
             id='join-match-id'
             inputRef={joinMatchId}
             variant='outlined'
-          />
+          /> */}
         </Grid>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'
+        >
+          {modalBody}
+        </Modal>
         <Paper className={classes.root}>
           <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
           <TableContainer className={classes.container}>
@@ -203,6 +280,7 @@ const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
     user: state.userData.user,
+    availableGames: state.game.availableGames,
   };
 };
 const mapDispatch = (dispatch) => {
@@ -210,6 +288,7 @@ const mapDispatch = (dispatch) => {
     newGame: (uid, name) => dispatch(createNewGame(uid, name)),
     joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
     findGame: () => dispatch(findGame()),
+    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
   };
 };
 export default connect(mapState, mapDispatch)(MatchSearch);

@@ -5,6 +5,9 @@ import {FIREDB} from '../../utils/firebase';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import {cancelGame, setOpponentInfo} from '../store/game';
+import {useHistory} from 'react-router-dom';
+//import bgImage from '../../public/pics/pregamegym.png';
 
 const useStyles = makeStyles(() => ({
   game: {
@@ -20,6 +23,7 @@ const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
+    // backgroundImage: `url(${bgImage})`,
     backgroundColor: 'red',
     width: '100vw',
     height: '80vh',
@@ -36,7 +40,8 @@ const useStyles = makeStyles(() => ({
 
 const PreGame = (props) => {
   const classes = useStyles();
-  const {matchId, username} = props;
+  const {matchId, username, cancelGame, setOppInfo, opponent} = props;
+  const history = useHistory();
 
   const [playerJoined, setPlayerJoined] = useState(false);
 
@@ -51,12 +56,19 @@ const PreGame = (props) => {
     dbUpdates.on('value', (snapshot) => {
       const playerTwo = snapshot.val();
       console.log(playerTwo);
-      if (playerTwo.guestId) {
-        setPlayerJoined(true);
-      } else {
-        setPlayerJoined(false);
+      if (playerTwo) {
+        if (playerTwo.guestId) {
+          setOppInfo(playerTwo);
+          setPlayerJoined(true);
+        } else {
+          setPlayerJoined(false);
+        }
       }
     });
+  }
+  function cancelClick() {
+    cancelGame(matchId);
+    history.push('/');
   }
 
   return (
@@ -71,10 +83,19 @@ const PreGame = (props) => {
           </div>
           <div>
             {playerJoined == false ? (
-              <h3>Waiting for a player to join...</h3>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <h3>Waiting for a player to join...</h3>
+                <Button onClick={() => cancelClick()}>Cancel</Button>
+              </div>
             ) : (
               <div>
-                <h3>Player joined!</h3>
+                <h3>{opponent.userName} joined!</h3>
                 <Button>Choose your Pokemon!</Button>
               </div>
             )}
@@ -88,11 +109,15 @@ const mapState = (state) => {
   return {
     matchId: state.game.matchId,
     username: state.userData.username,
+    opponent: state.game.opponentInfo,
   };
 };
 
 const mapDispatch = (dispatch) => {
-  return {};
+  return {
+    cancelGame: (matchId) => dispatch(cancelGame(matchId)),
+    setOppInfo: (info) => dispatch(setOpponentInfo(info)),
+  };
 };
 
 export default connect(mapState, mapDispatch)(PreGame);

@@ -13,12 +13,6 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 import { FIREDB } from '../../utils/firebase';
-import fetchPokemon from '../store/allPokemon';
-import AllPokemon from './AllPokemon';
-import Card from '@material-ui/core/Card';
-import { colorTypeGradients } from '../../utils/ColorGradientFunc';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import Modal from '@material-ui/core/Modal';
 
 // import firebase from 'firebase/app';
 
@@ -93,22 +87,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-export function MyPokemon() {
-	const dispatch = useDispatch();
-	const ref = FIREDB.ref('users');
-	ref.on('value', gotData, errData);
-
-	function gotData(data) {
-		let users = data.val();
-		let user = users['03ltHLv0SPQvT9YlU7bTpfuPPnF3'].pokemon;
-		console.log(user);
-	}
-
-	function errData(err) {
-		console.log(err);
-	}
-
-	console.log(dispatch)
-	return(<div>hi</div>)
-}

@@ -7,6 +7,21 @@ const GET_PLAYER_MOVES = 'GET_PLAYER_MOVES';
 const CREATE_NEW_GAME = 'CREATE_NEW_GAME';
 const JOIN_GAME = 'JOIN_GAME';
 const FIND_GAME = 'FIND_GAME';
+const CANCEL_GAME = 'CANCEL_GAME';
+const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
+
+const _setOpponentInfo = (info) => {
+  return {
+    type: SET_OPPONENT_INFO,
+    info,
+  };
+};
+
+const _cancelGame = () => {
+  return {
+    type: CANCEL_GAME,
+  };
+};
 
 const _findGame = (games) => {
   return {
@@ -43,9 +58,26 @@ const _joinGame = (data, matchId) => {
   };
 };
 
+export const setOpponentInfo = (info) => (dispatch) => {
+  const oppInfo = {userId: info.guestId, userName: info.guestUsername};
+  console.log(info);
+  console.log(oppInfo);
+  return dispatch(_setOpponentInfo(oppInfo));
+};
+
 export const getPlayerMoves = (newMoves) => (dispatch) => {
   const opponentMoves = newMoves;
   return dispatch(_getPlayerMoves(opponentMoves));
+};
+
+export const cancelGame = (matchId) => async (dispatch) => {
+  try {
+    await FIREDB.ref('/Match/' + matchId).remove();
+
+    return dispatch(_cancelGame());
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const findGame = () => async (dispatch) => {
@@ -55,11 +87,11 @@ export const findGame = () => async (dispatch) => {
     );
     let availableGames = [];
     for (const [match, values] of Object.entries(games.data)) {
-      console.log(match, values);
       if (values.status === 'open') {
         availableGames.push({matchId: match, data: values});
       }
     }
+    console.log(availableGames);
     return dispatch(_findGame(availableGames));
   } catch (error) {
     console.error(error);
@@ -137,11 +169,25 @@ export default function (state = initialState, action) {
     case JOIN_GAME:
       return {
         ...state,
-        opponentInfo: {userId: action.hostId, userName: action.userName},
+        opponentInfo: {
+          userId: action.hostId,
+          userName: action.userName,
+        },
         matchId: action.matchId,
       };
+    case SET_OPPONENT_INFO:
+      return {
+        ...state,
+        opponentInfo: {
+          userId: action.info.userId,
+          userName: action.info.userName,
+        },
+      };
     case FIND_GAME:
+      console.log(action.games);
       return {...state, availableGames: action.games};
+    case CANCEL_GAME:
+      return {...state, matchId: null};
     default:
       return state;
   }
