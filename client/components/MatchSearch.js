@@ -132,13 +132,13 @@ const MatchSearch = (props) => {
             Create Match
           </Button>
           <Button style={{backgroundColor: 'red'}} onClick={() => findGame()}>
-            Find Open Games
+            Find Games
           </Button>
           <Button
             style={{backgroundColor: 'red'}}
             onClick={() => handleJoinClick()}
           >
-            Join Match By Id
+            Join By Match Id
           </Button>
           <TextField
             id='join-match-id'
