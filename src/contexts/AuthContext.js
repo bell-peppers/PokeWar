@@ -9,8 +9,10 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+
 export function AuthProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null);
+
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
   async function signup(email, password, username) {
@@ -34,6 +36,9 @@ export function AuthProvider({children}) {
     return user;
   }
 
+	function logout () {
+		return auth.signOut();
+	}
   // function getUserData(uid) {
   //   FIREDB.ref('users/' + uid).once('value', (snap) => {
   //     console.log(snap.val());
@@ -56,6 +61,7 @@ export function AuthProvider({children}) {
     currentUser,
     login,
     signup,
+    logout
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
