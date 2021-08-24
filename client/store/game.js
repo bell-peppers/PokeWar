@@ -87,11 +87,11 @@ export const findGame = () => async (dispatch) => {
     );
     let availableGames = [];
     for (const [match, values] of Object.entries(games.data)) {
-      console.log(match, values);
       if (values.status === 'open') {
         availableGames.push({matchId: match, data: values});
       }
     }
+    console.log(availableGames);
     return dispatch(_findGame(availableGames));
   } catch (error) {
     console.error(error);
@@ -184,6 +184,7 @@ export default function (state = initialState, action) {
         },
       };
     case FIND_GAME:
+      console.log(action.games);
       return {...state, availableGames: action.games};
     case CANCEL_GAME:
       return {...state, matchId: null};
