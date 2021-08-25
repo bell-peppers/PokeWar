@@ -64,7 +64,7 @@ const SignupPage = (props) => {
       setError('');
       setLoading(true);
       //we had await here, but deleted it because of memory leak error
-      signup(
+      await signup(
         emailRef.current.value,
         passwordRef.current.value,
         usernameRef.current.value
