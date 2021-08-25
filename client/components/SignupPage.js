@@ -1,31 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
 import { Button, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Container from '@material-ui/core/Container';
-import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { useAuth } from '../../src/contexts/AuthContext';
 import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
-import AlertTitle from '@material-ui/lab/AlertTitle';
-import { getUserData } from '../store/userData';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import { OutlinedInput } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
 	main: {
 		fontFamily: 'Courier New, monospace',
 		display: 'flex',
-		backgroundColor: 'green',
-		width: '100%',
-		height: '600px',
+		height: '650px',
 		flexDirection: 'column',
 		justifyContent: 'space-around',
 	},
@@ -33,14 +24,13 @@ const useStyles = makeStyles(() => ({
 		display: 'flex',
 		flexDirection: 'column',
 		width: '350px',
-		height: '325px',
-		border: '5px solid red',
+		border: '5px solid grey',
 		padding: '15px',
 		backgroundColor: 'white',
 	},
 }));
 
-const SignupPage = (props) => {
+export default function SignupPage() {
 	const classes = useStyles();
 	const usernameRef = useRef();
 	const emailRef = useRef();
@@ -50,7 +40,16 @@ const SignupPage = (props) => {
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
-	const { getUserData } = props;
+	const [values, setValues] = React.useState({
+		showPassword: false,
+	});
+	const handleClickShowPassword = () => {
+		setValues({ ...values, showPassword: !values.showPassword });
+	};
+
+	const handleMouseDownPassword = (event) => {
+		event.preventDefault();
+	};
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -59,105 +58,112 @@ const SignupPage = (props) => {
 			return setError('Passwords do not match');
 		}
 
+		try {
+			setError('');
+			setLoading(true);
+			await signup(
+				emailRef.current.value,
+				passwordRef.current.value,
+				usernameRef.current.value
+			);
 
-    try {
-      setError('');
-      setLoading(true);
-      //we had await here, but deleted it because of memory leak error
-      signup(
-        emailRef.current.value,
-        passwordRef.current.value,
-        usernameRef.current.value
-      );
-
-      history.push('/');
-    } catch (error) {
-      console.log(error);
-      setError('Failed to create an account');
-    }
-    console.log(currentUser);
-    // await getUserData(currentUser.uid);
-    setLoading(false);
-  }
-
+			history.push('/');
+		} catch (error) {
+			console.log(error);
+			setError('Failed to create an account');
+		}
+		console.log(currentUser);
+		setLoading(false);
+	}
 
 	return (
 		<div>
 			<Grid className={classes.main}>
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
-					<h2> Create a new account</h2>
+					<h2>CREATE YOUR ACCOUNT</h2>
 				</Grid>
 				{error && <Alert severity='error'>{error}</Alert>}
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<form className={classes.form} onSubmit={handleSubmit}>
-						<TextField
-							inputRef={usernameRef}
-							label='Username'
-							id='filled-start-adornment'
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'> </InputAdornment>
-								),
-							}}
-							variant='filled'
-						/>
-						<TextField
-							// inputRef={el => this.emailRef = el}
-							inputRef={emailRef}
-							label='E-mail'
-							id='filled-start-adornment'
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'> </InputAdornment>
-								),
-							}}
-							variant='filled'
-						/>
-						<TextField
-							inputRef={passwordRef}
-							label='Password'
-							id='filled-start-adornment'
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'> </InputAdornment>
-								),
-							}}
-							variant='filled'
-						/>
-						<TextField
-							inputRef={passwordConfirmationRef}
-							label='Password confirmation'
-							id='filled-start-adornment'
-							InputProps={{
-								startAdornment: (
-									<InputAdornment position='start'> </InputAdornment>
-								),
-							}}
-							variant='filled'
-						/>
+						<FormControl variant='outlined'>
+							<InputLabel htmlFor='signup-username'>E-mail</InputLabel>
+							<OutlinedInput
+								label='Username'
+								id='signup-username'
+								inputRef={usernameRef}
+								labelWidth={70}
+							/>
+						</FormControl>
+						<FormControl variant='outlined'>
+							<InputLabel htmlFor='signup-email'>E-mail</InputLabel>
+							<OutlinedInput
+								label='E-mail'
+								id='signup-email'
+								inputRef={emailRef}
+								labelWidth={70}
+							/>
+						</FormControl>
+
+						<FormControl variant='outlined'>
+							<InputLabel htmlFor='signup-password'>Password</InputLabel>
+							<OutlinedInput
+								label='Password'
+								id='signup-password'
+								type={values.showPassword ? 'text' : 'password'}
+								inputRef={passwordRef}
+								endAdornment={
+									<InputAdornment position='end'>
+										<IconButton
+											aria-label='toggle password visibility'
+											onClick={handleClickShowPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge='end'
+										>
+											{values.showPassword ? <Visibility /> : <VisibilityOff />}
+										</IconButton>
+									</InputAdornment>
+								}
+								labelWidth={70}
+							/>
+						</FormControl>
+						<FormControl variant='outlined'>
+							<InputLabel htmlFor='signup-password-confirmation'>
+								Password Confirmation
+							</InputLabel>
+							<OutlinedInput
+								label='Password confirmation'
+								id='signup-password-confirmation'
+								type={values.showPassword ? 'text' : 'password'}
+								inputRef={passwordConfirmationRef}
+								endAdornment={
+									<InputAdornment position='end'>
+										<IconButton
+											aria-label='toggle password visibility'
+											onClick={handleClickShowPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge='end'
+										>
+											{values.showPassword ? <Visibility /> : <VisibilityOff />}
+										</IconButton>
+									</InputAdornment>
+								}
+								labelWidth={70}
+							/>
+						</FormControl>
 						<Button
 							variant='contained'
 							disabled={loading}
 							type='submit'
-							style={{ width: '150px', position: 'relative', left: '125px' }}
+							style={{ width: '150px', position: 'relative', left: '75px' }}
 						>
 							Create Account
 						</Button>
 					</form>
 				</Grid>
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
-					Already have an account? <a href='/login'> Log In</a>
+					Already have an account?<a href='/login'> Log In</a>
 				</Grid>
 			</Grid>
 		</div>
 	);
-};
-const mapState = (state) => {
-	return {
-		playerPokemon: state.pokemon.playerOnePokemon,
-	};
-};
-const mapDispatch = (dispatch) => {
-	return { getUserData: (uid) => dispatch(getUserData(uid)) };
-};
-export default connect(mapState, mapDispatch)(SignupPage);
+}

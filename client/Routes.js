@@ -18,6 +18,8 @@ import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
 import {useAuth} from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
+import EditProfile from './components/EditProfile'
+import Footer from './components/Footer'
 
 /**
  * COMPONENT
@@ -38,9 +40,11 @@ const Routes = () => {
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' exact component={LoginPage} />
         <Route path='/signup' exact component={SignupPage} />
+        <Route path='/editprofile' exact component={EditProfile} />
         <Route exact path='/' component={MatchSearch} />
         <Route path='*' component={FourOhFour} />
       </Switch>
+      <Footer />
       {/* </div>
       ) : (
         <div>

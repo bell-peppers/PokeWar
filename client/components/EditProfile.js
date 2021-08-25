@@ -21,6 +21,7 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import { FIREDB } from '../../utils/firebase';
 import 'firebase/database';
@@ -72,35 +73,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const UserProfile = (props) => {
+const EditProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
 	const { currentUser, username } = useAuth();
 	const classes = useStyles();
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		if (currentUser && currentUser.uid !== user.uid) {
-			getUserData(currentUser.uid);
-		}
-		if (user.pokemon) {
-			fetchPokemon(user.pokemon);
-		}
-	}, [user, currentUser]);
-
-	const [clicked, setClicked] = useState(false);
-
-	const handleIconClick = (poke) => {
-		console.log(poke);
-		if (!poke.liked) {
-			poke.liked = true;
-			setClicked(true);
-		} else {
-			poke.liked = false;
-			setClicked(false);
-		}
-		console.log(poke);
-	};
 
 	return (
 		<div>
@@ -131,41 +108,18 @@ const UserProfile = (props) => {
 								) : (
 									<Image src='/pics/default.png' />
 								)}
+								<Button>Upload your avatar</Button>
+								<Typography>
+									Upload a file from your device. Image should be square
+								</Typography>
 							</CardMedia>
-							{user.username}
+							<form>
+							<TextField id="username" placeholder={user.username} variant="filled" />
+							</form>
+							<Grid>{user.username}</Grid>
 						</Grid>
 					</Grid>
 					{/* {playerPokemon && console.log(playerPokemon)} */}
-
-					{playerPokemon && (
-						<div className={classes.imageRoot}>
-							My Pokemon
-							<ImageList
-								cols={2.5}
-								style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
-							>
-								{playerPokemon.map((item) => (
-									<ImageListItem key={item.id} style={{ width: '150px' }}>
-										<img src={item.sprites.front_default} />
-										<ImageListItemBar
-											actionIcon={
-												<IconButton
-													onClick={() => handleIconClick(item)}
-													className={classes.title}
-												>
-													{item.liked ? (
-														<FavoriteIcon />
-													) : (
-														<FavoriteBorderIcon />
-													)}
-												</IconButton>
-											}
-										/>
-									</ImageListItem>
-								))}
-							</ImageList>
-						</div>
-					)}
 				</Grid>
 				<Grid>
 					<Button href='/editprofile'>Edit Profile</Button>
@@ -197,4 +151,4 @@ const mapDispatch = (dispatch) => {
 		getUserData: (uid) => dispatch(getUserData(uid)),
 	};
 };
-export default connect(mapState, mapDispatch)(UserProfile);
+export default connect(mapState, mapDispatch)(EditProfile);
