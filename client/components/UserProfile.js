@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		backgroundColor: 'green',
 		// flexWrap: 'nowrap',
-		width: '100%',
-		height: '600px',
+		// width: '100%',
+		// height: '600px',
 		flexDirection: 'column',
 		justifyContent: 'space-around',
 	},
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
-	const { currentUser, username } = useAuth();
+	const { currentUser } = useAuth();
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
@@ -106,7 +106,7 @@ const UserProfile = (props) => {
 		<div>
 			<Grid className={classes.main}>
 				<Grid
-					style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}
+					style={{ display: 'flex', justifyContent: 'center', padding: '5px' }}
 				>
 					POKEWARS
 				</Grid>
@@ -126,11 +126,13 @@ const UserProfile = (props) => {
 									border: '5px solid blue',
 								}}
 							>
-								{currentUser && currentUser.photoUrl ? (
+								{currentUser && currentUser.photoUrl
+								? (
 									<Image src={currentUser.photoUrl} />
 								) : (
 									<Image src='/pics/default.png' />
-								)}
+								)
+								}
 							</CardMedia>
 							{user.username}
 						</Grid>
