@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {connect, useSelector} from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -12,10 +13,13 @@ import TableRow from '@material-ui/core/TableRow';
 import { CardMedia } from '@material-ui/core';
 import Image from 'material-ui-image';
 import { useAuth } from '../../src/contexts/AuthContext';
+import {getUserData} from '../store/userData';
+import {fetchPlayerOnePokemon} from '../store/pokemon';
 import firebase from 'firebase/app';
 import { FIREDB } from '../../utils/firebase';
 import 'firebase/database';
 import 'firebase/auth';
+
 
 const useStyles = makeStyles((theme) => ({
 	main: {
@@ -77,6 +81,12 @@ const rows = [
 
 
 const UserProfile = (props) => {
+	const {
+    user,
+		playerPokemon,
+    fetchPokemon,
+    getUserData,
+  } = props;
 	const { currentUser, username } = useAuth();
 	const classes = useStyles();
 	const [page, setPage] = React.useState(2);
@@ -88,10 +98,19 @@ const UserProfile = (props) => {
 		setRowsPerPage(parseInt(event.target.value, 10));
 		setPage(0);
 	};
+
+	useEffect(() => {
+    if (currentUser && currentUser.uid !== user.uid) {
+      getUserData(currentUser.uid);
+    }
+    if (user.pokemon) {
+      fetchPokemon(user.pokemon);
+    }
+  }, [user, currentUser]);
   // console.log(useAuth())
 	return (
 		<div>
-      {currentUser.uid && console.log(getUsername(currentUser.uid))}
+      {/* {currentUser.uid && console.log(getUsername(currentUser.uid))} */}
 			<Grid className={classes.main}>
 				<Grid
 					style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}
@@ -124,20 +143,16 @@ const UserProfile = (props) => {
 									<Image src='/pics/default.png' />
 								)}
 							</CardMedia>
-							taya_papaya
+							{user.username}
 						</Grid>
 						<Paper className={classes.cards}>
 							<Paper elevation={1} />
 							<Paper />
 							<Paper elevation={3} />
-							{/* <TablePagination
-                component='div'
-                count={100}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              /> */}
+							{playerPokemon && console.log(Array.isArray(playerPokemon))}
+							{/* {user.username && playerPokemon.map(poke => {
+								<Image src='/pics/default.png' />
+							})} */}
 						</Paper>
 					</Grid>
 					<Paper className={classes.root}>
@@ -202,31 +217,23 @@ const UserProfile = (props) => {
 	);
 };
 
-export default UserProfile;
+const mapState = (state) => {
+	// console.log(state.pokemon)
+  return {
+    playerPokemon: state.pokemon,
+    user: state.userData.user,
+  };
+};
+const mapDispatch = (dispatch) => {
+  return {
+    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
+    getUserData: (uid) => dispatch(getUserData(uid)),
+  };
+};
+export default connect(mapState, mapDispatch)(UserProfile);
 
-function getUsername(userId) {
-  FIREDB.ref('users').on('value', gotData);
-
-function gotData(data) {
-	let users = data.val();
-  console.log(users)
-	const username = users[userId].username;
-	console.log(username);
-  return username;
-}
-}
-
-// getUsername('03ltHLv0SPQvT9YlU7bTpfuPPnF3')
-
-
-//   const ref = FIREDB.ref('users');
-// ref.on('value', gotData, errData);
-// const gotData =(data) => {
-// let users = data.val();
-// let pokes = users['03ltHLv0SPQvT9YlU7bTpfuPPnF3'].pokemon;
-// console.log(pokes);
+// function listPokes() {
+// 	const pokes = useSelector(state=> )
 // }
 
-// const errData =(err) => {
-// console.log(err);
-// }
+// export connect(mapState, mapDispatch)(listPokes);

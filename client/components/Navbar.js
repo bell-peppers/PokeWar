@@ -23,6 +23,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '0px 0px 30px 30px',
     backgroundColor: '#1574b0',
     color: '#3d405b',
+    position: 'relative'
   },
   cart: {
     width: '80vw',
@@ -45,13 +46,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Navbar = (props) => {
+  const history = useHistory();
   const [error, setError] = useState('');
   const classes = useStyles();
   const {currentUser, logout} = useAuth();
 
   const {username} = props;
 
-  console.log(firebase.auth());
+  // console.log(firebase.auth());
   // const { currentUser } = firebase.auth();
 
   async function handleLogout() {
@@ -105,7 +107,8 @@ const Navbar = (props) => {
                 Sign Out
               </p>
             </div>
-          ) : (
+          )
+          : (
             <div style={{display: 'flex'}}>
               <Link to='/signup'>
                 <p className={classes.p}>Sign Up</p>
@@ -114,17 +117,19 @@ const Navbar = (props) => {
                 <p className={classes.p}>Login</p>
               </Link>
             </div>
-          )}
+          )
+          }
         </div>
       </Toolbar>
-      <div>{error && <Alert>{error}</Alert>}</div>
+      {error && <Alert>{error}</Alert>}
+      {/* <div>{error && <Alert>{error}</Alert>}</div> */}
     </AppBar>
   );
 };
 
 const mapState = (state) => {
   return {
-    username: state.userData.user.username,
+    // username: state.userData.user.username,
   };
 };
 
@@ -133,3 +138,5 @@ const mapDispatch = (dispatch) => {
 };
 
 export default connect(mapState, mapDispatch)(Navbar);
+
+

@@ -176,14 +176,14 @@ const MatchSearch = (props) => {
       alert('Please enter a valid match id');
     }
   }
-  useEffect(() => {
-    if (currentUser && currentUser.uid !== user.uid) {
-      getUserData(currentUser.uid);
-    }
-    if (user.pokemon) {
-      fetchPokemon(user.pokemon);
-    }
-  }, [user, currentUser]);
+  // useEffect(() => {
+  //   if (currentUser && currentUser.uid !== user.uid) {
+  //     getUserData(currentUser.uid);
+  //   }
+  //   if (user.pokemon) {
+  //     fetchPokemon(user.pokemon);
+  //   }
+  // }, [user, currentUser]);
   return (
     <div
       style={{

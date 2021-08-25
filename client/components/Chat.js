@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import 'firebase/firestore';
 import 'firebase/auth';
 import firebase, { FIREDB } from '../../utils/firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
+// import { useCollectionData } from 'react-firebase-hooks/firestore';
+// import { useAuthState } from 'react-firebase-hooks/auth';
 import { Input, Button } from '@material-ui/core';
 
 const auth = firebase.auth();
