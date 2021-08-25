@@ -1,13 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {Button, makeStyles} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import {Typography, Grid} from '@material-ui/core';
+import {Typography, Grid, CardContent} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import {useAuth} from '../../src/contexts/AuthContext';
+import {auth} from '../../utils/firebase';
 import firebase from 'firebase/app';
+import 'firebase/database';
+import 'firebase/auth';
+import {FIREDB} from '../../utils/firebase';
+
+// import firebase from 'firebase/app';
 
 const useStyles = makeStyles(() => ({
   navbar: {
@@ -47,10 +54,17 @@ const Navbar = (props) => {
   console.log(firebase.auth());
   // const { currentUser } = firebase.auth();
 
-  function handleLogout() {}
-  // useEffect(() => {
+  async function handleLogout() {
+    setError('');
 
-  // });
+    try {
+      await logout();
+      history.push('/login');
+    } catch {
+      setError('Failed to log out');
+    }
+  }
+
   return (
     <AppBar className={classes.navbar}>
       {/* {console.log(currentUser)} */}
