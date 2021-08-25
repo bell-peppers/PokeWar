@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     backgroundColor: 'white',
     width: '100%',
-    height: '75%',
+    height: '100%',
     justifyContent: 'flex-end',
     borderWidth: '1px',
     borderStyle: 'solid',
@@ -44,17 +44,19 @@ const useStyles = makeStyles(() => ({
   },
   playerSprites: {
     maxWidth: '100%',
-    width: '270px',
+    width: '200px',
     height: 'auto',
+    maxHeight: '200px',
     objectFit: 'contain',
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
   },
   opponentSprites: {
     maxWidth: '100%',
-    width: '225px',
+    width: '185px',
     height: 'auto',
+    maxHeight: '200px',
     objectFit: 'contain',
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-end',
   },
   pokemonContainer: {
     alignSelf: 'flex-end',
@@ -99,8 +101,10 @@ const Gameboard = (props) => {
     username,
     opponentPokemon,
     changeTurns,
-    opponentName = 'Opponent',
+    opponentName,
     isTurn,
+    role,
+    matchId,
   } = props;
 
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
@@ -110,18 +114,35 @@ const Gameboard = (props) => {
   }, []);
 
   function listenForOpponentMoves() {
-    const match = 'Match1';
-    const opponent = 'player2';
+    // const match = 'Match1';
+    // const opponent = 'player2';
     //firebase looking for updates to this match
-    const dbUpdates = FIREDB.ref(`Match/${match}/moves/${opponent}`);
-    dbUpdates.limitToLast(1).on('child_added', (snapshot) => {
+    console.log(isTurn);
+    const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
+    console.log(matchId, opponentName);
+    dbUpdates.limitToLast(1).on('value', (snapshot) => {
+      console.log(snapshot);
       const newMoves = snapshot.val();
-
-      if (chosenPokemon.length > 0 && opponentMovesLoaded == false && !isTurn) {
-        setOpponentMovesLoaded(true);
-        //getOpponentMoves(newMoves);
-        //applyMoves(newMoves, chosenPokemon, opponentPokemon);
-        //changeTurns();
+      console.log(newMoves);
+      if (newMoves) {
+        const moves = Object.values(newMoves)[0];
+        if (role === 'guest') {
+          applyMoves(moves, chosenPokemon, opponentPokemon);
+          changeTurns();
+          // if (
+          //   chosenPokemon.length > 0 &&
+          //   opponentMovesLoaded == false &&
+          //   !isTurn
+          // ) {
+          //   setOpponentMovesLoaded(true);
+          //   getOpponentMoves(newMoves);
+          //   applyMoves(newMoves, chosenPokemon, opponentPokemon);
+          //   changeTurns();
+          // }
+        } else if (role === 'host') {
+          getOpponentMoves(moves);
+          changeTurns();
+        }
       }
     });
   }
@@ -136,48 +157,57 @@ const Gameboard = (props) => {
       resetPlayerPokemon();
     }
   }
-  console.log('opp poke', opponentPokemon);
   return (
-    <div className={classes.main}>
-      <div className={classes.opponentSide}>
-        <div className={classes.playerName}>
-          <h1>{opponentName}</h1>
+    <div>
+      {opponentPokemon ? (
+        <div className={classes.main}>
+          <div className={classes.opponentSide}>
+            <div className={classes.playerName}>
+              <h1>{opponentName}</h1>
+            </div>
+            {opponentPokemon &&
+              opponentPokemon.map((pk) => {
+                return (
+                  <div
+                    className={classes.pokemonContainer}
+                    key={pk.id}
+                    onClick={() => clickHandle(pk)}
+                  >
+                    <p>{pk.name}</p>
+                    <img
+                      className={classes.opponentSprites}
+                      // src={pk.sprites.front_default}
+                      src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
+                      alt={pk.name}
+                    />
+                    <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
+                  </div>
+                );
+              })}
+          </div>
+          <div className={classes.playerSide}>
+            {chosenPokemon.length > 0 &&
+              chosenPokemon.map((pk) => {
+                return (
+                  <div className={classes.pokemonContainer} key={pk.id}>
+                    <img
+                      className={classes.playerSprites}
+                      // src={pk.sprites.back_default}
+                      src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
+                      alt={pk.name}
+                    />
+                    <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
+                  </div>
+                );
+              })}
+            <div className={classes.playerName}>
+              <h1>{username}</h1>
+            </div>
+          </div>
         </div>
-        {opponentPokemon &&
-          opponentPokemon.map((pk) => {
-            return (
-              <div
-                className={classes.pokemonContainer}
-                key={pk.id}
-                onClick={() => clickHandle(pk)}
-              >
-                <p>{pk.name}</p>
-                <img
-                  className={classes.opponentSprites}
-                  src={pk.sprites.front_default}
-                />
-                <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
-              </div>
-            );
-          })}
-      </div>
-      <div className={classes.playerSide}>
-        {chosenPokemon.length > 0 &&
-          chosenPokemon.map((pk) => {
-            return (
-              <div className={classes.pokemonContainer} key={pk.id}>
-                <img
-                  className={classes.playerSprites}
-                  src={pk.sprites.back_default}
-                />
-                <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
-              </div>
-            );
-          })}
-        <div className={classes.playerName}>
-          <h1>{username}</h1>
-        </div>
-      </div>
+      ) : (
+        <div>please wait</div>
+      )}
     </div>
   );
 };
@@ -198,7 +228,8 @@ const mapDispatch = (dispatch) => {
     selectAttacked: (atkdpk, atk, pk) =>
       dispatch(selectAttackedPokemon(atkdpk, atk, pk)),
     getOpponentMoves: (newMoves) => dispatch(getPlayerMoves(newMoves)),
-    applyMoves: (oppMoves, pk) => dispatch(applyMoves(oppMoves, pk)),
+    applyMoves: (newMoves, plyrPk, oppPk) =>
+      dispatch(applyMoves(newMoves, plyrPk, oppPk)),
     resetPlayerPokemon: () => dispatch(_selectedPlayerPokemon({})),
   };
 };

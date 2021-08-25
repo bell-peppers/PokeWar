@@ -1,4 +1,3 @@
-import {ContactsOutlined, ContactSupportOutlined} from '@material-ui/icons';
 import axios from 'axios';
 import {FIREDB} from '../../utils/firebase';
 
@@ -10,6 +9,14 @@ const FIND_GAME = 'FIND_GAME';
 const CANCEL_GAME = 'CANCEL_GAME';
 const SET_HOSTGUEST = 'SET_HOSTGUEST';
 const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
+const SET_PLAYER_READY = 'SET_PLAYER_READY';
+
+const _setPlayerReady = (ready) => {
+  return {
+    type: SET_PLAYER_READY,
+    ready,
+  };
+};
 
 const _setOpponentInfo = (info) => {
   return {
@@ -65,11 +72,18 @@ const _joinGame = (data, matchId) => {
   };
 };
 
+export const setPlayerReady = (matchId, role, ready) => async (dispatch) => {
+  const update = role === 'host' ? {'hostReady': ready} : {'guestReady': ready};
+  await FIREDB.ref('/Match/' + matchId + '/ready/').update(update);
+  return dispatch(_setPlayerReady(ready));
+};
+
 export const setHostGuest = (role) => (dispatch) => {
   return dispatch(_setHostGuest(role));
 };
+
 export const setOpponentInfo = (info) => (dispatch) => {
-  const oppInfo = {userId: info.guestId, userName: info.guestUsername};
+  const oppInfo = {username: info};
   console.log(info);
   console.log(oppInfo);
   return dispatch(_setOpponentInfo(oppInfo));
@@ -149,10 +163,10 @@ export const createNewGame = (userId, name) => async (dispatch) => {
   }
 };
 
-export const sendPlayerMoves = (sendMoves, user) => (dispatch) => {
+export const sendPlayerMoves = (sendMoves, user, matchId) => (dispatch) => {
   try {
     axios.post(
-      `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/Match1/moves/${user}/.json`,
+      `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/${matchId}/moves/${user}/.json`,
       sendMoves
     );
 
@@ -167,6 +181,7 @@ let initialState = {
   playerMoves: [],
   matchId: null,
   role: null,
+  playerReady: false,
 };
 
 export default function (state = initialState, action) {
@@ -190,8 +205,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         opponentInfo: {
-          userId: action.info.userId,
-          userName: action.info.userName,
+          username: action.info.username,
         },
       };
     case FIND_GAME:
@@ -201,6 +215,8 @@ export default function (state = initialState, action) {
       return {...state, matchId: null};
     case SET_HOSTGUEST:
       return {...state, role: action.role};
+    case SET_PLAYER_READY:
+      return {...state, playerReady: action.ready};
     default:
       return state;
   }

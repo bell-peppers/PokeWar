@@ -26,7 +26,7 @@ export default function FindMatch(props) {
 
   function joinClick(matchId) {
     joinGame(matchId, user);
-    setRole('visitor');
+    setRole('guest');
     history.push('/pregame');
   }
   return (

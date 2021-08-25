@@ -105,6 +105,7 @@ export default function (
     case CLEAR_ATTACKED_POKEMON:
       return {...state, attackedPokemon: []};
     case CHANGE_TURNS:
+      console.log(!state.isTurn);
       return {...state, isTurn: !state.isTurn};
     case SET_CALCULATED_ATTACKS:
       return {...state, calculatedAttacks: action.turn};

@@ -55,24 +55,26 @@ const PreGame = (props) => {
   function listenForNewPlayer() {
     //firebase looking for a player to join the match
     console.log(matchId);
-    const dbUpdates = FIREDB.ref(`Match/${matchId}`);
+    const dbUpdates = FIREDB.ref(`Match/${matchId}/guestUsername`);
     dbUpdates.on('value', (snapshot) => {
       const playerTwo = snapshot.val();
       console.log(playerTwo);
       if (playerTwo) {
-        if (playerTwo.guestId) {
-          setOppInfo(playerTwo);
-          setPlayerJoined(true);
-        } else {
-          setPlayerJoined(false);
-        }
+        setOppInfo(playerTwo);
+        setPlayerJoined(true);
+        // if (playerTwo.guestId) {
+        //   setOppInfo(playerTwo);
+        //   setPlayerJoined(true);
+        // } else {
+        //   setPlayerJoined(false);
+        // }
       }
     });
   }
   function cancelClick() {
     cancelGame(matchId);
     setChoosePk(true);
-    // history.push('/');
+    history.push('/');
   }
 
   return !choosePk ? (

@@ -111,6 +111,7 @@ const MatchSearch = (props) => {
     fetchPokemon,
     getUserData,
     setRole,
+    changeTurns,
   } = props;
   //const joinMatchId = useRef();
   const {currentUser} = useAuth();

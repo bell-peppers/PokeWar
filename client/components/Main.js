@@ -70,7 +70,7 @@ const Main = (props) => {
   useEffect(() => {
     //getPlayerPokemon(playerPkIds);
     if (opponentPokemon.length == 0) {
-      fetchOpponentPokemon(testMatch, role);
+      fetchOpponentPokemon(matchId, role);
     }
 
     // fetchOpponentPokemon(matchId, role);
@@ -89,6 +89,7 @@ const Main = (props) => {
             role={role}
             changeTurns={changeTurns}
             isTurn={isTurn}
+            matchId={matchId}
           />
           <Actionbar
             isTurn={isTurn}
@@ -96,6 +97,7 @@ const Main = (props) => {
             role={role}
             username={username}
             calculatedAttacks={calculatedAttacks}
+            matchId={matchId}
           />
         </div>
         <div className={classes.side}>

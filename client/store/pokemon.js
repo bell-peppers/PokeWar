@@ -237,7 +237,6 @@ export const sendChosenPokemon =
     const playerInfo =
       role == 'host' ? {hostPokemon: pokemon} : {guestPokemon: pokemon};
 
-    console.log(playerInfo);
     await FIREDB.ref('/Match/' + matchId).update(playerInfo);
     return dispatch(_sendChosenPokemon(pokemon));
   };
@@ -262,7 +261,6 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   const feed = [];
 
   moves.forEach((move) => {
-    console.log('move', move);
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'
         ? `${move.report.Class}`
@@ -278,7 +276,7 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         pk.stats[0].base_stat -= move.report.Damage;
       }
     });
-    console.log(oppPk);
+
     oppPk.forEach((pk) => {
       if (
         pk.owner === move.attackedPokemon.owner &&
