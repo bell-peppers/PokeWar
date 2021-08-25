@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import 'firebase/firestore';
-import 'firebase/auth';
+import React, { useState, useEffect, useRef } from 'react';
+// import 'firebase/firestore';
+// import 'firebase/auth';
 import firebase, { FIREDB } from '../../utils/firebase';
-// import { useCollectionData } from 'react-firebase-hooks/firestore';
-// import { useAuthState } from 'react-firebase-hooks/auth';
 import { Input, Button } from '@material-ui/core';
-
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -18,17 +14,15 @@ const Chat = () => {
 
     messageRef.on('value', snapshot => {
       const messages = snapshot.val();
-      console.log(messages);
       let allMessages = [];
       for (let id in messages) {
         allMessages.push({ id, ...messages[id] });
       }
       setMessages(allMessages);
-      console.log(allMessages);
     });
   }, []);
 
-  async function sendMessage(e) {
+  function sendMessage(e) {
     e.preventDefault();
 
     const messageRef = firebase
@@ -44,23 +38,26 @@ const Chat = () => {
   }
 
   return (
-    <div>
-      <h1>CHAT</h1>
-      {messages.map(({ id, user, message }) => (
-        <div key={id}>
-          <h4>{user}</h4>
-          <p>{message}</p>
-        </div>
-      ))}
+    <div className='chat'>
+      <ScrollToBottom className='messages'>
+        {messages.map(({ id, user, message }) => (
+          <div key={id} className='message'>
+            <h4>{user}</h4>
+            <p>{message}</p>
+          </div>
+        ))}
+      </ScrollToBottom>
 
       <form onSubmit={e => sendMessage(e)}>
         <Input
           value={msg}
           type='text'
           onChange={e => setMsg(e.target.value)}
-          placeholder='Messsage...'
+          placeholder='Enter message here'
         />
-        <Button type='submit'>Send</Button>
+        <Button type='submit' disabled={!msg}>
+          Send
+        </Button>
       </form>
     </div>
   );

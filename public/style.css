@@ -67,3 +67,64 @@ form div {
 .data {
   text-align: center;
 }
+
+/* ----- Chat ----- */
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 30rem;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.chat form {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  display: flex;
+  align-items: flex-start;
+}
+
+.message h4 {
+  margin: 0.8rem 0.3rem;
+}
+
+.message p {
+  max-width: 500px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  line-height: 1rem;
+  border-radius: 0.5rem;
+  /* position: relative; */
+  text-align: left;
+  color: black;
+  background-color: lightblue;
+}
+
+.messages {
+  overflow-y: scroll;
+}
+
+.sent {
+  flex-direction: row-reverse;
+}
+
+.sent p {
+  color: white;
+  background: #0b93f6;
+  align-self: flex-end;
+}
+
+.received p {
+  background: #e5e5ea;
+  color: black;
+}

@@ -45,7 +45,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-//<Grid className={classes.main}>
 const Main = (props) => {
   const {
     getPlayerPokemon,
