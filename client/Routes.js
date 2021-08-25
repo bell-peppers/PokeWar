@@ -56,12 +56,7 @@ const Routes = () => {
             <Route path='*' component={FourOhFour} />
           </Switch>
         </div>
-<<<<<<< HEAD
       )} */}
-=======
-      )}
-
->>>>>>> 229e1c1e661c0d7921f2028a7cfb8b23fded557e
     </Router>
   );
 };
