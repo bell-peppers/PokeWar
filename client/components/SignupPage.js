@@ -42,9 +42,14 @@ export default function SignupPage() {
 	const history = useHistory();
 	const [values, setValues] = React.useState({
 		showPassword: false,
+		showPasswordConf: false
 	});
 	const handleClickShowPassword = () => {
 		setValues({ ...values, showPassword: !values.showPassword });
+	};
+
+	const handleClickShowPasswordConf = () => {
+		setValues({ ...values, showPasswordConf: !values.showPasswordConf });
 	};
 
 	const handleMouseDownPassword = (event) => {
@@ -133,17 +138,17 @@ export default function SignupPage() {
 							<OutlinedInput
 								label='Password confirmation'
 								id='signup-password-confirmation'
-								type={values.showPassword ? 'text' : 'password'}
+								type={values.showPasswordConf ? 'text' : 'password'}
 								inputRef={passwordConfirmationRef}
 								endAdornment={
 									<InputAdornment position='end'>
 										<IconButton
-											aria-label='toggle password visibility'
-											onClick={handleClickShowPassword}
+											aria-label='toggle password vvisibility'
+											onClick={handleClickShowPasswordConf}
 											onMouseDown={handleMouseDownPassword}
 											edge='end'
 										>
-											{values.showPassword ? <Visibility /> : <VisibilityOff />}
+											{values.showPasswordConf ? <Visibility /> : <VisibilityOff />}
 										</IconButton>
 									</InputAdornment>
 								}
