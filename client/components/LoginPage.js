@@ -109,7 +109,20 @@ const LoginPage = (props) => {
 							}}
 							variant='filled'
 						/> */}
-						<TextField
+            		<FormControl
+							className={clsx(classes.margin, classes.textField)}
+							variant='outlined'
+						>
+							<InputLabel htmlFor='outlined-adornment-password'>
+								E-mail
+							</InputLabel>
+							<OutlinedInput
+								id='outlined-adornment-password'
+                inputRef={passwordRef}
+								labelWidth={70}
+							/>
+						</FormControl>
+						{/* <TextField
 							// inputRef={el => this.emailRef = el}
 							inputRef={emailRef}
 							label='E-mail'
@@ -120,7 +133,7 @@ const LoginPage = (props) => {
 								),
 							}}
 							variant='filled'
-						/>
+						/> */}
 						<FormControl
 							className={clsx(classes.margin, classes.textField)}
 							variant='outlined'
@@ -178,7 +191,7 @@ const LoginPage = (props) => {
 							Log In
 						</Button>
 						<Grid style={{ display: 'flex', justifyContent: 'center' }}>
-							Need an account? <a href='/signup'> Sign In</a>
+							Need an account? <a href='/signup'> Sign Up</a>
 						</Grid>
 					</form>
 				</Grid>
