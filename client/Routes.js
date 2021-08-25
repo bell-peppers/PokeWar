@@ -1,5 +1,5 @@
-import React, {Component, Fragment} from 'react';
-import {connect} from 'react-redux';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import {
   withRouter,
   Route,
@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import Main from './components/Main';
-import Home from './components/Home';
+import { me } from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
@@ -22,6 +22,7 @@ import {useAuth} from '../src/contexts/AuthContext';
  * COMPONENT
  */
 const Routes = () => {
+
   const {currentUser} = useAuth();
   return (
     <Router>
@@ -54,6 +55,7 @@ const Routes = () => {
           </Switch>
         </div>
       )}
+
     </Router>
   );
 };
