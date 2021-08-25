@@ -1,5 +1,6 @@
 import axios from 'axios';
 import history from '../history';
+import {FIREDB} from '../../utils/firebase';
 
 const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_PLAYERTWO_POKEMON = 'GET_PLAYERTWO_POKEMON';
@@ -9,6 +10,7 @@ const FETCH_SINGLE_POKEMON = 'FETCH_SINGLE_POKEMON';
 const FETCH_MOVES_INFO = 'UPDATE_MOVES_INFO';
 const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
 const UNCHOOSE_PLAYER_POKEMON = 'UNCHOOSE_PLAYER_POKEMON';
+const SEND_CHOSEN_POKEMON = 'SEND_CHOSEN_POKEMON';
 
 const playerOnePokemon = [
   {
@@ -166,6 +168,12 @@ const playerTwoPokemon = [
   },
 ];
 
+const _sendChosenPokemon = (pokemon) => {
+  return {
+    type: SEND_CHOSEN_POKEMON,
+    pokemon,
+  };
+};
 const _choosePlayerPokemon = (pokemon) => {
   return {
     type: CHOOSE_PLAYER_POKEMON,
@@ -222,6 +230,15 @@ const _fetchMovesInfo = (moves) => {
   };
 };
 
+export const sendChosenPokemon =
+  (pokemon, matchId, role) => async (dispatch) => {
+    const playerInfo =
+      role == 'host' ? {hostPokemon: pokemon} : {guestPokemon: pokemon};
+
+    console.log(playerInfo);
+    await FIREDB.ref('/Match/' + matchId).update(playerInfo);
+    return dispatch(_sendChosenPokemon(pokemon));
+  };
 export const choosePlayerPokemon = (pk) => (dispatch) => {
   return dispatch(_choosePlayerPokemon(pk));
 };
@@ -347,7 +364,8 @@ export default function (
         }
       });
       return {...state, chosenPokemon: updated};
-
+    case SEND_CHOSEN_POKEMON:
+      return state;
     default:
       return state;
   }

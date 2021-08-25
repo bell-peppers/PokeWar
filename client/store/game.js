@@ -8,6 +8,7 @@ const CREATE_NEW_GAME = 'CREATE_NEW_GAME';
 const JOIN_GAME = 'JOIN_GAME';
 const FIND_GAME = 'FIND_GAME';
 const CANCEL_GAME = 'CANCEL_GAME';
+const SET_HOSTGUEST = 'SET_HOSTGUEST';
 const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
 
 const _setOpponentInfo = (info) => {
@@ -17,6 +18,12 @@ const _setOpponentInfo = (info) => {
   };
 };
 
+const _setHostGuest = (role) => {
+  return {
+    type: SET_HOSTGUEST,
+    role,
+  };
+};
 const _cancelGame = () => {
   return {
     type: CANCEL_GAME,
@@ -58,6 +65,9 @@ const _joinGame = (data, matchId) => {
   };
 };
 
+export const setHostGuest = (role) => (dispatch) => {
+  return dispatch(_setHostGuest(role));
+};
 export const setOpponentInfo = (info) => (dispatch) => {
   const oppInfo = {userId: info.guestId, userName: info.guestUsername};
   console.log(info);
@@ -156,6 +166,7 @@ let initialState = {
   opponentInfo: {},
   playerMoves: [],
   matchId: null,
+  role: null,
 };
 
 export default function (state = initialState, action) {
@@ -188,6 +199,8 @@ export default function (state = initialState, action) {
       return {...state, availableGames: action.games};
     case CANCEL_GAME:
       return {...state, matchId: null};
+    case SET_HOSTGUEST:
+      return {...state, role: action.role};
     default:
       return state;
   }

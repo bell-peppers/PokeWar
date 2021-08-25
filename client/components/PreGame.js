@@ -110,8 +110,8 @@ const PreGame = (props) => {
       </Container>
     </React.Fragment>
   ) : (
-    <div>
-      <ChoosePokemon playerPokemon={playerPokemon} />
+    <div style={{display: 'flex', justifyContent: 'center'}}>
+      <ChoosePokemon playerPokemon={playerPokemon} matchId={matchId} />
     </div>
   );
 };

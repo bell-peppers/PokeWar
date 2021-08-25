@@ -37,10 +37,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Navbar = () => {
+const Navbar = (props) => {
   const [error, setError] = useState('');
   const classes = useStyles();
   const {currentUser, logout} = useAuth();
+
+  const {username} = props;
 
   console.log(firebase.auth());
   // const { currentUser } = firebase.auth();
@@ -68,10 +70,22 @@ const Navbar = () => {
             My Profile
           </a>
         </Grid>
+        {username ? <p>Hello, {username}</p> : <p>Hello!</p>}
+
         <Button onClick={handleLogout}>Sign Out</Button>
       </Toolbar>
     </AppBar>
   );
 };
 
-export default Navbar;
+const mapState = (state) => {
+  return {
+    username: state.userData.user.username,
+  };
+};
+
+const mapDispatch = (dispatch) => {
+  return {};
+};
+
+export default connect(mapState, mapDispatch)(Navbar);

@@ -7,7 +7,12 @@ import {makeStyles} from '@material-ui/styles';
 import {colorTypeGradients} from '../../utils/ColorGradientFunc';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Modal from '@material-ui/core/Modal';
-import {choosePlayerPokemon, unchoosePlayerPokemon} from '../store/pokemon';
+import {useHistory} from 'react-router-dom';
+import {
+  choosePlayerPokemon,
+  unchoosePlayerPokemon,
+  sendChosenPokemon,
+} from '../store/pokemon';
 
 const useStyles = makeStyles((theme) => ({
   PokeCards: {
@@ -59,7 +64,16 @@ function ChoosePokemon(props) {
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
   const [pokeColor, setPokeColor] = React.useState([]);
   const classes = useStyles();
-  const {playerPokemon, choosePokemon, chosenPokemon, unchoosePokemon} = props;
+  const history = useHistory();
+  const {
+    playerPokemon,
+    choosePokemon,
+    chosenPokemon,
+    unchoosePokemon,
+    matchId,
+    role,
+    sendChosenPokemon,
+  } = props;
 
   const handleOpen = (pokemon, color) => {
     setOpen(true);
@@ -81,6 +95,11 @@ function ChoosePokemon(props) {
     }
   };
 
+  const readyButtonHandle = () => {
+    const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
+    sendChosenPokemon(chosenPokemon, testMatch, role);
+    history.push('/game');
+  };
   const alreadyPicked = (pk) => {
     const alreadyPick = chosenPokemon.filter((pkm) => {
       return pkm.name === pk.name;
@@ -265,7 +284,9 @@ function ChoosePokemon(props) {
         </Modal>
       )}
       <div>
-        <Button variant='outlined'>READY!</Button>
+        <Button onClick={() => readyButtonHandle()} variant='outlined'>
+          READY!
+        </Button>
       </div>
     </div>
   );
@@ -276,12 +297,15 @@ const mapState = (state) => {
     playerPokemon: state.pokemon.playerOnePokemon,
     user: state.userData,
     chosenPokemon: state.pokemon.chosenPokemon,
+    role: state.game.role,
   };
 };
 const mapDispatch = (dispatch) => {
   return {
     choosePokemon: (pk) => dispatch(choosePlayerPokemon(pk)),
     unchoosePokemon: (pk) => dispatch(unchoosePlayerPokemon(pk)),
+    sendChosenPokemon: (pk, matchId, role) =>
+      dispatch(sendChosenPokemon(pk, matchId, role)),
   };
 };
 export default connect(mapState, mapDispatch)(ChoosePokemon);

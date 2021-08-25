@@ -145,17 +145,16 @@ const Actionbar = (props) => {
           display: 'flex',
           flexDirection: 'column',
           border: '5px solid red',
-          maxWidth: '250px',
+          maxWidth: '300px',
         }}
       >
         <Grid
           style={{
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: '30px',
           }}
         >
-          Choose the attack:
+          Choose your attack:
         </Grid>
         <Grid
           container
@@ -165,7 +164,6 @@ const Actionbar = (props) => {
           {selectedPlayerPokemon.moves.length > 0
             ? selectedPlayerPokemon.moves.map((value, i) => (
                 <Grid key={i} item>
-                  {/* <MoveBlock move={value} selectMove={selectMove} /> */}
                   <Paper
                     className={
                       value === playerAttack
@@ -178,7 +176,7 @@ const Actionbar = (props) => {
                   </Paper>
                 </Grid>
               ))
-            : [1, 2, 3].map((value) => (
+            : [1, 2, 3, 4].map((value) => (
                 <Grid key={value} item>
                   <Paper className={classes.skill}>
                     <p></p>
