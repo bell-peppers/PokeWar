@@ -259,7 +259,7 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
 
 export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   const feed = [];
-
+  console.log('moves', moves);
   moves.forEach((move) => {
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'

@@ -66,7 +66,7 @@ function ChoosePokemon(props) {
   const [open, setOpen] = React.useState(false);
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
   const [pokeColor, setPokeColor] = React.useState([]);
-  // const [ready, setReady] = React.useState(false);
+  const [readyClicked, setReadyClicked] = React.useState(false);
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -120,7 +120,7 @@ function ChoosePokemon(props) {
   };
 
   const readyButtonHandle = () => {
-    const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
+    setReadyClicked(true);
     if (role === 'guest') {
       changeTurns();
     }
@@ -314,9 +314,14 @@ function ChoosePokemon(props) {
         </Modal>
       )}
       <div>
-        <Button onClick={() => readyButtonHandle()} variant='outlined'>
+        <Button
+          onClick={() => readyButtonHandle()}
+          variant='outlined'
+          disabled={readyClicked}
+        >
           READY!
         </Button>
+        {readyClicked ? <h1>Waiting for other player to choose</h1> : null}
       </div>
     </div>
   );

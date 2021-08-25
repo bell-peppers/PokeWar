@@ -101,7 +101,7 @@ const PreGame = (props) => {
               </div>
             ) : (
               <div>
-                <h3>{opponent.userName} joined!</h3>
+                <h3>{opponent.username} joined!</h3>
                 <Button onClick={() => setChoosePk(true)}>
                   Choose your Pokemon!
                 </Button>
