@@ -91,15 +91,15 @@ const UserProfile = (props) => {
 	const [clicked, setClicked] = useState(false);
 
 	const handleIconClick = (poke) => {
-		console.log(poke)
-		if(!poke.liked) {
+		console.log(poke);
+		if (!poke.liked) {
 			poke.liked = true;
 			setClicked(true);
 		} else {
 			poke.liked = false;
 			setClicked(false);
 		}
-		console.log(poke)
+		console.log(poke);
 	};
 
 	return (
@@ -143,16 +143,24 @@ const UserProfile = (props) => {
 					{playerPokemon && (
 						<div className={classes.imageRoot}>
 							My Pokemon
-							<ImageList  cols={2.5} style={{display: 'flex', flexWrap: 'nowrap', width: '350px'}}>
+							<ImageList
+								cols={2.5}
+								style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
+							>
 								{playerPokemon.map((item) => (
-									<ImageListItem key={item.id} style={{width: '150px'}}>
-										<img src={item.sprites.front_default}/>
+									<ImageListItem key={item.id} style={{ width: '150px' }}>
+										<img src={item.sprites.front_default} />
 										<ImageListItemBar
 											actionIcon={
-												<IconButton  onClick={() => handleIconClick(item)
-												}	className={classes.title}>
-													{clicked ? <FavoriteBorderIcon
-													/> : <FavoriteIcon /> }
+												<IconButton
+													onClick={() => handleIconClick(item)}
+													className={classes.title}
+												>
+													{item.liked ? (
+														<FavoriteIcon />
+													) : (
+														<FavoriteBorderIcon />
+													)}
 												</IconButton>
 											}
 										/>
