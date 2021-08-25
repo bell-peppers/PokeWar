@@ -3,7 +3,7 @@ import {Button, makeStyles} from '@material-ui/core';
 import {useHistory} from 'react-router-dom';
 
 export default function FindMatch(props) {
-  const {availableGames, joinGame, user} = props;
+  const {availableGames, joinGame, user, setRole} = props;
   const history = useHistory();
 
   const useStyles = makeStyles((theme) => ({
@@ -26,6 +26,7 @@ export default function FindMatch(props) {
 
   function joinClick(matchId) {
     joinGame(matchId, user);
+    setRole('visitor');
     history.push('/pregame');
   }
   return (

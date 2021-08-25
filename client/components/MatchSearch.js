@@ -11,7 +11,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Container from '@material-ui/core/Container';
-import {createNewGame, joinGame, findGame} from '../store/game';
+import {createNewGame, joinGame, findGame, setHostGuest} from '../store/game';
 import TextField from '@material-ui/core/TextField';
 import {useHistory} from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
@@ -110,6 +110,7 @@ const MatchSearch = (props) => {
     availableGames,
     fetchPokemon,
     getUserData,
+    setRole,
   } = props;
   //const joinMatchId = useRef();
   const {currentUser} = useAuth();
@@ -139,18 +140,13 @@ const MatchSearch = (props) => {
   function handleNewMatchClick() {
     if (user.uid) {
       newGame(user.uid, user.username);
+      setRole('host');
       history.push('/pregame');
     } else {
       history.push('/login');
       alert('You must be logged in to create a new game!');
     }
   }
-  // async function handleFindClick() {
-  //   await findGame();
-  //   if (availableGames.length > 0) {
-  //     console.log(availableGames);
-  //   }
-  // }
 
   const modalBody = (
     <div style={modalStyle} className={classes.paper}>
@@ -158,6 +154,7 @@ const MatchSearch = (props) => {
         availableGames={availableGames}
         joinGame={joinGame}
         user={user}
+        setRole={setRole}
       />
     </div>
   );
@@ -169,6 +166,7 @@ const MatchSearch = (props) => {
       if (user.uid !== '') {
         console.log(matchId);
         joinGame(matchId, user);
+        setRole('guest');
         history.push('/pregame');
       } else {
         history.push('/login');
@@ -302,6 +300,7 @@ const mapDispatch = (dispatch) => {
     findGame: () => dispatch(findGame()),
     fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
     getUserData: (uid) => dispatch(getUserData(uid)),
+    setRole: (role) => dispatch(setHostGuest(role)),
   };
 };
 export default connect(mapState, mapDispatch)(MatchSearch);

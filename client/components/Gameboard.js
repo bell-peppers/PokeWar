@@ -15,14 +15,14 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'yellow',
+    backgroundColor: 'white',
     width: '100%',
     height: '75%',
     justifyContent: 'flex-end',
   },
   playerSide: {
     height: '50%',
-    backgroundColor: 'orange',
+    backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'flex-start',
     borderWidth: '1px',
@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
   },
   opponentSide: {
     height: '50%',
-    backgroundColor: 'purple',
+    backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
@@ -89,13 +89,15 @@ const Gameboard = (props) => {
     selectedPlayerPk,
     playerAttack,
     resetPlayerPokemon,
+    chosenPokemon,
+    username,
   } = props;
 
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
 
   useEffect(() => {
     listenForOpponentMoves();
-  }, [playerPokemon]);
+  }, []);
 
   function listenForOpponentMoves() {
     const match = 'Match1';
@@ -105,10 +107,10 @@ const Gameboard = (props) => {
     dbUpdates.limitToLast(1).on('child_added', (snapshot) => {
       const newMoves = snapshot.val();
 
-      if (playerPokemon.length > 0 && opponentMovesLoaded == false) {
+      if (chosenPokemon.length > 0 && opponentMovesLoaded == false) {
         setOpponentMovesLoaded(true);
         getOpponentMoves(newMoves);
-        applyOpponentMoves(newMoves, playerPokemon);
+        applyOpponentMoves(newMoves, chosenPokemon);
       }
     });
   }
@@ -145,8 +147,8 @@ const Gameboard = (props) => {
           })}
       </div>
       <div className={classes.playerSide}>
-        {playerPokemon.length > 0 &&
-          playerPokemon.map((pk) => {
+        {chosenPokemon.length > 0 &&
+          chosenPokemon.map((pk) => {
             return (
               <div className={classes.pokemonContainer} key={pk.id}>
                 <img
@@ -158,7 +160,7 @@ const Gameboard = (props) => {
             );
           })}
         <div className={classes.playerName}>
-          <h1>Player </h1>
+          <h1>{username}</h1>
         </div>
       </div>
     </div>
@@ -169,6 +171,8 @@ const mapState = (state) => {
     opponentMoves: state.game.opponentMoves,
     selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
     playerAttack: state.playerTurn.playerAttack,
+    chosenPokemon: state.pokemon.chosenPokemon,
+    username: state.userData.user.username,
   };
 };
 

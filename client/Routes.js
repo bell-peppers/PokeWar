@@ -16,35 +16,52 @@ import PreGame from './components/PreGame';
 import AllPokemon from './components/AllPokemon';
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
-import { useAuth } from '../src/contexts/AuthContext';
+import {useAuth} from '../src/contexts/AuthContext';
+import Navbar from './components/Navbar';
 
 /**
  * COMPONENT
  */
 const Routes = () => {
-  const { currentUser } = useAuth();
+
+  const {currentUser} = useAuth();
   return (
     <Router>
+      {/* {!currentUser ? (
+        <div> */}
+      <Navbar />
       <Switch>
-        <Route path='/' exact component={MatchSearch} />
         <Route path='/allpokemon' exact component={AllPokemon} />
+        <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
-
+        <Route path='/myprofile' exact component={UserProfile} />
         <Route path='/dev/setup' component={temp} />
-        {!currentUser ? (
-          <div>
-            <Route path='/login' exact component={LoginPage} />
-            <Route path='/signup' exact component={SignupPage} />
-          </div>
-        ) : (
-          <div>
+        <Route path='/login' exact component={LoginPage} />
+        <Route path='/signup' exact component={SignupPage} />
+        <Route exact path='/' component={MatchSearch} />
+        <Route path='*' component={FourOhFour} />
+      </Switch>
+      {/* </div>
+      ) : (
+        <div>
+          <Switch>
+            <Route path='/allpokemon' exact component={AllPokemon} />
+            <Route path='/game' exact component={Main} />
+            <Route path='/pregame' exact component={PreGame} />
+            <Route path='/dev/setup' component={temp} />
             <Route path='/myprofile' exact component={UserProfile} />
             <Route path='/login' exact component={AlreadyLoggedIn} />
             <Route path='/signup' exact component={AlreadyLoggedIn} />
-          </div>
-        )}
-        <Route path='*' component={FourOhFour} />
-      </Switch>
+            <Route exact path='/' component={MatchSearch} />
+            <Route path='*' component={FourOhFour} />
+          </Switch>
+        </div>
+<<<<<<< HEAD
+      )} */}
+=======
+      )}
+
+>>>>>>> 229e1c1e661c0d7921f2028a7cfb8b23fded557e
     </Router>
   );
 };

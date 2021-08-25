@@ -26,7 +26,7 @@ export function AuthProvider({children}) {
     FIREDB.ref('users/' + uid).set({
       uid: uid,
       email: email,
-      pokemon: [68, 44, 58],
+      pokemon: [68, 44, 58, 76, 105, 234, 192, 204, 169, 151],
       username: name,
     });
   }

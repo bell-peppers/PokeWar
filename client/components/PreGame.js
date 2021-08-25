@@ -71,7 +71,8 @@ const PreGame = (props) => {
   }
   function cancelClick() {
     cancelGame(matchId);
-    history.push('/');
+    setChoosePk(true);
+    // history.push('/');
   }
 
   return !choosePk ? (
@@ -94,8 +95,7 @@ const PreGame = (props) => {
                 }}
               >
                 <h3>Waiting for a player to join...</h3>
-                {/* <Button onClick={() => cancelClick()}>Cancel</Button> */}
-                <Button onClick={() => setChoosePk(true)}>Choose</Button>
+                <Button onClick={() => cancelClick()}>Cancel</Button>
               </div>
             ) : (
               <div>
@@ -110,8 +110,8 @@ const PreGame = (props) => {
       </Container>
     </React.Fragment>
   ) : (
-    <div>
-      <ChoosePokemon playerPokemon={playerPokemon} />
+    <div style={{display: 'flex', justifyContent: 'center'}}>
+      <ChoosePokemon playerPokemon={playerPokemon} matchId={matchId} />
     </div>
   );
 };
