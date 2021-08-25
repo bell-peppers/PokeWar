@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 // import 'firebase/firestore';
 // import 'firebase/auth';
@@ -12,11 +13,11 @@ const Chat = () => {
   useEffect(() => {
     const messageRef = FIREDB.ref('Match/-MhprQDsdLsk5tzwWn2H/messages');
 
-    messageRef.on('value', snapshot => {
+    messageRef.on('value', (snapshot) => {
       const messages = snapshot.val();
       let allMessages = [];
       for (let id in messages) {
-        allMessages.push({ id, ...messages[id] });
+        allMessages.push({id, ...messages[id]});
       }
       setMessages(allMessages);
     });
@@ -38,6 +39,7 @@ const Chat = () => {
   }
 
   return (
+
     <div className='chat'>
       <ScrollToBottom className='messages'>
         {messages.map(({ id, user, message }) => (
@@ -48,12 +50,14 @@ const Chat = () => {
         ))}
       </ScrollToBottom>
 
-      <form onSubmit={e => sendMessage(e)}>
+      <form onSubmit={(e) => sendMessage(e)}>
         <Input
           value={msg}
           type='text'
+
           onChange={e => setMsg(e.target.value)}
           placeholder='Enter message here'
+
         />
         <Button type='submit' disabled={!msg}>
           Send

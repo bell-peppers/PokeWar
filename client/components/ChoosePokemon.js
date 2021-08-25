@@ -13,6 +13,9 @@ import {
   unchoosePlayerPokemon,
   sendChosenPokemon,
 } from '../store/pokemon';
+import {setPlayerReady} from '../store/game';
+import {FIREDB} from '../../utils/firebase';
+import {_changeTurns} from '../store/playerTurn';
 
 const useStyles = makeStyles((theme) => ({
   PokeCards: {
@@ -63,6 +66,7 @@ function ChoosePokemon(props) {
   const [open, setOpen] = React.useState(false);
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
   const [pokeColor, setPokeColor] = React.useState([]);
+  const [readyClicked, setReadyClicked] = React.useState(false);
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -73,6 +77,9 @@ function ChoosePokemon(props) {
     matchId,
     role,
     sendChosenPokemon,
+    setReady,
+    playerReady,
+    changeTurns,
   } = props;
 
   const handleOpen = (pokemon, color) => {
@@ -95,11 +102,34 @@ function ChoosePokemon(props) {
     }
   };
 
-  const readyButtonHandle = () => {
-    const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
-    sendChosenPokemon(chosenPokemon, testMatch, role);
-    history.push('/game');
+  const listenOppReady = () => {
+    const readyUpdate = FIREDB.ref(`Match/${matchId}/ready`);
+    readyUpdate.on('value', (snapshot) => {
+      const readyCheck = snapshot.val();
+      console.log(readyCheck);
+      if (role === 'host') {
+        if (readyCheck.guestReady === true) {
+          history.push('/game');
+        }
+      } else if (role === 'guest') {
+        if (readyCheck.hostReady === true) {
+          history.push('/game');
+        }
+      }
+    });
   };
+
+  const readyButtonHandle = () => {
+    setReadyClicked(true);
+    if (role === 'guest') {
+      changeTurns();
+    }
+    sendChosenPokemon(chosenPokemon, matchId, role);
+    setReady(matchId, role, true);
+    listenOppReady();
+    // history.push('/game');
+  };
+
   const alreadyPicked = (pk) => {
     const alreadyPick = chosenPokemon.filter((pkm) => {
       return pkm.name === pk.name;
@@ -284,9 +314,14 @@ function ChoosePokemon(props) {
         </Modal>
       )}
       <div>
-        <Button onClick={() => readyButtonHandle()} variant='outlined'>
+        <Button
+          onClick={() => readyButtonHandle()}
+          variant='outlined'
+          disabled={readyClicked}
+        >
           READY!
         </Button>
+        {readyClicked ? <h1>Waiting for other player to choose</h1> : null}
       </div>
     </div>
   );
@@ -298,6 +333,7 @@ const mapState = (state) => {
     user: state.userData,
     chosenPokemon: state.pokemon.chosenPokemon,
     role: state.game.role,
+    playerReady: state.game.playerReady,
   };
 };
 const mapDispatch = (dispatch) => {
@@ -306,6 +342,8 @@ const mapDispatch = (dispatch) => {
     unchoosePokemon: (pk) => dispatch(unchoosePlayerPokemon(pk)),
     sendChosenPokemon: (pk, matchId, role) =>
       dispatch(sendChosenPokemon(pk, matchId, role)),
+    setReady: (mid, role, ready) => dispatch(setPlayerReady(mid, role, ready)),
+    changeTurns: () => dispatch(_changeTurns()),
   };
 };
 export default connect(mapState, mapDispatch)(ChoosePokemon);

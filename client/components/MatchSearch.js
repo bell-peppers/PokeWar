@@ -102,18 +102,21 @@ const MatchSearch = (props) => {
 	const [modalStyle] = React.useState(getModalStyle);
 	const [open, setOpen] = React.useState(false);
 
-	const {
-		newGame,
-		user,
-		joinGame,
-		findGame,
-		availableGames,
-		fetchPokemon,
-		getUserData,
-		setRole,
-	} = props;
-	//const joinMatchId = useRef();
-	const { currentUser } = useAuth();
+
+  const {
+    newGame,
+    user,
+    joinGame,
+    findGame,
+    availableGames,
+    fetchPokemon,
+    getUserData,
+    setRole,
+    changeTurns,
+  } = props;
+  //const joinMatchId = useRef();
+  const {currentUser} = useAuth();
+
 
 	const handleOpen = async () => {
 		if (user.uid) {
@@ -148,51 +151,53 @@ const MatchSearch = (props) => {
 		}
 	}
 
-	const modalBody = (
-		<div style={modalStyle} className={classes.paper}>
-			<FindMatch
-				availableGames={availableGames}
-				joinGame={joinGame}
-				user={user}
-				setRole={setRole}
-			/>
-		</div>
-	);
-	function handleJoinClick() {
-		//const matchId = '-MhpRo167oCYp3cT5O7-';
-		//const matchId = joinMatchId.current.value;
-		let matchId = prompt('Please enter a match id');
-		if (matchId !== '') {
-			if (user.uid !== '') {
-				console.log(matchId);
-				joinGame(matchId, user);
-				setRole('guest');
-				history.push('/pregame');
-			} else {
-				history.push('/login');
-				alert('You must be logged in to create a new game!');
-			}
-		} else {
-			alert('Please enter a valid match id');
-		}
-	}
-	// useEffect(() => {
-	//   if (currentUser && currentUser.uid !== user.uid) {
-	//     getUserData(currentUser.uid);
-	//   }
-	//   if (user.pokemon) {
-	//     fetchPokemon(user.pokemon);
-	//   }
-	// }, [user, currentUser]);
-	return (
-		<div
-			style={{
-				display: 'flex',
-				flexDirection: 'column',
-				justifyContent: 'center',
-			}}
-		>
-			{/* <Grid
+
+  const modalBody = (
+    <div style={modalStyle} className={classes.paper}>
+      <FindMatch
+        availableGames={availableGames}
+        joinGame={joinGame}
+        user={user}
+        setRole={setRole}
+      />
+    </div>
+  );
+  function handleJoinClick() {
+    //const matchId = '-MhpRo167oCYp3cT5O7-';
+    //const matchId = joinMatchId.current.value;
+    let matchId = prompt('Please enter a match id');
+    if (matchId !== '') {
+      if (user.uid !== '') {
+        console.log(matchId);
+        joinGame(matchId, user);
+        setRole('guest');
+        history.push('/pregame');
+      } else {
+        history.push('/login');
+        alert('You must be logged in to create a new game!');
+      }
+    } else {
+      alert('Please enter a valid match id');
+    }
+  }
+  useEffect(() => {
+    if (currentUser && currentUser.uid !== user.uid) {
+      getUserData(currentUser.uid);
+    }
+    if (user.pokemon) {
+      fetchPokemon(user.pokemon, user.username);
+    }
+  }, [user, currentUser]);
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      {/* <Grid
+
         style={{
           display: 'flex',
           justifyContent: 'center',
@@ -294,13 +299,16 @@ const mapState = (state) => {
 	};
 };
 const mapDispatch = (dispatch) => {
-	return {
-		newGame: (uid, name) => dispatch(createNewGame(uid, name)),
-		joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
-		findGame: () => dispatch(findGame()),
-		fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
-		getUserData: (uid) => dispatch(getUserData(uid)),
-		setRole: (role) => dispatch(setHostGuest(role)),
-	};
+
+  return {
+    newGame: (uid, name) => dispatch(createNewGame(uid, name)),
+    joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
+    findGame: () => dispatch(findGame()),
+    fetchPokemon: (pk, username) =>
+      dispatch(fetchPlayerOnePokemon(pk, username)),
+    getUserData: (uid) => dispatch(getUserData(uid)),
+    setRole: (role) => dispatch(setHostGuest(role)),
+  };
+
 };
 export default connect(mapState, mapDispatch)(MatchSearch);

@@ -62,7 +62,8 @@ const Navbar = (props) => {
     try {
       await logout();
       history.push('/login');
-    } catch {
+    } catch (error) {
+      console.log(error);
       setError('Failed to log out');
     }
   }

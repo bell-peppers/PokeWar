@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import {
   withRouter,
   Route,
@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import Main from './components/Main';
-import { me } from './store';
+import {me} from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
@@ -25,7 +25,6 @@ import Footer from './components/Footer'
  * COMPONENT
  */
 const Routes = () => {
-
   const {currentUser} = useAuth();
   return (
     <Router>

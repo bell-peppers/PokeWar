@@ -7,11 +7,13 @@ import {
   selectAttack,
   _clearPlayerTurn,
   _clearAttackedPokemon,
+  _setCalculatedAttacks,
 } from '../store/playerTurn';
 import {_selectedPlayerPokemon} from '../store/playerTurn';
-import {attackOpponent} from '../store/pokemon';
+import {applyMoves, attackOpponent} from '../store/pokemon';
 //import MoveBlock from './MoveBlock';
-import {sendPlayerMoves} from '../store/game';
+import {sendPlayerMoves, getPlayerMoves} from '../store/game';
+import calculateTurn from '../../utils/calculateTurn';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -68,6 +70,16 @@ const Actionbar = (props) => {
     selectedPlayerPk,
     selectPlayerPokemon,
     playerAttack,
+    isTurn,
+    changeTurns,
+    role,
+    username,
+    opponentMoves,
+    setCalculatedAttacks,
+    calculatedAttacks,
+    applyMoves,
+    clearOpponentMoves,
+    matchId,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
@@ -94,15 +106,30 @@ const Actionbar = (props) => {
   }
 
   function completeTurnHandler() {
-    const user = 'player1';
+    // const user = 'player1';
     // const sendMove = playerTurn.map((move, index) => {
     //   return {...move, attackedPokemon: attackedPokemon[index]};
     // });
-    sendMoves(playerTurn, user);
-    attackOpponent(opponentPokemon, playerTurn);
+    if (role === 'guest') {
+      sendMoves(playerTurn, username, matchId);
+    } else if (role === 'host') {
+      //make sure we have moves
+      if (opponentMoves) {
+        const thisTurn = calculateTurn(playerTurn, opponentMoves);
+        setCalculatedAttacks(thisTurn);
+        sendMoves(thisTurn, username, matchId);
+        //apply
+        applyMoves(thisTurn, playerPokemon, opponentPokemon);
+      }
+
+      //apply to opppk
+      //turn over
+    }
+    changeTurns();
     clearPlayerTurn();
     clearAttackedPokemon();
     selectPlayerPokemon({});
+    clearOpponentMoves();
   }
   return (
     <div className={classes.actionBar}>
@@ -198,6 +225,7 @@ const Actionbar = (props) => {
             backgroundColor: 'red',
             height: '45px',
           }}
+          disabled={!isTurn}
           onClick={() => completeTurnHandler()}
         >
           Complete turn
@@ -208,25 +236,30 @@ const Actionbar = (props) => {
 };
 const mapState = (state) => {
   return {
-    playerPokemon: state.pokemon.playerOnePokemon,
+    playerPokemon: state.pokemon.chosenPokemon,
     playerTurn: state.playerTurn.playerTurn,
     playerMoves: state.game.playerMoves,
     attackedPokemon: state.playerTurn.attackedPokemon,
-    opponentPokemon: state.pokemon.playerTwoPokemon,
+    opponentPokemon: state.pokemon.opponentPokemon,
     selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
     playerAttack: state.playerTurn.playerAttack.attack,
+    opponentMoves: state.game.opponentMoves,
   };
 };
 const mapDispatch = (dispatch) => {
   return {
     selectAttack: (pk, move) => dispatch(selectAttack(pk, move)),
-    sendMoves: (moves, attacked, user) =>
-      dispatch(sendPlayerMoves(moves, attacked, user)),
+    sendMoves: (moves, user, matchId) =>
+      dispatch(sendPlayerMoves(moves, user, matchId)),
     clearPlayerTurn: () => dispatch(_clearPlayerTurn()),
     clearAttackedPokemon: () => dispatch(_clearAttackedPokemon()),
     attackOpponent: (opponentPokemon, playerMoves) =>
       dispatch(attackOpponent(opponentPokemon, playerMoves)),
     selectPlayerPokemon: (pokemon) => dispatch(_selectedPlayerPokemon(pokemon)),
+    setCalculatedAttacks: (turn) => dispatch(_setCalculatedAttacks(turn)),
+    applyMoves: (moves, playerPk, oppPk) =>
+      dispatch(applyMoves(moves, playerPk, oppPk)),
+    clearOpponentMoves: () => dispatch(getPlayerMoves([])),
   };
 };
 export default connect(mapState, mapDispatch)(Actionbar);
