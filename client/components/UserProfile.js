@@ -89,10 +89,17 @@ const UserProfile = (props) => {
 	}, [user, currentUser]);
 
 	const [clicked, setClicked] = useState(false);
-	const handleIconClick = (id) => {
-		console.log(id)
-		setClicked(true);
-		// change <AddCircleIcon /> to <BlockIcon /> at "id"
+
+	const handleIconClick = (poke) => {
+		console.log(poke)
+		if(!poke.liked) {
+			poke.liked = true;
+			setClicked(true);
+		} else {
+			poke.liked = false;
+			setClicked(false);
+		}
+		console.log(poke)
 	};
 
 	return (
@@ -131,7 +138,7 @@ const UserProfile = (props) => {
 							{user.username}
 						</Grid>
 					</Grid>
-					{playerPokemon && console.log(playerPokemon)}
+					{/* {playerPokemon && console.log(playerPokemon)} */}
 
 					{playerPokemon && (
 						<div className={classes.imageRoot}>
@@ -142,7 +149,7 @@ const UserProfile = (props) => {
 										<img src={item.sprites.front_default}/>
 										<ImageListItemBar
 											actionIcon={
-												<IconButton  onClick={() => handleIconClick(item.id)
+												<IconButton  onClick={() => handleIconClick(item)
 												}	className={classes.title}>
 													{clicked ? <FavoriteBorderIcon
 													/> : <FavoriteIcon /> }
