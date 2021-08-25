@@ -11,7 +11,6 @@ import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import { OutlinedInput } from '@material-ui/core';
-import clsx from 'clsx';
 
 const useStyles = makeStyles(() => ({
 	main: {
@@ -58,7 +57,6 @@ export default function LoginPage() {
 			setError('');
 			setLoading(true);
 			await login(emailRef.current.value, passwordRef.current.value);
-			//getUserData(currentUser.uid);
 
 			history.push('/');
 		} catch (error) {
@@ -77,7 +75,6 @@ export default function LoginPage() {
 			<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 				<form className={classes.form} onSubmit={handleSubmit}>
 					<FormControl
-						className={clsx(classes.margin, classes.textField)}
 						variant='outlined'
 					>
 						<InputLabel htmlFor='outlined-adornment-password'>
@@ -90,7 +87,6 @@ export default function LoginPage() {
 						/>
 					</FormControl>
 					<FormControl
-						className={clsx(classes.margin, classes.textField)}
 						variant='outlined'
 					>
 						<InputLabel htmlFor='login-password'>Password</InputLabel>
