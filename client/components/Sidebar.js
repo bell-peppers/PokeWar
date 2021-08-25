@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
-import {makeStyles} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
+import Chat from './Chat';
+
 const useStyles = makeStyles(() => ({
   sidebar: {
     fontFamily: 'Courier New, monospace',
@@ -16,11 +18,12 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
   },
 }));
-const Sidebar = (props) => {
+
+const Sidebar = props => {
   const classes = useStyles();
   return (
-    <div style={{backgroundColor: 'blue', height: '100%'}}>
-      <Grid style={{display: 'flex', justifyContent: 'center'}}>sidebar</Grid>
+    <div style={{ backgroundColor: 'blue', height: '100%' }}>
+      <Grid style={{ display: 'flex', justifyContent: 'center' }}>sidebar</Grid>
       <div className={classes.sidebar}>
         <div>
           <Grid container className={classes.users}>
@@ -34,16 +37,19 @@ const Sidebar = (props) => {
             </Grid>
           </Grid>
         </div>
+        <Chat />
       </div>
-      {/* {user ? <ChatRoom /> : <SignIn/>} */}
     </div>
   );
 };
-const mapState = (state) => {
+
+const mapState = state => {
   return {
   };
 };
-const mapDispatch = (dispatch) => {
+
+const mapDispatch = dispatch => {
   return {};
 };
+
 export default connect(mapState, mapDispatch)(Sidebar);

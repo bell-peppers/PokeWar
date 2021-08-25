@@ -1,4 +1,7 @@
+html,
 body {
+  margin: 0;
+  padding: 0;
   font-family: sans-serif;
 }
 
@@ -10,9 +13,39 @@ label {
   display: block;
 }
 
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 3.5rem;
+}
+
 nav a {
   display: inline-block;
-  margin: 1em;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+nav h1 {
+  margin: 0 2rem;
+}
+
+.nav-avatar {
+  display: flex;
+  align-items: center;
+}
+
+.nav-avatar span {
+  margin-right: 1rem;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 14rem;
+  padding-right: 2rem;
 }
 
 form div {
