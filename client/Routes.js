@@ -17,6 +17,7 @@ import AllPokemon from './components/AllPokemon';
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
 import {useAuth} from '../src/contexts/AuthContext';
+import Navbar from './components/Navbar';
 
 /**
  * COMPONENT
@@ -25,24 +26,24 @@ const Routes = () => {
   const {currentUser} = useAuth();
   return (
     <Router>
-      {!currentUser ? (
-        <div>
-          <Switch>
-            <Route path='/' exact component={MatchSearch} />
-            <Route path='/allpokemon' exact component={AllPokemon} />
-            <Route path='/pregame' exact component={PreGame} />
-            <Route path='/game' exact component={Main} />
-
-            <Route path='/dev/setup' component={temp} />
-            <Route path='/login' exact component={LoginPage} />
-            <Route path='/signup' exact component={SignupPage} />
-            <Route path='*' component={FourOhFour} />
-          </Switch>
-        </div>
+      {/* {!currentUser ? (
+        <div> */}
+      <Navbar />
+      <Switch>
+        <Route path='/allpokemon' exact component={AllPokemon} />
+        <Route path='/pregame' exact component={PreGame} />
+        <Route path='/game' exact component={Main} />
+        <Route path='/myprofile' exact component={UserProfile} />
+        <Route path='/dev/setup' component={temp} />
+        <Route path='/login' exact component={LoginPage} />
+        <Route path='/signup' exact component={SignupPage} />
+        <Route exact path='/' component={MatchSearch} />
+        <Route path='*' component={FourOhFour} />
+      </Switch>
+      {/* </div>
       ) : (
         <div>
           <Switch>
-            <Route path='/' exact component={MatchSearch} />
             <Route path='/allpokemon' exact component={AllPokemon} />
             <Route path='/game' exact component={Main} />
             <Route path='/pregame' exact component={PreGame} />
@@ -50,10 +51,11 @@ const Routes = () => {
             <Route path='/myprofile' exact component={UserProfile} />
             <Route path='/login' exact component={AlreadyLoggedIn} />
             <Route path='/signup' exact component={AlreadyLoggedIn} />
+            <Route exact path='/' component={MatchSearch} />
             <Route path='*' component={FourOhFour} />
           </Switch>
         </div>
-      )}
+      )} */}
     </Router>
   );
 };

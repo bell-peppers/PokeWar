@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
   navbar: {
     width: '90vw',
     margin: '0vh 5vw 0vh 5vw',
-    // borderRadius: '0px 0px 30px 30px',
+    borderRadius: '0px 0px 30px 30px',
     backgroundColor: '#1574b0',
     color: '#3d405b',
   },
@@ -71,23 +71,53 @@ const Navbar = (props) => {
       {/* {console.log(currentUser)} */}
       {/* {currentUser && currentUser.email} */}
       {error && console.log(error)}
-      <div>{error && <Alert>{error.message}</Alert>}</div>
       <Toolbar className={classes.cart}>
-        <a className={classes.p} href='/'>
+        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+          {/* <a className={classes.p} href='/'>
           Poke Wars
-        </a>
-        <Grid className={classes.leftMenu}>
+        </a> */}
+          {/* <Grid className={classes.leftMenu}>
           <a className={classes.p} href='/allpokemon'>
             All Pokemon
           </a>
           <a className={classes.p} href='/myprofile'>
             My Profile
           </a>
-        </Grid>
-        {username ? <p>Hello, {username}</p> : <p>Hello!</p>}
+        // </Grid> */}
 
-        <Button onClick={handleLogout}>Sign Out</Button>
+          <Link to='/'>
+            <p className={classes.p}>PokeWar</p>
+          </Link>
+          <Link to='/allpokemon'>
+            <p className={classes.p}>All Pokemon</p>
+          </Link>
+        </div>
+        <div>
+          {username && <p className={classes.p}> Welcome, {username}</p>}
+        </div>
+        <div>
+          {currentUser ? (
+            <div style={{display: 'flex'}}>
+              <Link to='/myprofile'>
+                <p className={classes.p}>My Profile</p>
+              </Link>
+              <p onClick={handleLogout} className={classes.p}>
+                Sign Out
+              </p>
+            </div>
+          ) : (
+            <div style={{display: 'flex'}}>
+              <Link to='/signup'>
+                <p className={classes.p}>Sign Up</p>
+              </Link>
+              <Link to='/login'>
+                <p className={classes.p}>Login</p>
+              </Link>
+            </div>
+          )}
+        </div>
       </Toolbar>
+      <div>{error && <Alert>{error}</Alert>}</div>
     </AppBar>
   );
 };
