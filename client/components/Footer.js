@@ -40,7 +40,7 @@ export default function Footer() {
 				>
 					<AppBar
 						position="static"
-						style={{ background: '#1574b0', height: '100px' }}
+						style={{ position: 'absolute', bottom: 0, background: '#1574b0', height: '100px' }}
 					>
 						<Container maxWidth="md">
 							<Toolbar>
