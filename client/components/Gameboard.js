@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {makeStyles} from '@material-ui/core';
-import {applyOpponentMoves, attackOpponent} from '../store/pokemon';
+import {applyMoves, attackOpponent} from '../store/pokemon';
 import {
   selectAttackedPokemon,
   _selectAttack,
@@ -19,15 +19,18 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     height: '75%',
     justifyContent: 'flex-end',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'black',
   },
   playerSide: {
     height: '50%',
     backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'flex-start',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    borderTopWidth: '1px',
+    borderTopStyle: 'solid',
+    borderTopColor: 'black',
   },
   opponentSide: {
     height: '50%',
@@ -35,9 +38,9 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    // borderWidth: '1px',
+    // borderStyle: 'solid',
+    // borderColor: 'black',
   },
   playerSprites: {
     maxWidth: '100%',
@@ -56,10 +59,14 @@ const useStyles = makeStyles(() => ({
   pokemonContainer: {
     alignSelf: 'flex-end',
     display: 'flex',
+    flexDirection: 'column',
     width: '32%',
     height: '100%',
     justifyContent: 'center',
-    alignItems: 'flex-end',
+  },
+  pokemonName: {
+    alignText: 'center',
+    fontSize: 20,
   },
   playerName: {
     position: 'absolute',
@@ -68,29 +75,32 @@ const useStyles = makeStyles(() => ({
     width: '250px',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    // borderWidth: '1px',
+    // borderStyle: 'solid',
+    // borderColor: 'black',
   },
   hp: {
-    fontSize: '30px',
+    fontSize: '20px',
+    alignText: 'center',
   },
 }));
 
 const Gameboard = (props) => {
   const classes = useStyles();
   const {
-    opponentPokemon,
-    playerPokemon,
     resetAttack,
     selectAttacked,
     getOpponentMoves,
-    applyOpponentMoves,
+    applyMoves,
     selectedPlayerPk,
     playerAttack,
     resetPlayerPokemon,
     chosenPokemon,
     username,
+    opponentPokemon,
+    changeTurns,
+    opponentName = 'Opponent',
+    isTurn,
   } = props;
 
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
@@ -107,17 +117,18 @@ const Gameboard = (props) => {
     dbUpdates.limitToLast(1).on('child_added', (snapshot) => {
       const newMoves = snapshot.val();
 
-      if (chosenPokemon.length > 0 && opponentMovesLoaded == false) {
+      if (chosenPokemon.length > 0 && opponentMovesLoaded == false && !isTurn) {
         setOpponentMovesLoaded(true);
-        getOpponentMoves(newMoves);
-        applyOpponentMoves(newMoves, chosenPokemon);
+        //getOpponentMoves(newMoves);
+        //applyMoves(newMoves, chosenPokemon, opponentPokemon);
+        //changeTurns();
       }
     });
   }
 
   function clickHandle(pk) {
     if (playerAttack && selectedPlayerPk) {
-      selectAttacked(pk.name, playerAttack.attack, selectedPlayerPk.name);
+      selectAttacked(pk, playerAttack.attack, selectedPlayerPk);
       console.log(
         `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
       );
@@ -125,14 +136,14 @@ const Gameboard = (props) => {
       resetPlayerPokemon();
     }
   }
-
+  console.log('opp poke', opponentPokemon);
   return (
     <div className={classes.main}>
       <div className={classes.opponentSide}>
         <div className={classes.playerName}>
-          <h1>Opponent</h1>
+          <h1>{opponentName}</h1>
         </div>
-        {opponentPokemon.length > 0 &&
+        {opponentPokemon &&
           opponentPokemon.map((pk) => {
             return (
               <div
@@ -140,8 +151,12 @@ const Gameboard = (props) => {
                 key={pk.id}
                 onClick={() => clickHandle(pk)}
               >
-                <img className={classes.opponentSprites} src={pk.frontImg} />
-                <p className={classes.hp}>hp: {pk.stats.hp}</p>
+                <p>{pk.name}</p>
+                <img
+                  className={classes.opponentSprites}
+                  src={pk.sprites.front_default}
+                />
+                <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
               </div>
             );
           })}
@@ -172,7 +187,6 @@ const mapState = (state) => {
     selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
     playerAttack: state.playerTurn.playerAttack,
     chosenPokemon: state.pokemon.chosenPokemon,
-    username: state.userData.user.username,
   };
 };
 
@@ -184,8 +198,7 @@ const mapDispatch = (dispatch) => {
     selectAttacked: (atkdpk, atk, pk) =>
       dispatch(selectAttackedPokemon(atkdpk, atk, pk)),
     getOpponentMoves: (newMoves) => dispatch(getPlayerMoves(newMoves)),
-    applyOpponentMoves: (oppMoves, pk) =>
-      dispatch(applyOpponentMoves(oppMoves, pk)),
+    applyMoves: (oppMoves, pk) => dispatch(applyMoves(oppMoves, pk)),
     resetPlayerPokemon: () => dispatch(_selectedPlayerPokemon({})),
   };
 };

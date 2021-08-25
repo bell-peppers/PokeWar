@@ -1,10 +1,11 @@
 import axios from 'axios';
 import history from '../history';
 import {FIREDB} from '../../utils/firebase';
+import {FeedbackSharp} from '@material-ui/icons';
 
 const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
-const GET_PLAYERTWO_POKEMON = 'GET_PLAYERTWO_POKEMON';
-const APPLY_OPPONENT_MOVES = 'APPLY_OPPONENT_MOVES';
+const GET_OPPONENT_POKEMON = 'GET_OPPONENT_POKEMON';
+const APPLY_MOVES = 'APPLY_MOVES';
 const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
 const FETCH_SINGLE_POKEMON = 'FETCH_SINGLE_POKEMON';
 const FETCH_MOVES_INFO = 'UPDATE_MOVES_INFO';
@@ -195,9 +196,9 @@ const _getPlayerOnePokemon = (pokemon) => {
   };
 };
 
-const _getPlayerTwoPokemon = (pokemon) => {
+const _getOpponentPokemon = (pokemon) => {
   return {
-    type: GET_PLAYERTWO_POKEMON,
+    type: GET_OPPONENT_POKEMON,
     pokemon,
   };
 };
@@ -209,10 +210,11 @@ const _attackOpponent = (pokemon) => {
   };
 };
 
-const _applyOpponentMoves = (pokemon) => {
+const _applyMoves = (playerPk, oppPk) => {
   return {
-    type: APPLY_OPPONENT_MOVES,
-    pokemon,
+    type: APPLY_MOVES,
+    playerPk,
+    oppPk,
   };
 };
 
@@ -256,18 +258,42 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
   }
 };
 
-export const applyOpponentMoves = (moves, playerPokemon) => (dispatch) => {
-  const updatedPk = playerPokemon.map((pk) => {
-    for (let i = 0; i < moves.length; i++) {
-      if (moves[i].attackedPokemon === pk.name) {
-        pk.stats.hp -= moves[i].attack.damage;
-        const actionString = `${moves[i].pokemon} hit ${pk.name} for ${moves[i].attack.damage}`;
-        console.log(actionString);
+export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
+  const feed = [];
+
+  moves.forEach((move) => {
+    console.log('move', move);
+    const reportClass =
+      move.report.Class && move.report.Class !== 'Normal'
+        ? `${move.report.Class}`
+        : '';
+    const action =
+      `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} for ${move.report.Damage} on ${move.attackedPokemon.name}. ` +
+      reportClass;
+    playerPk.forEach((pk) => {
+      if (
+        pk.owner === move.attackedPokemon.owner &&
+        pk.name == move.attackedPokemon.name
+      ) {
+        pk.stats[0].base_stat -= move.report.Damage;
       }
-    }
-    return pk;
+    });
+    console.log(oppPk);
+    oppPk.forEach((pk) => {
+      if (
+        pk.owner === move.attackedPokemon.owner &&
+        pk.name == move.attackedPokemon.name
+      ) {
+        pk.stats[0].base_stat -= move.report.Damage;
+      }
+    });
+    feed.push(action);
   });
-  dispatch(_applyOpponentMoves(updatedPk));
+
+  const updatedPlayerPk = [...playerPk];
+  const updatedOppPk = [...oppPk];
+  console.log(feed);
+  dispatch(_applyMoves(updatedPlayerPk, updatedOppPk));
 };
 
 export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
@@ -285,7 +311,7 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
   return dispatch(_attackOpponent(updatedPk));
 };
 
-export const fetchPlayerOnePokemon = (pkId) => async (dispatch) => {
+export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
   try {
     const playerPk = [];
     await pkId.forEach(async (id) => {
@@ -301,6 +327,7 @@ export const fetchPlayerOnePokemon = (pkId) => async (dispatch) => {
         move.moveData = getMove.data;
       });
       pk.data.moves = movesArr;
+      pk.data.owner = username;
       playerPk.push(pk.data);
     });
 
@@ -325,9 +352,22 @@ export const fetchMovesInfo = (pokemon) => async (dispatch) => {
     console.error(error);
   }
 };
-export const fetchPlayerTwoPokemon = () => async (dispatch) => {
+export const fetchOpponentPokemon = (matchId, role) => async (dispatch) => {
   try {
-    return dispatch(_getPlayerTwoPokemon(playerTwoPokemon));
+    const oppRole = role == 'host' ? 'guestPokemon' : 'hostPokemon';
+    const oppPoke = await axios.get(
+      `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/${matchId}/${oppRole}.json`
+    );
+    console.log(oppPoke.data);
+    return dispatch(_getOpponentPokemon(oppPoke.data));
+    // const oppRole = role == 'host' ? 'guestPokemon' : 'hostPokemon';
+    // await FIREDB.ref('/Match/' + matchId + oppRole).get((snapshot) => {
+    //   const oppPoke = snapshot.val();
+    //   console.log(oppPoke);
+    //   return dispatch(_getOpponentPokemon(oppPoke));
+    // });
+    // console.log(oppPoke);
+    // return dispatch(_getOpponentPokemon(oppPoke));
   } catch (error) {
     console.error(error);
   }
@@ -337,7 +377,7 @@ export default function (
   state = {
     singlePokemon: {},
     playerOnePokemon: [],
-    playerTwoPokemon: [],
+    opponentPokemon: [],
     chosenPokemon: [],
   },
   action
@@ -345,12 +385,17 @@ export default function (
   switch (action.type) {
     case GET_PLAYERONE_POKEMON:
       return {...state, playerOnePokemon: action.pokemon};
-    case GET_PLAYERTWO_POKEMON:
-      return {...state, playerTwoPokemon: action.pokemon};
+    case GET_OPPONENT_POKEMON:
+      console.log(action);
+      return {...state, opponentPokemon: action.pokemon};
     case ATTACK_OPPONENT:
       return {...state, playerTwoPokemon: action.pokemon};
-    case APPLY_OPPONENT_MOVES:
-      return {...state, playerOnePokemon: action.pokemon};
+    case APPLY_MOVES:
+      return {
+        ...state,
+        playerOnePokemon: action.playerPk,
+        opponentPokemon: action.oppPk,
+      };
     case CHOOSE_PLAYER_POKEMON:
       return {
         ...state,

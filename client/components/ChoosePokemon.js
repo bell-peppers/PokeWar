@@ -97,6 +97,7 @@ function ChoosePokemon(props) {
 
   const readyButtonHandle = () => {
     const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
+
     sendChosenPokemon(chosenPokemon, testMatch, role);
     history.push('/game');
   };

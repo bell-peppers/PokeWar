@@ -181,7 +181,7 @@ const MatchSearch = (props) => {
       getUserData(currentUser.uid);
     }
     if (user.pokemon) {
-      fetchPokemon(user.pokemon);
+      fetchPokemon(user.pokemon, user.username);
     }
   }, [user, currentUser]);
   return (
@@ -298,7 +298,8 @@ const mapDispatch = (dispatch) => {
     newGame: (uid, name) => dispatch(createNewGame(uid, name)),
     joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
     findGame: () => dispatch(findGame()),
-    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
+    fetchPokemon: (pk, username) =>
+      dispatch(fetchPlayerOnePokemon(pk, username)),
     getUserData: (uid) => dispatch(getUserData(uid)),
     setRole: (role) => dispatch(setHostGuest(role)),
   };
