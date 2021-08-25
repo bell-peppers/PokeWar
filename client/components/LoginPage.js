@@ -74,24 +74,20 @@ export default function LoginPage() {
 			{error && <Alert severity='error'>{error}</Alert>}
 			<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 				<form className={classes.form} onSubmit={handleSubmit}>
-					<FormControl
-						variant='outlined'
-					>
-						<InputLabel htmlFor='outlined-adornment-password'>
-							E-mail
-						</InputLabel>
+					<FormControl variant='outlined'>
+						<InputLabel htmlFor='login-email'>E-mail</InputLabel>
 						<OutlinedInput
 							id='login-email'
-							inputRef={passwordRef}
+							inputRef={emailRef}
 							labelWidth={70}
 						/>
 					</FormControl>
-					<FormControl
-						variant='outlined'
-					>
+					<FormControl variant='outlined'>
 						<InputLabel htmlFor='login-password'>Password</InputLabel>
 						<OutlinedInput
+							label='Password'
 							id='login-password'
+							type={values.showPassword ? 'text' : 'password'}
 							inputRef={passwordRef}
 							endAdornment={
 								<InputAdornment position='end'>
