@@ -18,6 +18,13 @@ import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import { getUserData } from '../store/userData';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconButton from '@material-ui/core/IconButton';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import { OutlinedInput } from '@material-ui/core';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(() => ({
 	main: {
@@ -51,6 +58,16 @@ const SignupPage = (props) => {
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
 	const { getUserData } = props;
+	const [values, setValues] = React.useState({
+		showPassword: false,
+	});
+	const handleClickShowPassword = () => {
+		setValues({ ...values, showPassword: !values.showPassword });
+	};
+
+	const handleMouseDownPassword = (event) => {
+		event.preventDefault();
+	};
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -113,7 +130,34 @@ const SignupPage = (props) => {
 							}}
 							variant='filled'
 						/>
-						<TextField
+						<FormControl
+							className={clsx(classes.margin, classes.textField)}
+							variant='outlined'
+						>
+							<InputLabel htmlFor='outlined-adornment-password'>
+								Password
+							</InputLabel>
+							<OutlinedInput
+							label='Password'
+								id='outlined-adornment-password'
+								type={values.showPassword ? 'text' : 'password'}
+                inputRef={passwordRef}
+								endAdornment={
+									<InputAdornment position='end'>
+										<IconButton
+											aria-label='toggle password visibility'
+											onClick={handleClickShowPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge='end'
+										>
+											{values.showPassword ? <Visibility /> : <VisibilityOff />}
+										</IconButton>
+									</InputAdornment>
+								}
+								labelWidth={70}
+							/>
+						</FormControl>
+						{/* <TextField
 							inputRef={passwordRef}
 							label='Password'
 							id='filled-start-adornment'
@@ -123,8 +167,35 @@ const SignupPage = (props) => {
 								),
 							}}
 							variant='filled'
-						/>
-						<TextField
+						/> */}
+												<FormControl
+							className={clsx(classes.margin, classes.textField)}
+							variant='outlined'
+						>
+							<InputLabel htmlFor='outlined-adornment-password'>
+								Password
+							</InputLabel>
+							<OutlinedInput
+							label='Password confirmation'
+								id='outlined-adornment-password'
+								type={values.showPassword ? 'text' : 'password'}
+                inputRef={passwordConfirmationRef}
+								endAdornment={
+									<InputAdornment position='end'>
+										<IconButton
+											aria-label='toggle password visibility'
+											onClick={handleClickShowPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge='end'
+										>
+											{values.showPassword ? <Visibility /> : <VisibilityOff />}
+										</IconButton>
+									</InputAdornment>
+								}
+								labelWidth={70}
+							/>
+						</FormControl>
+						{/* <TextField
 							inputRef={passwordConfirmationRef}
 							label='Password confirmation'
 							id='filled-start-adornment'
@@ -134,7 +205,7 @@ const SignupPage = (props) => {
 								),
 							}}
 							variant='filled'
-						/>
+						/> */}
 						<Button
 							variant='contained'
 							disabled={loading}
