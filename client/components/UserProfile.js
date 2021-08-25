@@ -110,9 +110,6 @@ const UserProfile = (props) => {
 				>
 					POKEWARS
 				</Grid>
-				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
-					Leaderboard position: 34532523
-				</Grid>
 				<Grid
 					style={{
 						display: 'flex',
