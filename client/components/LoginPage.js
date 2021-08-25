@@ -53,19 +53,17 @@ const LoginPage = (props) => {
   const history = useHistory();
   const {getUserData, fetchPokemon} = props;
 
-  async function handleSubmit(e) {
+   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       setError('');
       setLoading(true);
-      //we had await here, but deleted it because of memory leak error
-      login(emailRef.current.value, passwordRef.current.value);
+      await login(emailRef.current.value, passwordRef.current.value);
       //getUserData(currentUser.uid);
 
       history.push('/');
-    } catch (error) {
-      console.error(error);
+    } catch {
       setError('Failed to log in');
     }
     setLoading(false);
