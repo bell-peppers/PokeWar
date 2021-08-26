@@ -48,7 +48,7 @@ export default function Footer() {
 									variant="body1"
 									style={{ fontFamily: 'Courier New, monospace' }}
 								>
-									© 2021
+									© Poke Wars 2021
 								</Typography>
 
 								{/* <Link

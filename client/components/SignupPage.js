@@ -91,7 +91,7 @@ export default function SignupPage() {
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<form className={classes.form} onSubmit={handleSubmit}>
 						<FormControl variant='outlined'>
-							<InputLabel htmlFor='signup-username'>E-mail</InputLabel>
+							<InputLabel htmlFor='signup-username'>Username</InputLabel>
 							<OutlinedInput
 								label='Username'
 								id='signup-username'

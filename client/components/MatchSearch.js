@@ -226,67 +226,69 @@ const MatchSearch = (props) => {
             inputRef={joinMatchId}
             variant='outlined'
           /> */}
-        </Grid>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby='simple-modal-title'
-          aria-describedby='simple-modal-description'
-        >
-          {modalBody}
-        </Modal>
-        <Paper className={classes.root}>
-          <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead>
-                <TableRow>
-                  {columns.map((column, i) => (
-                    <TableCell
-                      key={i}
-                      align={column.align}
-                      style={{minWidth: column.minWidth}}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, i) => {
-                    return (
-                      <TableRow hover role='checkbox' tabIndex={-1} key={i}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component='div'
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-      </Container>
-    </div>
-  );
+				</Grid>
+				<Modal
+					open={open}
+					onClose={handleClose}
+					aria-labelledby='simple-modal-title'
+					aria-describedby='simple-modal-description'
+				>
+					{modalBody}
+				</Modal>
+				<Paper className={classes.root}>
+					<h4 style={{ textAlign: 'center' }}>Leaderboard</h4>
+					<TableContainer className={classes.container}>
+						<Table stickyHeader aria-label='sticky table'>
+							<TableHead>
+								<TableRow>
+									{columns.map((column, i) => (
+										<TableCell
+											key={i}
+											align={column.align}
+											style={{ minWidth: column.minWidth }}
+										>
+											{column.label}
+										</TableCell>
+									))}
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{rows
+									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+									.map((row, i) => {
+										return (
+											<TableRow hover role='checkbox' tabIndex={-1} key={i}>
+												{columns.map((column) => {
+													const value = row[column.id];
+													return (
+														<TableCell key={column.id} align={column.align}>
+															{column.format && typeof value === 'number'
+																? column.format(value)
+																: value}
+														</TableCell>
+													);
+												})}
+											</TableRow>
+										);
+									})}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					<TablePagination
+						rowsPerPageOptions={[10, 25, 100]}
+						component='div'
+						count={rows.length}
+						rowsPerPage={rowsPerPage}
+						page={page}
+						onPageChange={handleChangePage}
+						onRowsPerPageChange={handleChangeRowsPerPage}
+					/>
+				</Paper>
+			</Container>
+			<Grid>
+			<Button href='/signup' style={{backgroundColor: 'green', position: 'absolute', left: '40%'}}>Sign Up For free today</Button></Grid>
+		</div>
+	);
 };
 const mapState = (state) => {
   return {
