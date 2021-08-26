@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     backgroundColor: 'red',
     width: '100vw',
-    height: '80vh',
+    height: '100vh',
     maxHeight: '1200px',
     minWidth: '800px',
     justifyContent: 'space-between',
