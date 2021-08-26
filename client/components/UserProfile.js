@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect, useDispatch } from 'react-redux';
-import { Button, makeStyles } from '@material-ui/core';
+import { Button, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { CardMedia } from '@material-ui/core';
 import Image from 'material-ui-image';
@@ -95,70 +95,50 @@ const UserProfile = (props) => {
 	};
 
 	return (
-		<div>
-			<Grid className={classes.main}>
-				<Grid
-					style={{ display: 'flex', justifyContent: 'center', padding: '5px' }}
-				>
-					POKEWARS
-				</Grid>
-				<Grid
+		// <div>
+		<Grid className={classes.main}>
+			<Grid style={{ display: 'flex', width: '700px' }}>
+				<CardMedia
 					style={{
-						display: 'flex',
-						flexDirection: 'row',
-						justifyContent: 'space-around',
+						width: '180px',
+						height: '180px',
+						border: '5px solid darkBlue',
 					}}
 				>
-					<Grid>
-						<Grid>
-							<CardMedia
-								style={{
-									width: '150px',
-									height: '150px',
-									border: '5px solid blue',
-								}}
-							>
-								{user && <Image src={user.photoUrl} />
-
-								}
-							</CardMedia>
-							{user.username}
-						</Grid>
-					</Grid>
-					{/* {playerPokemon && console.log(playerPokemon)} */}
-
-					{playerPokemon && (
-						<div className={classes.imageRoot}>
-							My Pokemon
-							<ImageList
-								cols={2.5}
-								style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
-							>
-								{playerPokemon.map((item) => (
-									<ImageListItem key={item.id} style={{ width: '150px' }}>
-										<img src={item.sprites.front_default} />
-										<ImageListItemBar
-											actionIcon={
-												<IconButton
-													onClick={() => handleIconClick(item)}
-													className={classes.title}
-												>
-													{item.liked ? (
-														<FavoriteIcon />
-													) : (
-														<FavoriteBorderIcon />
-													)}
-												</IconButton>
-											}
-										/>
-									</ImageListItem>
-								))}
-							</ImageList>
-						</div>
-					)}
-				</Grid>
-				<Grid>
-					<Button href='/editprofile'>Edit Profile</Button>
+					{user && <Image src={user.photoUrl} />}
+				</CardMedia>
+				{user.username}
+				<Typography>Level 1</Typography>
+				<Button href='/editprofile'>Edit Profile</Button>
+			</Grid>
+			<Grid>
+				{playerPokemon && (
+					<div className={classes.imageRoot}>
+						My Pokemon
+						<ImageList
+							cols={2.5}
+							style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
+						>
+							{playerPokemon.map((item) => (
+								<ImageListItem key={item.id} style={{ width: '150px' }}>
+									<img src={item.sprites.front_default} />
+									<ImageListItemBar
+										actionIcon={
+											<IconButton
+												onClick={() => handleIconClick(item)}
+												className={classes.title}
+											>
+												{item.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+											</IconButton>
+										}
+									/>
+								</ImageListItem>
+							))}
+						</ImageList>
+					</div>
+				)}
+			</Grid>
+			{/* <Grid>
 					<Button
 						onClick={() =>
 							alert(
@@ -168,9 +148,8 @@ const UserProfile = (props) => {
 					>
 						Add Friend
 					</Button>
-				</Grid>
-			</Grid>
-		</div>
+				</Grid> */}
+		</Grid>
 	);
 };
 

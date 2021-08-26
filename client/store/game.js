@@ -110,9 +110,12 @@ export const findGame = () => async (dispatch) => {
       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/.json`
     );
     let availableGames = [];
-    for (const [match, values] of Object.entries(games.data)) {
-      if (values.status === 'open') {
-        availableGames.push({matchId: match, data: values});
+    console.log(games.data);
+    if (games.data) {
+      for (const [match, values] of Object.entries(games.data)) {
+        if (values.status === 'open') {
+          availableGames.push({matchId: match, data: values});
+        }
       }
     }
     console.log(availableGames);
