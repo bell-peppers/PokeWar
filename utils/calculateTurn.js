@@ -11,10 +11,14 @@ export default function calculateTurn(playerTurn, oppTurn) {
 
   const pokeOrder = PokemonOrder(allPokemon);
   console.log('order', pokeOrder);
+
   const fullTurnOrder = pokeOrder.map((pk) => {
     const move = fullTurn.filter((turn) => {
-      return turn.pokemon.name === pk.name;
+      if (turn.pokemon.name === pk.name && turn.pokemon.owner === pk.owner) {
+        return turn;
+      }
     });
+    console.log(move);
     return move[0];
   });
 

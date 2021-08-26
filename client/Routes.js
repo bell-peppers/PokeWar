@@ -18,8 +18,8 @@ import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
 import {useAuth} from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
-import EditProfile from './components/EditProfile'
-import Footer from './components/Footer'
+import EditProfile from './components/EditProfile';
+import Footer from './components/Footer';
 
 /**
  * COMPONENT
