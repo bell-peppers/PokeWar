@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { CardMedia } from '@material-ui/core';
@@ -20,13 +20,22 @@ import 'firebase/auth';
 const useStyles = makeStyles((theme) => ({
 	main: {
 		fontFamily: 'Courier New, monospace',
-		display: 'flex',
-		backgroundColor: 'green',
+		// display: 'flex',
+		// flex: '1',
+		backgroundColor: 'royalBlue',
+		position: 'relative',
+		maxWidth: '1018px',
+		// minHeight: '224px',
+		paddingBottom: '0px',
+		margin: '0 auto',
 		// flexWrap: 'nowrap',
-		// width: '100%',
+
+		// maxWidth: '960px',
+		// position: 'relative'
 		// height: '600px',
-		flexDirection: 'column',
-		justifyContent: 'space-around',
+		// flexDirection: 'column',
+		// justifyContent: 'center',
+		// margin: '0  100px 0 100px'
 	},
 	root: {
 		// flexWrap: 'nowrap',
@@ -68,14 +77,15 @@ const UserProfile = (props) => {
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
 	const history = useHistory();
 	const { currentUser } = useAuth();
+	console.log('current user ==>', currentUser);
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (currentUser && currentUser.uid !== user.uid) {
 			getUserData(currentUser.uid);
-		}
-		if (user.pokemon) {
+
+			// fetchPokemon(Object.keys(currentUser))
 			fetchPokemon(user.pokemon);
 		}
 	}, [user, currentUser]);
@@ -95,49 +105,140 @@ const UserProfile = (props) => {
 	};
 
 	return (
-		// <div>
 		<Grid className={classes.main}>
-			<Grid style={{ display: 'flex', width: '700px' }}>
-				<CardMedia
+			<Grid
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					margin: '0 50px 30px 25px',
+					paddingLeft: '9px',
+					paddingTop: '50px',
+				}}
+			>
+				<Grid style={{ display: 'flex' }}>
+					<CardMedia
+						style={{
+							width: '180px',
+							height: '180px',
+							border: '5px solid darkBlue',
+							margin: '0 20px 0 0',
+						}}
+					>
+						{user && <Image src={user.photoUrl} />}
+					</CardMedia>
+					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
+				</Grid>
+				<Grid>
+					<Typography
+						style={{ display: 'flex', fontSize: '25px', paddingRight: '80px' }}
+					>
+						Level
+						<Typography
+							style={{
+								height: '40px',
+								width: '40px',
+								display: 'table-cell',
+								textAlign: 'center',
+								verticalAlign: 'middle',
+								borderRadius: '50%',
+								background: 'white',
+								fontSize: '25px',
+								marginLeft: '4px',
+							}}
+						>
+							1
+						</Typography>
+					</Typography>
+					<Button
+						style={{ padding: '0', marginTop: '6px' }}
+						href='/editprofile'
+					>
+						Edit Profile
+					</Button>
+				</Grid>
+			</Grid>
+			<Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Grid
 					style={{
-						width: '180px',
-						height: '180px',
-						border: '5px solid darkBlue',
+						width: '450px',
+						marginLeft: '20px',
+						minHeight: '243px',
+						paddingBottom: '10px',
 					}}
 				>
-					{user && <Image src={user.photoUrl} />}
-				</CardMedia>
-				{user.username}
-				<Typography>Level 1</Typography>
-				<Button href='/editprofile'>Edit Profile</Button>
-			</Grid>
-			<Grid>
-				{playerPokemon && (
-					<div className={classes.imageRoot}>
+					<Typography style={{ fontSize: '18px', marginBottom: '8px' }}>
 						My Pokemon
-						<ImageList
-							cols={2.5}
-							style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
-						>
-							{playerPokemon.map((item) => (
-								<ImageListItem key={item.id} style={{ width: '150px' }}>
-									<img src={item.sprites.front_default} />
-									<ImageListItemBar
-										actionIcon={
-											<IconButton
-												onClick={() => handleIconClick(item)}
-												className={classes.title}
-											>
-												{item.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-											</IconButton>
-										}
-									/>
-								</ImageListItem>
-							))}
-						</ImageList>
-					</div>
-				)}
+					</Typography>
+					{playerPokemon && playerPokemon.length ? (
+						<div className={classes.imageRoot}>
+							<ImageList
+								cols={2.5}
+								style={{
+									display: 'flex',
+									flexWrap: 'nowrap',
+									border: '5px solid grey',
+								}}
+							>
+								{playerPokemon.map((item) => (
+									<ImageListItem key={item.id} style={{ width: '150px' }}>
+										<img src={item.sprites.front_default} />
+										<ImageListItemBar
+											actionIcon={
+												<IconButton
+													onClick={() => handleIconClick(item)}
+													className={classes.title}
+												>
+													{item.liked ? (
+														<FavoriteIcon />
+													) : (
+														<FavoriteBorderIcon />
+													)}
+												</IconButton>
+											}
+										/>
+									</ImageListItem>
+								))}
+							</ImageList>
+						</div>
+					) : null}
+				</Grid>
+				<Grid>
+					<Typography style={{ fontSize: '18px', paddingRight: '175px' }}>
+						Badges
+					</Typography>
+					<Grid
+						style={{ backgroundColor: 'white', width: '180px', height: '90px' }}
+					>
+					</Grid>
+				</Grid>
 			</Grid>
+			<Grid style={{display: 'flex', justifyContent: 'space-between'}}><Grid style={{ display: 'flex', flexDirection: 'column' }}>
+				<Grid>
+					<Typography
+						style={{
+							fontSize: '20px',
+							paddingLeft: '20px',
+							paddingTop: '20px',
+						}}
+					>
+						Inventory
+					</Typography>
+				</Grid>
+				<Grid style={{ paddingLeft: '20px', paddingTop: '20px', paddingBottom: '10px' }}>
+					<Typography style={{ fontSize: '20px' }}>Comments</Typography>
+					<Grid
+						style={{
+							backgroundColor: 'white',
+							width: '450px',
+							height: '150px',
+						}}
+					></Grid>
+				</Grid>
+			</Grid>
+			<Grid><Typography  style={{ fontSize: '18px', paddingRight: '175px' }}>Friends</Typography>	<Grid
+						style={{ backgroundColor: 'white', width: '200px', height: '220px' }}
+					>
+					</Grid></Grid></Grid>
 			{/* <Grid>
 					<Button
 						onClick={() =>
