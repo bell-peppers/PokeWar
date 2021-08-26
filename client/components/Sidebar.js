@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: 'red',
     height: '100%',
     fontFamily: 'Courier New, monospace',
   },
@@ -37,6 +37,8 @@ const useStyles = makeStyles(theme => ({
 
 const Sidebar = props => {
   const classes = useStyles();
+  const { feed, user, opponent } = props;
+
   return (
     <Grid className={classes.sidebar}>
       <Grid className={classes.users}>
@@ -61,14 +63,18 @@ const Sidebar = props => {
         </Grid>
       </Grid>
       <Grid className={classes.chat}>
-        <Chat />
+        <Chat feed={feed} user={user} opponent={opponent} />
       </Grid>
     </Grid>
   );
 };
 
 const mapState = state => {
-  return {};
+  return {
+    feed: state.pokemon.attackFeed,
+    user: state.userData.user,
+    opponent: state.game.opponentInfo,
+  };
 };
 
 const mapDispatch = dispatch => {

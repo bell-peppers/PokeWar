@@ -1,19 +1,19 @@
-import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import Gameboard from './Gameboard';
 import Actionbar from './Actionbar';
 import Sidebar from './Sidebar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import {makeStyles} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import {
   fetchPlayerOnePokemon,
   fetchOpponentPokemon,
   fetchMovesInfo,
 } from '../store/pokemon';
-import {getPlayerMoves} from '../store/game';
-import {_changeTurns} from '../store/playerTurn';
+import { getPlayerMoves } from '../store/game';
+import { _changeTurns } from '../store/playerTurn';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -46,7 +46,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Main = (props) => {
+const Main = props => {
   const {
     getPlayerPokemon,
     fetchOpponentPokemon,
@@ -106,7 +106,8 @@ const Main = (props) => {
     </React.Fragment>
   );
 };
-const mapState = (state) => {
+
+const mapState = state => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
     opponentPokemon: state.pokemon.opponentPokemon,
@@ -119,12 +120,12 @@ const mapState = (state) => {
   };
 };
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = dispatch => {
   return {
-    getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
+    getPlayerPokemon: pkIds => dispatch(fetchPlayerOnePokemon(pkIds)),
     fetchOpponentPokemon: (matchId, role) =>
       dispatch(fetchOpponentPokemon(matchId, role)),
-    getMoves: (playerPk) => dispatch(fetchMovesInfo(playerPk)),
+    getMoves: playerPk => dispatch(fetchMovesInfo(playerPk)),
     changeTurns: () => dispatch(_changeTurns()),
   };
 };

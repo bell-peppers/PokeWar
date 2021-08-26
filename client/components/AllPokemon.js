@@ -11,7 +11,7 @@ import Modal from '@material-ui/core/Modal';
 /**
  * COMPONENT
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   PokeCards: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AllPokemon(props) {
-  const pokemon = useSelector((state) => state.allPokemon);
+  const pokemon = useSelector(state => state.allPokemon);
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -57,7 +57,7 @@ export default function AllPokemon(props) {
   return (
     <div className='main'>
       {pokemon[0] &&
-        pokemon.map((poke) => {
+        pokemon.map(poke => {
           let finalColor;
 
           if (poke.types.length === 2) {

@@ -20,6 +20,7 @@ import {useAuth} from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
 import EditProfile from './components/EditProfile'
 import Footer from './components/Footer'
+import Sidebar from './components/Sidebar';
 
 /**
  * COMPONENT
@@ -35,6 +36,7 @@ const Routes = () => {
         <Route path='/allpokemon' exact component={AllPokemon} />
         <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
+        <Route path='/chat' exact component={Sidebar} />
         <Route path='/myprofile' exact component={UserProfile} />
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' exact component={LoginPage} />
@@ -43,7 +45,7 @@ const Routes = () => {
         <Route exact path='/' component={MatchSearch} />
         <Route path='*' component={FourOhFour} />
       </Switch>
-      <Footer />
+      {/* <Footer /> */}
       {/* </div>
       ) : (
         <div>
