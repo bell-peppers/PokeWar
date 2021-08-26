@@ -17,7 +17,7 @@
     "test:dev:models": "npm run test:dev -- --grep=model",
     "test:dev:routes": "npm run test:dev -- --grep=route"
   },
-  "author": "Fullstack Academy of Code",
+  "author": "Gustavo Allen, Mike Alessi, Taya Ugay, Nick Fasulo",
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^4.12.3",

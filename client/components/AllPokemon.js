@@ -34,9 +34,8 @@ export default function AllPokemon(props) {
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  const [onPage, setOnPage] = useState(1);
-  const [Amount, setAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [Page, setPage] = useState(1);
 
   const [open, setOpen] = React.useState(false);
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
@@ -55,20 +54,15 @@ export default function AllPokemon(props) {
   };
 
   const handlePagination = (evt, page) => {
-    console.log(page);
-    setOnPage(page);
-    console.log(onPage);
-    setAmount((page - 1) * 50);
-    console.log(Amount);
-
+    setPage(page);
     setIsLoading(true);
-    dispatch(fetchPokemon(Amount)).then(() => {
+    dispatch(fetchPokemon((page - 1) * 50)).then(() => {
       setIsLoading(false);
     });
   };
 
   useEffect(() => {
-    dispatch(fetchPokemon(Amount)).then(() => {
+    dispatch(fetchPokemon(0)).then(() => {
       setIsLoading(false);
     });
   }, [dispatch]);
@@ -81,104 +75,108 @@ export default function AllPokemon(props) {
         <React.Fragment>
           <Pagination
             count={13}
-            page={onPage}
-            onChange={(evt, page) => {
-              console.log(page);
-              setOnPage(page);
-              console.log(onPage);
-              setAmount((page - 1) * 50);
-              console.log(Amount);
-
-              setIsLoading(true);
-              dispatch(fetchPokemon(Amount)).then(() => {
-                setIsLoading(false);
-              });
-            }}
+            page={Page}
+            onChange={handlePagination}
+            style={{ display: 'block' }}
           />
-          {pokemon[0] &&
-            pokemon.map((poke) => {
-              let finalColor;
+          <div className='main'>
+            {pokemon[0] &&
+              pokemon.map((poke) => {
+                let finalColor;
 
-              if (poke.types.length === 2) {
-                finalColor = colorTypeGradients(
-                  poke.types[0].type.name,
-                  poke.types[1].type.name,
-                  poke.types.length
-                );
-              } else {
-                finalColor = colorTypeGradients(
-                  poke.types[0].type.name,
-                  poke.types[0].type.name,
-                  poke.types.length
-                );
-              }
+                if (poke.types.length === 2) {
+                  finalColor = colorTypeGradients(
+                    poke.types[0].type.name,
+                    poke.types[1].type.name,
+                    poke.types.length
+                  );
+                } else {
+                  finalColor = colorTypeGradients(
+                    poke.types[0].type.name,
+                    poke.types[0].type.name,
+                    poke.types.length
+                  );
+                }
 
-              return (
-                <React.Fragment key={poke.id}>
-                  <Card
-                    className={classes.PokeCards}
-                    key={poke.id}
-                    style={{
-                      background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
-                    }}
-                  >
-                    <CardContent>
-                      <Typography
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        #{poke.id}{' '}
-                        <InfoOutlinedIcon
-                          onClick={() => handleOpen(poke, finalColor)}
-                          style={{
-                            cursor: 'pointer',
-                          }}
-                        />
-                      </Typography>
-                      <Typography>
-                        <img
-                          className='cardPic'
-                          src={
-                            poke.sprites.other['official-artwork'].front_default
-                          }
-                        />
-                      </Typography>
-                      <Typography className='data'>{poke.name}</Typography>
-                      {poke.types.length === 2 ? (
+                return (
+                  <React.Fragment key={poke.id}>
+                    <Card
+                      className={classes.PokeCards}
+                      key={poke.id}
+                      style={{
+                        background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
+                      }}
+                    >
+                      <CardContent>
                         <Typography
                           style={{
                             display: 'flex',
-                            width: '100px',
-                            height: '20px',
-                            marginTop: '4px',
-                            marginLeft: '20%',
-                            justifyContent: 'space-evenly',
+                            justifyContent: 'space-between',
                           }}
                         >
-                          <img src={`assets/${poke.types[0].type.name}.png`} />
-                          <img src={`assets/${poke.types[1].type.name}.png`} />
+                          #{poke.id}{' '}
+                          <InfoOutlinedIcon
+                            onClick={() => handleOpen(poke, finalColor)}
+                            style={{
+                              cursor: 'pointer',
+                            }}
+                          />
                         </Typography>
-                      ) : (
-                        <Typography
-                          style={{
-                            display: 'flex',
-                            width: '20px',
-                            height: '20px',
-                            marginTop: '4px',
-                            marginLeft: '45%',
-                          }}
-                        >
-                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                        <Typography>
+                          <img
+                            className='cardPic'
+                            src={
+                              poke.sprites.other['official-artwork']
+                                .front_default
+                            }
+                          />
                         </Typography>
-                      )}
-                    </CardContent>
-                  </Card>
-                </React.Fragment>
-              );
-            })}
-          <Pagination count={13} page={onPage} onChange={handlePagination} />
+                        <Typography className='data'>{poke.name}</Typography>
+                        {poke.types.length === 2 ? (
+                          <Typography
+                            style={{
+                              display: 'flex',
+                              width: '100px',
+                              height: '20px',
+                              marginTop: '4px',
+                              marginLeft: '20%',
+                              justifyContent: 'space-evenly',
+                            }}
+                          >
+                            <img
+                              src={`assets/${poke.types[0].type.name}.png`}
+                            />
+                            <img
+                              src={`assets/${poke.types[1].type.name}.png`}
+                            />
+                          </Typography>
+                        ) : (
+                          <Typography
+                            style={{
+                              display: 'flex',
+                              width: '20px',
+                              height: '20px',
+                              marginTop: '4px',
+                              marginLeft: '45%',
+                            }}
+                          >
+                            <img
+                              src={`assets/${poke.types[0].type.name}.png`}
+                            />
+                          </Typography>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </React.Fragment>
+                );
+              })}
+          </div>
+          <Pagination
+            count={13}
+            page={Page}
+            onChange={handlePagination}
+            style={{ display: 'block' }}
+          />
         </React.Fragment>
       )}
       {selectedPokemon.id && (
