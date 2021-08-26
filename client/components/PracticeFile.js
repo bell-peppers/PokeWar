@@ -1,172 +1,69 @@
 import { Button } from '@material-ui/core';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-// import firebase from '../../utils/firebase';
-// import { damageClass } from '../../utils/TypeEffectiveness';
-import { calcDamage } from '../../utils/DmgCalculations';
-import allPokemon, { fetchPokemon } from '../store/allPokemon';
-import { PokemonOrder } from '../../utils/orderCalculation';
+import React, { useState } from 'react';
 
-export default function temp(props) {
-  // const [name, setName] = useState('');
-  // const [Trainers, setTrainers] = useState([]);
-  const pokemon = useSelector((state) => state.allPokemon);
-  const [pokemonOne, setPokemonOne] = useState('pikachu');
-  const [pokemonTwo, setPokemonTwo] = useState('charizard');
-  const [moveOne, setMoveOne] = useState('thunder-punch');
-  const [Stats, setStats] = useState({});
-  const [sortedPokemon, setSortedPokemon] = useState(pokemon);
-  const dispatch = useDispatch();
+export default function Temp(props) {
+  const [sprite, setSprite] = useState('');
+  const [spriteBack, setSpriteBack] = useState('');
+  const [shinySprite, setShinySprite] = useState('');
+  const [shinySpriteBack, setShinySpriteBack] = useState('');
+  const [alt, setAlt] = useState('');
+  const [pokemon, setPokemon] = useState('');
 
-  useEffect(() => {
-    dispatch(fetchPokemon());
-  }, [dispatch]);
-
-  const onSubmit = async (evt) => {
+  const onSubmit = (evt) => {
     evt.preventDefault();
-    try {
-      const attacker = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonOne}`
-      );
+    const normalFront = `https://img.pokemondb.net/sprites/black-white/anim/normal/${pokemon}.gif`; //normal
+    const shinyFront = `https://img.pokemondb.net/sprites/black-white/anim/shiny/${pokemon}.gif`; //shiny
+    const normalBack = `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pokemon}.gif`; //normal back
+    const shinyBack = `https://img.pokemondb.net/sprites/black-white/anim/back-shiny/${pokemon}.gif`;
 
-      const move = await axios.get(
-        `https://pokeapi.co/api/v2/move/${moveOne}/`
-      );
+    setSprite(normalFront);
+    setSpriteBack(normalBack);
+    setShinySprite(shinyFront);
+    setShinySpriteBack(shinyBack);
 
-      const target = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonTwo}`
-      );
+    let name = pokemon.split('');
+    let letter = name.shift().toUpperCase();
+    const alternate = [letter, ...name].join('');
 
-      setStats(calcDamage(move.data, target.data, attacker.data));
-      // setPokemonOne('');
-      // setPokemonTwo('');
-      const data = PokemonOrder([...pokemon]);
-      console.log('data ==>', data);
-      setSortedPokemon(data);
-    } catch (error) {
-      console.log(error);
-      return setStats({ error: 'invalid pokemon or moves' });
-    }
+    setAlt(alternate);
+    setPokemon('');
   };
 
-  // //gets trainers from the database and puts them into an array,
-  // useEffect(() => {
-  //   const trainerRef = firebase.database().ref('Trainers');
-  //   trainerRef.on('value', (snapshot) => {
-  //     const trainers = snapshot.val();
-  //     let AllTrainers = [];
-  //     for (let id in trainers) {
-  //       AllTrainers.push({ id, ...trainers[id] });
-  //     }
-  //     console.log(AllTrainers);
-  //     setTrainers(AllTrainers);
-  //   });
-  // }, []);
-
-  // const HandleChange = (evt) => {
-  //   setName(evt.target.value);
-  // };
-
-  // //creates a trainer in the database
-  // const createTrainer = () => {
-  //   const trainerRef = firebase.database().ref('Trainers');
-  //   const Trainer = {
-  //     name,
-  //     numOfPokemon: 0,
-  //   };
-
-  //   trainerRef.push(Trainer);
-  //   setName('');
-  // };
-
-  // const Delete = (user) => {
-  //   const trainerRef = firebase.database().ref('Trainers').child(user.id);
-  //   trainerRef.remove();
-  // };
-
-  // const Increment = (user) => {
-  //   const trainerRef = firebase.database().ref('Trainers').child(user.id);
-  //   trainerRef.update({ numOfPokemon: user.numOfPokemon + 1 });
-  // };
-  return (
-    <div>
-      {/* <h1>THIS BETTER WORK!</h1>
-
-<input type='text' onChange={HandleChange} value={name} />
-<Button variant='outlined' onClick={createTrainer}>
-CLICK ME!
-</Button>
-
-<h1>ALL TRAINERS</h1>
-{Trainers.map((user) => {
   return (
     <div
-    key={user.id}
-    style={{
-      margin: '50px',
-      display: 'flex',
-      justifyContent: 'space-evenly',
-      alignItems: 'baseline',
-    }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginTop: '50px',
+      }}
     >
-    <div>NAME: {user.name}</div>
-    <div>POKEMON: {user.numOfPokemon}</div>
-    <Button variant='outlined' onClick={() => Delete(user)}>
-    DELETE
-    </Button>
-    <Button variant='outlined' onClick={() => Increment(user)}>
-    ADD
-    </Button>
-    </div>
-    );
-  })} */}
-      <form
-        onSubmit={onSubmit}
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
+      <form onSubmit={onSubmit}>
+        <label htmlFor='pokemon'>Choose Your Pokemon</label>
         <input
           type='text'
-          value={pokemonOne}
-          placeholder='ATTACKER'
+          value={pokemon}
           onChange={(evt) => {
-            setPokemonOne(evt.target.value);
+            setPokemon(evt.target.value);
           }}
-        />
-        <input
-          type='text'
-          placeholder='MOVE'
-          value={moveOne}
-          onChange={(evt) => {
-            setMoveOne(evt.target.value);
-          }}
-        />
-        <input
-          type='text'
-          value={pokemonTwo}
-          placeholder='TARGET'
-          onChange={(evt) => {
-            setPokemonTwo(evt.target.value);
-          }}
+          style={{ display: 'block' }}
         />
         <Button variant='outlined' type='submit'>
-          Get Stats
+          Get The Sprite
         </Button>
       </form>
-      {/* {console.log(Stats)} */}
-      <div>{Stats.Damage}</div>
-      {Stats.isCrit && <div>CRITICAL HIT!</div>}
-      <div>{Stats.Class}</div>
-      <div style={{ color: 'red', textAlign: 'center' }}>{Stats.error}</div>
-      <div>===============================================</div>
-      {pokemon.map((poke) => {
-        return <div key={poke.id}>{poke.name}</div>;
-      })}
-      <div>=========================================</div>
-      {sortedPokemon[0] &&
-        sortedPokemon.map((poke) => {
-          return <div key={poke.id}>{poke.name}</div>;
-        })}
+      {sprite[1] ? (
+        <div>
+          <img src={sprite} alt={alt} />
+          <img src={spriteBack} alt={alt} />
+        </div>
+      ) : null}
+      {shinySprite[1] ? (
+        <div>
+          <img src={shinySprite} alt={alt} />
+          <img src={shinySpriteBack} alt={alt} />
+        </div>
+      ) : null}
     </div>
   );
 }
