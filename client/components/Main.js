@@ -9,10 +9,11 @@ import Container from '@material-ui/core/Container';
 import {makeStyles} from '@material-ui/core';
 import {
   fetchPlayerOnePokemon,
-  fetchPlayerTwoPokemon,
+  fetchOpponentPokemon,
   fetchMovesInfo,
 } from '../store/pokemon';
 import {getPlayerMoves} from '../store/game';
+import {_changeTurns} from '../store/playerTurn';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -48,17 +49,31 @@ const useStyles = makeStyles(() => ({
 const Main = (props) => {
   const {
     getPlayerPokemon,
-    getOpponentPokemon,
+    fetchOpponentPokemon,
     opponentPokemon,
     playerPokemon,
     getMoves,
+    matchId,
+    role,
+    opponentName,
+    changeTurns,
+    isTurn,
+    username,
+    calculatedAttacks,
   } = props;
+
+  //test data
   const playerPkIds = [45, 23, 98];
+  const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
 
   useEffect(() => {
-    getPlayerPokemon(playerPkIds);
-    getOpponentPokemon();
-  }, []);
+    //getPlayerPokemon(playerPkIds);
+    if (opponentPokemon.length == 0) {
+      fetchOpponentPokemon(matchId, role);
+    }
+
+    // fetchOpponentPokemon(matchId, role);
+  }, [opponentPokemon]);
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -68,11 +83,24 @@ const Main = (props) => {
           <Gameboard
             playerPokemon={playerPokemon}
             opponentPokemon={opponentPokemon}
+            opponentName={opponentName}
+            username={username}
+            role={role}
+            changeTurns={changeTurns}
+            isTurn={isTurn}
+            matchId={matchId}
           />
-          <Actionbar />
+          <Actionbar
+            isTurn={isTurn}
+            changeTurns={changeTurns}
+            role={role}
+            username={username}
+            calculatedAttacks={calculatedAttacks}
+            matchId={matchId}
+          />
         </div>
         <div className={classes.side}>
-          <Sidebar />
+          <Sidebar calculatedAttacks={calculatedAttacks} />
         </div>
       </Container>
     </React.Fragment>
@@ -81,15 +109,23 @@ const Main = (props) => {
 const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
-    opponentPokemon: state.pokemon.playerTwoPokemon,
+    opponentPokemon: state.pokemon.opponentPokemon,
+    matchId: state.game.matchId,
+    role: state.game.role,
+    opponentName: state.game.opponentInfo.username,
+    isTurn: state.playerTurn.isTurn,
+    username: state.userData.user.username,
+    calculatedAttacks: state.playerTurn.calculatedAttacks,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
     getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
-    getOpponentPokemon: () => dispatch(fetchPlayerTwoPokemon()),
+    fetchOpponentPokemon: (matchId, role) =>
+      dispatch(fetchOpponentPokemon(matchId, role)),
     getMoves: (playerPk) => dispatch(fetchMovesInfo(playerPk)),
+    changeTurns: () => dispatch(_changeTurns()),
   };
 };
 

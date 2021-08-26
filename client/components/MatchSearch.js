@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     position: 'absolute',
-    width: 400,
+    width: 600,
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
@@ -111,6 +111,7 @@ const MatchSearch = (props) => {
     fetchPokemon,
     getUserData,
     setRole,
+    changeTurns,
   } = props;
   //const joinMatchId = useRef();
   const {currentUser} = useAuth();
@@ -137,9 +138,9 @@ const MatchSearch = (props) => {
     setPage(0);
   };
 
-  function handleNewMatchClick() {
+  async function handleNewMatchClick() {
     if (user.uid) {
-      newGame(user.uid, user.username);
+      await newGame(user.uid, user.username);
       setRole('host');
       history.push('/pregame');
     } else {
@@ -181,7 +182,7 @@ const MatchSearch = (props) => {
       getUserData(currentUser.uid);
     }
     if (user.pokemon) {
-      fetchPokemon(user.pokemon);
+      fetchPokemon(user.pokemon, user.username);
     }
   }, [user, currentUser]);
   return (
@@ -193,6 +194,7 @@ const MatchSearch = (props) => {
       }}
     >
       {/* <Grid
+
         style={{
           display: 'flex',
           justifyContent: 'center',
@@ -206,7 +208,7 @@ const MatchSearch = (props) => {
         <Grid className={classes.buttons}>
           <Button
             style={{backgroundColor: 'red'}}
-            onClick={() => handleNewMatchClick()}
+            onClick={async () => handleNewMatchClick()}
           >
             Create Match
           </Button>
@@ -298,7 +300,8 @@ const mapDispatch = (dispatch) => {
     newGame: (uid, name) => dispatch(createNewGame(uid, name)),
     joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
     findGame: () => dispatch(findGame()),
-    fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
+    fetchPokemon: (pk, username) =>
+      dispatch(fetchPlayerOnePokemon(pk, username)),
     getUserData: (uid) => dispatch(getUserData(uid)),
     setRole: (role) => dispatch(setHostGuest(role)),
   };

@@ -1,9 +1,26 @@
 // const ATTACK_OPPONENT = 'ATTACK_OPPONENT';
+import calculateTurn from '../../utils/calculateTurn';
+
 const SELECT_ATTACK = 'SELECT_ATTACK';
 const CLEAR_PLAYER_TURN = 'CLEAR_PLAYER_TURN';
 const SELECT_ATTACKED_POKEMON = 'SELECT_ATTACKED_POKEMON';
 const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
 const SELECTED_PLAYER_POKEMON = 'SELECTED_PLAYER_POKEMON';
+const CHANGE_TURNS = 'CHANGE_TURNS';
+const SET_CALCULATED_ATTACKS = 'SET_CALCULATED_ATTACKS';
+
+export const _setCalculatedAttacks = (turn) => {
+  return {
+    type: SET_CALCULATED_ATTACKS,
+    turn,
+  };
+};
+
+export const _changeTurns = () => {
+  return {
+    type: CHANGE_TURNS,
+  };
+};
 
 export const _selectedPlayerPokemon = (pokemon) => {
   return {
@@ -39,8 +56,14 @@ export const _clearAttackedPokemon = () => {
 };
 
 export const selectAttack = (selectedPokemon, attack) => (dispatch) => {
-  const attackObj = {pokemon: selectedPokemon.name, attack: attack};
+  const attackObj = {pokemon: selectedPokemon, attack: attack};
   return dispatch(_selectAttack(attackObj));
+};
+
+export const setCalculatedAttacks = (updatedTurns) => (dispatch) => {
+  // const updatedTurns = calculateTurn(p1Turn, oppTurn);
+  // return dispatch(_setCalculatedAttacks(updatedTurns));
+  return dispatch(_setCalculatedAttacks(updatedTurns));
 };
 
 export const selectAttackedPokemon =
@@ -59,6 +82,8 @@ export default function (
     playerTurn: [],
     attackedPokemon: [],
     selectedPlayerPokemon: {},
+    isTurn: false,
+    calculatedAttacks: [],
   },
   action
 ) {
@@ -79,6 +104,11 @@ export default function (
       return {...state, playerTurn: []};
     case CLEAR_ATTACKED_POKEMON:
       return {...state, attackedPokemon: []};
+    case CHANGE_TURNS:
+      console.log(!state.isTurn);
+      return {...state, isTurn: !state.isTurn};
+    case SET_CALCULATED_ATTACKS:
+      return {...state, calculatedAttacks: action.turn};
     default:
       return state;
   }

@@ -23,6 +23,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '0px 0px 30px 30px',
     backgroundColor: '#1574b0',
     color: '#3d405b',
+    position: 'relative',
   },
   cart: {
     width: '80vw',
@@ -45,13 +46,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Navbar = (props) => {
+  const history = useHistory();
   const [error, setError] = useState('');
   const classes = useStyles();
   const {currentUser, logout} = useAuth();
 
   const {username} = props;
 
-  console.log(firebase.auth());
+  // console.log(firebase.auth());
   // const { currentUser } = firebase.auth();
 
   async function handleLogout() {
@@ -60,7 +62,8 @@ const Navbar = (props) => {
     try {
       await logout();
       history.push('/login');
-    } catch {
+    } catch (error) {
+      console.log(error);
       setError('Failed to log out');
     }
   }
@@ -117,7 +120,8 @@ const Navbar = (props) => {
           )}
         </div>
       </Toolbar>
-      <div>{error && <Alert>{error}</Alert>}</div>
+      {error && <Alert>{error}</Alert>}
+      {/* <div>{error && <Alert>{error}</Alert>}</div> */}
     </AppBar>
   );
 };

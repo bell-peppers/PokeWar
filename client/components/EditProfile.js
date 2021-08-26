@@ -21,6 +21,7 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import { FIREDB } from '../../utils/firebase';
 import 'firebase/database';
@@ -32,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		backgroundColor: 'green',
 		// flexWrap: 'nowrap',
-		// width: '100%',
-		// height: '600px',
+		width: '100%',
+		height: '600px',
 		flexDirection: 'column',
 		justifyContent: 'space-around',
 	},
@@ -72,41 +73,41 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const UserProfile = (props) => {
+const EditProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
-	const { currentUser } = useAuth();
+	const { currentUser, username } = useAuth();
 	const classes = useStyles();
-	const dispatch = useDispatch();
+	const [image, setImage] = useState({ preview: '', raw: '' });
 
-	useEffect(() => {
-		if (currentUser && currentUser.uid !== user.uid) {
-			getUserData(currentUser.uid);
+	const handleChange = (e) => {
+		if (e.target.files.length) {
+			setImage({
+				preview: URL.createObjectURL(e.target.files[0]),
+				raw: e.target.files[0],
+			});
 		}
-		if (user.pokemon) {
-			fetchPokemon(user.pokemon);
-		}
-	}, [user, currentUser]);
+	};
 
-	const [clicked, setClicked] = useState(false);
+	const handleUpload = async (e) => {
+		e.preventDefault();
+		const formData = new FormData();
+		formData.append('image', image.raw);
 
-	const handleIconClick = (poke) => {
-		console.log(poke);
-		if (!poke.liked) {
-			poke.liked = true;
-			setClicked(true);
-		} else {
-			poke.liked = false;
-			setClicked(false);
-		}
-		console.log(poke);
+		await fetch('YOUR_URL', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+			body: formData,
+		});
 	};
 
 	return (
 		<div>
 			<Grid className={classes.main}>
 				<Grid
-					style={{ display: 'flex', justifyContent: 'center', padding: '5px' }}
+					style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}
 				>
 					POKEWARS
 				</Grid>
@@ -118,68 +119,64 @@ const UserProfile = (props) => {
 					}}
 				>
 					<Grid>
-						<Grid>
-							<CardMedia
-								style={{
-									width: '150px',
-									height: '150px',
-									border: '5px solid blue',
-								}}
-							>
-								{currentUser && currentUser.photoUrl
-								? (
-									<Image src={currentUser.photoUrl} />
+						<CardMedia
+							style={{
+								width: '150px',
+								height: '150px',
+								border: '5px solid blue',
+							}}
+						>
+							{currentUser && currentUser.photoUrl ? (
+								<Image src={currentUser.photoUrl} />
+							) : (
+								<Image src='/pics/default.png' />
+							)}
+						</CardMedia>
+						<div>
+							<label htmlFor='upload-button'>
+								{image.preview ? (
+									<img
+										src={image.preview}
+										alt='dummy'
+										width='300'
+										height='300'
+									/>
 								) : (
-									<Image src='/pics/default.png' />
-								)
-								}
-							</CardMedia>
-							{user.username}
-						</Grid>
+									<>
+										<span className='fa-stack fa-2x mt-3 mb-2'>
+											<i className='fas fa-circle fa-stack-2x' />
+											<i className='fas fa-store fa-stack-1x fa-inverse' />
+										</span>
+										<h5 className='text-center'>Upload your photo</h5>
+									</>
+								)}
+							</label>
+							<input
+								type='file'
+								id='upload-button'
+								style={{ display: 'none' }}
+								onChange={handleChange}
+							/>
+							<br />
+							{currentUser && <button onClick={handleUpload}>Upload{currentUser.photoUrl = image.preview}</button>}
+              {currentUser && console.log(currentUser.photoUrl)}
+						</div>
+						<Typography>
+							Upload a file from your device. Image should be square
+						</Typography>
+
+						<form>
+							<TextField
+								id='username'
+								placeholder={user.username}
+								variant='filled'
+							/>
+						</form>
 					</Grid>
 					{/* {playerPokemon && console.log(playerPokemon)} */}
-
-					{playerPokemon && (
-						<div className={classes.imageRoot}>
-							My Pokemon
-							<ImageList
-								cols={2.5}
-								style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
-							>
-								{playerPokemon.map((item) => (
-									<ImageListItem key={item.id} style={{ width: '150px' }}>
-										<img src={item.sprites.front_default} />
-										<ImageListItemBar
-											actionIcon={
-												<IconButton
-													onClick={() => handleIconClick(item)}
-													className={classes.title}
-												>
-													{item.liked ? (
-														<FavoriteIcon />
-													) : (
-														<FavoriteBorderIcon />
-													)}
-												</IconButton>
-											}
-										/>
-									</ImageListItem>
-								))}
-							</ImageList>
-						</div>
-					)}
 				</Grid>
 				<Grid>
-					<Button href='/editprofile'>Edit Profile</Button>
-					<Button
-						onClick={() =>
-							alert(
-								'Friend invite sent. They will appear as a friend once they have accepted your invite'
-							)
-						}
-					>
-						Add Friend
-					</Button>
+					<Button href='/myprofile'>Save</Button>
 				</Grid>
 			</Grid>
 		</div>
@@ -199,4 +196,4 @@ const mapDispatch = (dispatch) => {
 		getUserData: (uid) => dispatch(getUserData(uid)),
 	};
 };
-export default connect(mapState, mapDispatch)(UserProfile);
+export default connect(mapState, mapDispatch)(EditProfile);

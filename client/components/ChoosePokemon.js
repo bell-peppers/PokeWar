@@ -13,6 +13,10 @@ import {
   unchoosePlayerPokemon,
   sendChosenPokemon,
 } from '../store/pokemon';
+import {setPlayerReady} from '../store/game';
+import {FIREDB} from '../../utils/firebase';
+import {_changeTurns} from '../store/playerTurn';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
   PokeCards: {
@@ -43,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: '70px',
+    // marginTop: '70px',
     maxWidth: '1200px',
     minWidth: '400px',
     minheight: '400px',
@@ -51,11 +55,17 @@ const useStyles = makeStyles((theme) => ({
   cardContainer: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '70px',
+    // marginTop: '70px',
     maxWidth: '1400px',
     minWidth: '400px',
     minheight: '400px',
     flexWrap: 'wrap',
+  },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
 }));
 
@@ -63,6 +73,7 @@ function ChoosePokemon(props) {
   const [open, setOpen] = React.useState(false);
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
   const [pokeColor, setPokeColor] = React.useState([]);
+  const [readyClicked, setReadyClicked] = React.useState(false);
   const classes = useStyles();
   const history = useHistory();
   const {
@@ -73,6 +84,9 @@ function ChoosePokemon(props) {
     matchId,
     role,
     sendChosenPokemon,
+    setReady,
+    playerReady,
+    changeTurns,
   } = props;
 
   const handleOpen = (pokemon, color) => {
@@ -88,18 +102,43 @@ function ChoosePokemon(props) {
   };
 
   const clickHandle = (pk) => {
-    if (chosenPokemon.length < 3 && !alreadyPicked(pk)) {
-      choosePokemon(pk);
-    } else {
-      unchoosePokemon(pk);
+    if (!readyClicked) {
+      if (chosenPokemon.length < 3 && !alreadyPicked(pk)) {
+        choosePokemon(pk);
+      } else {
+        unchoosePokemon(pk);
+      }
     }
   };
 
-  const readyButtonHandle = () => {
-    const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
-    sendChosenPokemon(chosenPokemon, testMatch, role);
-    history.push('/game');
+  const listenOppReady = () => {
+    const readyUpdate = FIREDB.ref(`Match/${matchId}/ready`);
+    readyUpdate.on('value', (snapshot) => {
+      const readyCheck = snapshot.val();
+      console.log(readyCheck);
+      if (role === 'host') {
+        if (readyCheck.guestReady === true) {
+          history.push('/game');
+        }
+      } else if (role === 'guest') {
+        if (readyCheck.hostReady === true) {
+          history.push('/game');
+        }
+      }
+    });
   };
+
+  const readyButtonHandle = () => {
+    setReadyClicked(true);
+    if (role === 'guest') {
+      changeTurns();
+    }
+    sendChosenPokemon(chosenPokemon, matchId, role);
+    setReady(matchId, role, true);
+    listenOppReady();
+    // history.push('/game');
+  };
+
   const alreadyPicked = (pk) => {
     const alreadyPick = chosenPokemon.filter((pkm) => {
       return pkm.name === pk.name;
@@ -110,96 +149,207 @@ function ChoosePokemon(props) {
   return (
     <div className={classes.main}>
       <div>
-        <h1>Choose three pokemon to take to war!</h1>
+        {readyClicked ? (
+          <div style={{marginTop: 50, marginBottom: 40}}>
+            <h2>Waiting for other player to click ready...</h2>
+            <LinearProgress color='secondary' />
+          </div>
+        ) : (
+          <div
+            className={classes.buttonContainer}
+            style={{marginTop: 50, marginBottom: 40}}
+          >
+            <h1>Choose your three pokemon to take to battle!</h1>{' '}
+            <Button
+              onClick={() => readyButtonHandle()}
+              variant='contained'
+              color='primary'
+              disabled={readyClicked}
+            >
+              READY!
+            </Button>
+          </div>
+        )}
       </div>
-      <div className={classes.cardContainer}>
-        {playerPokemon[0] &&
-          playerPokemon.map((poke) => {
-            let finalColor;
+      {readyClicked ? (
+        <div className={classes.cardContainer}>
+          {playerPokemon[0] &&
+            chosenPokemon.map((poke) => {
+              let finalColor;
 
-            if (poke.types.length === 2) {
-              finalColor = colorTypeGradients(
-                poke.types[0].type.name,
-                poke.types[1].type.name,
-                poke.types.length
-              );
-            } else {
-              finalColor = colorTypeGradients(
-                poke.types[0].type.name,
-                poke.types[0].type.name,
-                poke.types.length
-              );
-            }
+              if (poke.types.length === 2) {
+                finalColor = colorTypeGradients(
+                  poke.types[0].type.name,
+                  poke.types[1].type.name,
+                  poke.types.length
+                );
+              } else {
+                finalColor = colorTypeGradients(
+                  poke.types[0].type.name,
+                  poke.types[0].type.name,
+                  poke.types.length
+                );
+              }
 
-            return (
-              <React.Fragment key={poke.id}>
-                <Card
-                  className={
-                    alreadyPicked(poke) ? classes.picked : classes.PokeCards
-                  }
-                  key={poke.id}
-                  style={{
-                    background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
-                  }}
-                  onClick={() => clickHandle(poke)}
-                >
-                  <CardContent>
-                    <Typography
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      #{poke.id}{' '}
-                      <InfoOutlinedIcon
-                        onClick={() => handleOpen(poke, finalColor)}
-                        style={{
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </Typography>
-                    <Typography>
-                      <img
-                        className='cardPic'
-                        src={
-                          poke.sprites.other['official-artwork'].front_default
-                        }
-                      />
-                    </Typography>
-                    <Typography className='data'>{poke.name}</Typography>
-                    {poke.types.length === 2 ? (
+              return (
+                <React.Fragment key={poke.id}>
+                  <Card
+                    className={
+                      alreadyPicked(poke) ? classes.picked : classes.PokeCards
+                    }
+                    key={poke.id}
+                    style={{
+                      background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
+                    }}
+                    onClick={() => clickHandle(poke)}
+                  >
+                    <CardContent>
                       <Typography
                         style={{
                           display: 'flex',
-                          width: '100px',
-                          height: '20px',
-                          marginTop: '4px',
-                          marginLeft: '20%',
-                          justifyContent: 'space-evenly',
+                          justifyContent: 'space-between',
                         }}
                       >
-                        <img src={`assets/${poke.types[0].type.name}.png`} />
-                        <img src={`assets/${poke.types[1].type.name}.png`} />
+                        #{poke.id}{' '}
+                        <InfoOutlinedIcon
+                          onClick={() => handleOpen(poke, finalColor)}
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                        />
                       </Typography>
-                    ) : (
+                      <Typography>
+                        <img
+                          className='cardPic'
+                          src={
+                            poke.sprites.other['official-artwork'].front_default
+                          }
+                        />
+                      </Typography>
+                      <Typography className='data'>{poke.name}</Typography>
+                      {poke.types.length === 2 ? (
+                        <Typography
+                          style={{
+                            display: 'flex',
+                            width: '100px',
+                            height: '20px',
+                            marginTop: '4px',
+                            marginLeft: '20%',
+                            justifyContent: 'space-evenly',
+                          }}
+                        >
+                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                          <img src={`assets/${poke.types[1].type.name}.png`} />
+                        </Typography>
+                      ) : (
+                        <Typography
+                          style={{
+                            display: 'flex',
+                            width: '20px',
+                            height: '20px',
+                            marginTop: '4px',
+                            marginLeft: '45%',
+                          }}
+                        >
+                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </React.Fragment>
+              );
+            })}
+        </div>
+      ) : (
+        <div className={classes.cardContainer}>
+          {playerPokemon[0] &&
+            playerPokemon.map((poke) => {
+              let finalColor;
+
+              if (poke.types.length === 2) {
+                finalColor = colorTypeGradients(
+                  poke.types[0].type.name,
+                  poke.types[1].type.name,
+                  poke.types.length
+                );
+              } else {
+                finalColor = colorTypeGradients(
+                  poke.types[0].type.name,
+                  poke.types[0].type.name,
+                  poke.types.length
+                );
+              }
+
+              return (
+                <React.Fragment key={poke.id}>
+                  <Card
+                    className={
+                      alreadyPicked(poke) ? classes.picked : classes.PokeCards
+                    }
+                    key={poke.id}
+                    style={{
+                      background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
+                    }}
+                    onClick={() => clickHandle(poke)}
+                  >
+                    <CardContent>
                       <Typography
                         style={{
                           display: 'flex',
-                          width: '20px',
-                          height: '20px',
-                          marginTop: '4px',
-                          marginLeft: '45%',
+                          justifyContent: 'space-between',
                         }}
                       >
-                        <img src={`assets/${poke.types[0].type.name}.png`} />
+                        #{poke.id}{' '}
+                        <InfoOutlinedIcon
+                          onClick={() => handleOpen(poke, finalColor)}
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                        />
                       </Typography>
-                    )}
-                  </CardContent>
-                </Card>
-              </React.Fragment>
-            );
-          })}
-      </div>
+                      <Typography>
+                        <img
+                          className='cardPic'
+                          src={
+                            poke.sprites.other['official-artwork'].front_default
+                          }
+                        />
+                      </Typography>
+                      <Typography className='data'>{poke.name}</Typography>
+                      {poke.types.length === 2 ? (
+                        <Typography
+                          style={{
+                            display: 'flex',
+                            width: '100px',
+                            height: '20px',
+                            marginTop: '4px',
+                            marginLeft: '20%',
+                            justifyContent: 'space-evenly',
+                          }}
+                        >
+                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                          <img src={`assets/${poke.types[1].type.name}.png`} />
+                        </Typography>
+                      ) : (
+                        <Typography
+                          style={{
+                            display: 'flex',
+                            width: '20px',
+                            height: '20px',
+                            marginTop: '4px',
+                            marginLeft: '45%',
+                          }}
+                        >
+                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </React.Fragment>
+              );
+            })}
+        </div>
+      )}
       {selectedPokemon.id && (
         <Modal
           open={open}
@@ -283,11 +433,6 @@ function ChoosePokemon(props) {
           </div>
         </Modal>
       )}
-      <div>
-        <Button onClick={() => readyButtonHandle()} variant='outlined'>
-          READY!
-        </Button>
-      </div>
     </div>
   );
 }
@@ -298,6 +443,7 @@ const mapState = (state) => {
     user: state.userData,
     chosenPokemon: state.pokemon.chosenPokemon,
     role: state.game.role,
+    playerReady: state.game.playerReady,
   };
 };
 const mapDispatch = (dispatch) => {
@@ -306,6 +452,8 @@ const mapDispatch = (dispatch) => {
     unchoosePokemon: (pk) => dispatch(unchoosePlayerPokemon(pk)),
     sendChosenPokemon: (pk, matchId, role) =>
       dispatch(sendChosenPokemon(pk, matchId, role)),
+    setReady: (mid, role, ready) => dispatch(setPlayerReady(mid, role, ready)),
+    changeTurns: () => dispatch(_changeTurns()),
   };
 };
 export default connect(mapState, mapDispatch)(ChoosePokemon);
