@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPokemon } from '../store/allPokemon';
 import Card from '@material-ui/core/Card';
-import { CardContent, Typography } from '@material-ui/core';
+import { CardContent, Typography, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { colorTypeGradients } from '../../utils/ColorGradientFunc';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import Modal from '@material-ui/core/Modal';
+import { Pagination } from '@material-ui/lab';
+import Loading from './Loading';
 
 /**
  * COMPONENT
@@ -24,8 +26,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: 400,
     border: '2px solid #000',
-    // boxShadow: theme.shadows[5],
-    // padding: theme.spacing(2, 4, 3),
   },
 }));
 
@@ -33,6 +33,10 @@ export default function AllPokemon(props) {
   const pokemon = useSelector((state) => state.allPokemon);
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  const [onPage, setOnPage] = useState(1);
+  const [Amount, setAmount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [open, setOpen] = React.useState(false);
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
@@ -50,93 +54,133 @@ export default function AllPokemon(props) {
     setPokeColor([]);
   };
 
+  const handlePagination = (evt, page) => {
+    console.log(page);
+    setOnPage(page);
+    console.log(onPage);
+    setAmount((page - 1) * 50);
+    console.log(Amount);
+
+    setIsLoading(true);
+    dispatch(fetchPokemon(Amount)).then(() => {
+      setIsLoading(false);
+    });
+  };
+
   useEffect(() => {
-    dispatch(fetchPokemon());
+    dispatch(fetchPokemon(Amount)).then(() => {
+      setIsLoading(false);
+    });
   }, [dispatch]);
 
   return (
     <div className='main'>
-      {pokemon[0] &&
-        pokemon.map((poke) => {
-          let finalColor;
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          <Pagination
+            count={13}
+            page={onPage}
+            onChange={(evt, page) => {
+              console.log(page);
+              setOnPage(page);
+              console.log(onPage);
+              setAmount((page - 1) * 50);
+              console.log(Amount);
 
-          if (poke.types.length === 2) {
-            finalColor = colorTypeGradients(
-              poke.types[0].type.name,
-              poke.types[1].type.name,
-              poke.types.length
-            );
-          } else {
-            finalColor = colorTypeGradients(
-              poke.types[0].type.name,
-              poke.types[0].type.name,
-              poke.types.length
-            );
-          }
+              setIsLoading(true);
+              dispatch(fetchPokemon(Amount)).then(() => {
+                setIsLoading(false);
+              });
+            }}
+          />
+          {pokemon[0] &&
+            pokemon.map((poke) => {
+              let finalColor;
 
-          return (
-            <React.Fragment key={poke.id}>
-              <Card
-                className={classes.PokeCards}
-                key={poke.id}
-                style={{
-                  background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
-                }}
-              >
-                <CardContent>
-                  <Typography
+              if (poke.types.length === 2) {
+                finalColor = colorTypeGradients(
+                  poke.types[0].type.name,
+                  poke.types[1].type.name,
+                  poke.types.length
+                );
+              } else {
+                finalColor = colorTypeGradients(
+                  poke.types[0].type.name,
+                  poke.types[0].type.name,
+                  poke.types.length
+                );
+              }
+
+              return (
+                <React.Fragment key={poke.id}>
+                  <Card
+                    className={classes.PokeCards}
+                    key={poke.id}
                     style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
                     }}
                   >
-                    #{poke.id}{' '}
-                    <InfoOutlinedIcon
-                      onClick={() => handleOpen(poke, finalColor)}
-                      style={{
-                        cursor: 'pointer',
-                      }}
-                    />
-                  </Typography>
-                  <Typography>
-                    <img
-                      className='cardPic'
-                      src={poke.sprites.other['official-artwork'].front_default}
-                    />
-                  </Typography>
-                  <Typography className='data'>{poke.name}</Typography>
-                  {poke.types.length === 2 ? (
-                    <Typography
-                      style={{
-                        display: 'flex',
-                        width: '100px',
-                        height: '20px',
-                        marginTop: '4px',
-                        marginLeft: '20%',
-                        justifyContent: 'space-evenly',
-                      }}
-                    >
-                      <img src={`assets/${poke.types[0].type.name}.png`} />
-                      <img src={`assets/${poke.types[1].type.name}.png`} />
-                    </Typography>
-                  ) : (
-                    <Typography
-                      style={{
-                        display: 'flex',
-                        width: '20px',
-                        height: '20px',
-                        marginTop: '4px',
-                        marginLeft: '45%',
-                      }}
-                    >
-                      <img src={`assets/${poke.types[0].type.name}.png`} />
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
-            </React.Fragment>
-          );
-        })}
+                    <CardContent>
+                      <Typography
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        #{poke.id}{' '}
+                        <InfoOutlinedIcon
+                          onClick={() => handleOpen(poke, finalColor)}
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                        />
+                      </Typography>
+                      <Typography>
+                        <img
+                          className='cardPic'
+                          src={
+                            poke.sprites.other['official-artwork'].front_default
+                          }
+                        />
+                      </Typography>
+                      <Typography className='data'>{poke.name}</Typography>
+                      {poke.types.length === 2 ? (
+                        <Typography
+                          style={{
+                            display: 'flex',
+                            width: '100px',
+                            height: '20px',
+                            marginTop: '4px',
+                            marginLeft: '20%',
+                            justifyContent: 'space-evenly',
+                          }}
+                        >
+                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                          <img src={`assets/${poke.types[1].type.name}.png`} />
+                        </Typography>
+                      ) : (
+                        <Typography
+                          style={{
+                            display: 'flex',
+                            width: '20px',
+                            height: '20px',
+                            marginTop: '4px',
+                            marginLeft: '45%',
+                          }}
+                        >
+                          <img src={`assets/${poke.types[0].type.name}.png`} />
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </React.Fragment>
+              );
+            })}
+          <Pagination count={13} page={onPage} onChange={handlePagination} />
+        </React.Fragment>
+      )}
       {selectedPokemon.id && (
         <Modal
           open={open}
