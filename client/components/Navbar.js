@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '0px 0px 30px 30px',
     backgroundColor: '#1574b0',
     color: '#3d405b',
-    position: 'relative'
+    position: 'relative',
   },
   cart: {
     width: '80vw',
@@ -108,8 +108,7 @@ const Navbar = (props) => {
                 Sign Out
               </p>
             </div>
-          )
-          : (
+          ) : (
             <div style={{display: 'flex'}}>
               <Link to='/signup'>
                 <p className={classes.p}>Sign Up</p>
@@ -118,8 +117,7 @@ const Navbar = (props) => {
                 <p className={classes.p}>Login</p>
               </Link>
             </div>
-          )
-          }
+          )}
         </div>
       </Toolbar>
       {error && <Alert>{error}</Alert>}
@@ -130,7 +128,7 @@ const Navbar = (props) => {
 
 const mapState = (state) => {
   return {
-    // username: state.userData.user.username,
+    username: state.userData.user.username,
   };
 };
 
@@ -139,5 +137,3 @@ const mapDispatch = (dispatch) => {
 };
 
 export default connect(mapState, mapDispatch)(Navbar);
-
-
