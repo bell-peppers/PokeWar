@@ -103,6 +103,11 @@ const EditProfile = (props) => {
 		});
 	};
 
+	useEffect(() => {
+		if (currentUser && currentUser.uid !== user.uid) {
+			getUserData(currentUser.uid);
+		}
+	}, [user, currentUser]);
 	return (
 		<div>
 			<Grid className={classes.main}>
@@ -126,11 +131,13 @@ const EditProfile = (props) => {
 								border: '5px solid blue',
 							}}
 						>
-							{currentUser && currentUser.photoUrl ? (
-								<Image src={currentUser.photoUrl} />
-							) : (
-								<Image src='/pics/default.png' />
-							)}
+							{user && (
+								<Image src={user.photoUrl} />
+							)
+							// : (
+							// 	<Image src='http://localhost:8080//pics/default.png' />
+							// )
+							}
 						</CardMedia>
 						<div>
 							<label htmlFor='upload-button'>
@@ -158,8 +165,8 @@ const EditProfile = (props) => {
 								onChange={handleChange}
 							/>
 							<br />
-							{currentUser && <button onClick={handleUpload}>Upload{currentUser.photoUrl = image.preview}</button>}
-              {currentUser && console.log(currentUser.photoUrl)}
+							{currentUser && <button onClick={handleUpload}>Upload{user.photoUrl = image.preview}</button>}
+              {currentUser && console.log(user.photoUrl)}
 						</div>
 						<Typography>
 							Upload a file from your device. Image should be square

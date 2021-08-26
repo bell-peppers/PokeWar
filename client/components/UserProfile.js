@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
-import { Button, makeStyles, Typography } from '@material-ui/core';
+import { connect, useDispatch } from 'react-redux';
+import { Button, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
 import { CardMedia } from '@material-ui/core';
 import Image from 'material-ui-image';
 import { useAuth } from '../../src/contexts/AuthContext';
@@ -21,8 +13,7 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import firebase from 'firebase/app';
-import { FIREDB } from '../../utils/firebase';
+import { useHistory } from 'react-router-dom';
 import 'firebase/database';
 import 'firebase/auth';
 
@@ -75,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
+	const history = useHistory();
 	const { currentUser } = useAuth();
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -126,12 +118,8 @@ const UserProfile = (props) => {
 									border: '5px solid blue',
 								}}
 							>
-								{currentUser && currentUser.photoUrl
-								? (
-									<Image src={currentUser.photoUrl} />
-								) : (
-									<Image src='/pics/default.png' />
-								)
+								{user && <Image src={user.photoUrl} />
+
 								}
 							</CardMedia>
 							{user.username}
