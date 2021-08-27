@@ -120,18 +120,63 @@ function EditProfile(props) {
 						display: 'flex',
 						flexDirection: 'row',
 						justifyContent: 'space-around',
+						paddingTop: '30px',
 					}}
 				>
 					<Grid>
-						<Grid>
-							<img
-								src={url || 'http://via.placeholder.com/300'}
-								alt='firebase-image'
-							/>
-							<input type='file' onChange={handleChange} />
-							<button onClick={handleUpload}>Upload</button>
+						<Typography>AVATAR</Typography>
+						<Typography>Choose your avatar image</Typography>
+						<Grid
+							style={{
+								display: 'flex',
+								flexDirection: 'column',
+								minHeight: '300px',
+								justifyContent: 'center',
+							}}
+						>
+							<Grid
+								style={{
+									display: 'flex',
+									justifyContent: 'center',
+									paddingBottom: '20px',
+								}}
+							>
+								{currentUser && (
+									<img
+										// src={url}
+										src={url || currentUser.photoURL}
+										alt='firebase-image'
+										width='180px'
+										height='180px'
+									/>
+								)}
+							</Grid>
+							<Grid style={{ display: 'flex' }}>
+								<input type='file' onChange={handleChange} />
+								<button onClick={handleUpload}>Upload</button>
+							</Grid>
 						</Grid>
-
+						<Grid>
+							<Typography>Your avatars</Typography>
+							<Grid style={{display: 'flex', padding: '20px', border: '5px solid grey',width: '600px', justifyContent: 'space-between'}}>
+								<img
+									width='150px'
+									height='150px'
+									padding='10px'
+									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/bulbasaur.png?alt=media&token=92102872-97ff-4fd3-8b81-65e7ce211a5f'
+								/>
+								<img
+									width='150px'
+									height='150px'
+									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/charmander.png?alt=media&token=726a00eb-7fa6-4446-8152-cfb767f673e6'
+								/>
+								<img
+									width='150px'
+									height='150px'
+									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2'
+								/>
+							</Grid>
+						</Grid>
 						<form>
 							<TextField
 								id='username'

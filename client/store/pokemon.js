@@ -311,8 +311,7 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
 
 export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
   try {
-    const playerPk = [];
-    await pkId.forEach(async (id) => {
+     let playerPk = await Promise.all(pkId.map(async (id) => {
       const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
       const movesArr = [
         pk.data.moves[0],
@@ -326,9 +325,11 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
       });
       pk.data.moves = movesArr;
       pk.data.owner = username;
-      playerPk.push(pk.data);
-    });
-
+      return pk.data
+      // playerPk.push();
+    }));
+    console.log("infetch")
+    console.log(JSON.stringify(playerPk))
     return dispatch(_getPlayerOnePokemon(playerPk));
   } catch (error) {
     console.error(error);
