@@ -11,6 +11,14 @@ const SET_HOSTGUEST = 'SET_HOSTGUEST';
 const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
 const SET_PLAYER_READY = 'SET_PLAYER_READY';
 const SET_WINNER = 'SET_WINNER';
+const SET_WIN_RECORD = 'SET_WIN_RECORD';
+
+const _setWinRecord = (userId) => {
+  return {
+    type: SET_WIN_RECORD,
+    userId,
+  };
+};
 
 const _setWinner = (player) => {
   return {
@@ -80,13 +88,21 @@ const _joinGame = (data, matchId) => {
   };
 };
 
-export const setWinner = (playerPk, username, oppName) => (dispatch) => {
+export const setWinner = (playerPk, user, oppName) => async (dispatch) => {
   const playerCheck = playerPk.filter((pk) => {
     return pk.active;
   }).length;
 
-  const winner = playerCheck === 0 ? oppName : username;
+  const winner = playerCheck === 0 ? oppName : user.username;
   alert(`${winner} wins!`);
+  if (winner === user.username) {
+    let userRec = {gamesPlayed: user.gamesPlayed + 1, wins: user.wins + 1};
+    await FIREDB.ref('/users/' + user.uid).update(userRec);
+  } else {
+    let userRec = {gamesPlayed: user.gamesPlayed + 1};
+    await FIREDB.ref('/users/' + user.uid).update(userRec);
+  }
+
   return dispatch(_setWinner(winner));
 };
 

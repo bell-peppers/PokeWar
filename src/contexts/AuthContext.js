@@ -9,10 +9,8 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-
 export function AuthProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null);
-
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
   async function signup(email, password, username) {
@@ -26,9 +24,11 @@ export function AuthProvider({children}) {
     FIREDB.ref('users/' + uid).set({
       uid: uid,
       email: email,
-      pokemon: [68, 44, 58, 76, 105, 234, 192, 204, 169, 151],
+      pokemon: [89, 1, 24, 76, 105, 562, 33, 69],
       username: name,
-      photoUrl: ''
+      photoUrl: '',
+      wins: 0,
+      totalGames: 0,
     });
   }
 
@@ -38,9 +38,9 @@ export function AuthProvider({children}) {
     return user;
   }
 
-	function logout () {
-		return auth.signOut();
-	}
+  function logout() {
+    return auth.signOut();
+  }
   // function getUserData(uid) {
   //   FIREDB.ref('users/' + uid).once('value', (snap) => {
   //     console.log(snap.val());
@@ -63,7 +63,7 @@ export function AuthProvider({children}) {
     currentUser,
     login,
     signup,
-    logout
+    logout,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
