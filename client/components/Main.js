@@ -66,14 +66,15 @@ const Main = (props) => {
   const playerPkIds = [45, 23, 98];
   const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
 
-  useEffect(() => {
-    //getPlayerPokemon(playerPkIds);
-    if (opponentPokemon.length == 0) {
-      fetchOpponentPokemon(matchId, role);
-    }
+  // useEffect(() => {
+  //   //getPlayerPokemon(playerPkIds);
 
-    // fetchOpponentPokemon(matchId, role);
-  }, [opponentPokemon]);
+  //   // if (opponentPokemon.length == 0) {
+  //   //   fetchOpponentPokemon(matchId, role);
+  //   // }
+
+  //   fetchOpponentPokemon(matchId, role);
+  // }, []);
   const classes = useStyles();
   return (
     <React.Fragment>

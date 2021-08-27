@@ -127,6 +127,7 @@ export const findGame = () => async (dispatch) => {
 
 export const joinGame = (matchId, user) => async (dispatch) => {
   try {
+    console.log(matchId);
     const gameInfo = await axios.get(
       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/${matchId}.json`
     );
@@ -199,8 +200,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         opponentInfo: {
-          userId: action.hostId,
-          userName: action.userName,
+          username: action.data.hostUsername,
         },
         matchId: action.matchId,
       };
