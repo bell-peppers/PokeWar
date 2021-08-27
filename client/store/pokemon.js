@@ -217,10 +217,12 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
       //     newerMoves[3],
       //   ];
       // }
+
       const newestMoves =
-        newerMoves < 4
-          ? newMoves
+        newerMoves.length < 4
+          ? newerMoves
           : [newerMoves[0], newerMoves[1], newerMoves[2], newerMoves[3]];
+
       const pokemon = {
         moves: newestMoves,
         owner: username,
@@ -235,6 +237,7 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
           backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
         },
       };
+      pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
       pokemon.stats[0].base_stat += 100;
       playerPk.push(pokemon);
     });

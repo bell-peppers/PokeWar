@@ -19,7 +19,8 @@ const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
-    backgroundColor: 'red',
+    backgroundColor: '#F8E8DC',
+    borderRadius: '25px',
     width: '100vw',
     height: '80vh',
     maxHeight: '1200px',
@@ -35,10 +36,10 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'green',
+    //backgroundColor: 'green',
     width: '75%',
     height: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   side: {
     width: '25%',
@@ -95,6 +96,7 @@ const Main = (props) => {
             winner={winner}
             setWinner={setWinner}
           />
+
           <Actionbar
             isTurn={isTurn}
             changeTurns={changeTurns}
