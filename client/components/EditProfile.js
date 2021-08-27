@@ -9,7 +9,7 @@ import { getUserData } from '../store/userData';
 import { fetchPlayerOnePokemon } from '../store/pokemon';
 import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
-import { storage } from '../../utils/firebase';
+import { FIREDB, storage } from '../../utils/firebase';
 import 'firebase/database';
 import 'firebase/auth';
 
@@ -65,6 +65,15 @@ const useStyles = makeStyles((theme) => ({
 			background:
 				'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
 		},
+		notHovered: {
+			width: '150px',
+			height: '150px',
+			padding: '10px',
+		},
+
+		hover: {
+			transform: `scale(1.5)`,
+		},
 	},
 }));
 
@@ -74,9 +83,16 @@ function EditProfile(props) {
 	const { currentUser, username } = useAuth();
 	const classes = useStyles();
 
+	let photo = '';
 	const [image, setImage] = useState(null);
 	const [usernameValue, setUsername] = useState('');
 	const [url, setUrl] = useState('');
+	// const [hover, setHover] = useState(false);
+
+	// const toggleHover = () => {
+	// 	setHover;
+	// };
+
 	const handleChange = (e) => {
 		if (e.target.files[0]) {
 			setImage(e.target.files[0]);
@@ -84,20 +100,18 @@ function EditProfile(props) {
 	};
 
 	const changePhoto = (imgUrl) => {
-					currentUser
-						.updateProfile({
-							photoURL: imgUrl,
-						})
-						.then(() => {
-							console.log('hey', url, currentUser);
-						})
-						.catch((error) => {
-							console.log(error);
-						});
-	}
-	// const returnTheImgSrc = (img) => {
-	// 	alert(img)
-	// }
+		currentUser
+			.updateProfile({
+				photoURL: imgUrl,
+			})
+			.then(() => {
+				console.log('hey', imgUrl, currentUser);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
 	const handleUpload = async () => {
 		const uploadTask = storage.ref(`images/${currentUser.uid}`).put(image);
 		uploadTask.on('state_changed', () => {
@@ -120,6 +134,22 @@ function EditProfile(props) {
 				});
 		});
 	};
+
+	// const updateUser = (value) => {
+	// 		const uid = currentUser.uid;
+	// 			const pokemon = currentUser.pokemon;
+	// 			const email = currentUser.email;
+	// 			const username = currentUser.username;
+	// 		currentUser && 		console.log(uid, pokemon, email, username)
+
+	// 	currentUser && FIREDB.ref('users/' + currentUser.uid).set({
+	// 		email: currentUser.email,
+	// 		pokemon: currentUser.pokemon,
+	// 		uid: currentUser.uid,
+	// 		username : 'hi'
+	// 	}).then(console.log('oops'));
+	// 	console.log(value)
+	// };
 
 	useEffect(() => {
 		if (currentUser && currentUser.uid !== user.uid) {
@@ -173,46 +203,77 @@ function EditProfile(props) {
 						</Grid>
 						<Grid>
 							<Typography>Your avatars</Typography>
-							<Grid style={{display: 'flex', padding: '20px', border: '5px solid grey',width: '600px', justifyContent: 'space-between'}}>
+							<Grid
+								style={{
+									display: 'flex',
+									padding: '20px',
+									border: '5px solid grey',
+									width: '600px',
+									justifyContent: 'space-between',
+								}}
+							>
 								<img
 									width='150px'
 									height='150px'
 									padding='10px'
 									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/bulbasaur.png?alt=media&token=92102872-97ff-4fd3-8b81-65e7ce211a5f'
 									alt='bulbasaur'
-									onClick={() => changePhoto('https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/bulbasaur.png?alt=media&token=92102872-97ff-4fd3-8b81-65e7ce211a5f')}
+									onClick={() =>
+										(photo =
+											'https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/bulbasaur.png?alt=media&token=92102872-97ff-4fd3-8b81-65e7ce211a5f')
+									}
 								/>
+								{/* {bulbasaur} */}
 								<img
 									width='150px'
 									height='150px'
 									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/charmander.png?alt=media&token=726a00eb-7fa6-4446-8152-cfb767f673e6'
 									alt='charmander'
-									onClick={() => changePhoto('https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/charmander.png?alt=media&token=726a00eb-7fa6-4446-8152-cfb767f673e6')}
+									onClick={() =>
+										(photo =
+											'https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/charmander.png?alt=media&token=726a00eb-7fa6-4446-8152-cfb767f673e6')
+									}
 								/>
 								<img
 									width='150px'
 									height='150px'
 									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2'
 									alt='cute_poke'
-									onClick={() => changePhoto('https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2')}
+									// onMouseOver={() => enlargeImg()}
+									onClick={() =>
+										(photo =
+											'https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2')
+									}
 								/>
 							</Grid>
+							<Grid style={{ display: 'flex', justifyContent: 'center' }}>
+								<Button
+									onClick={() => {
+										changePhoto(photo);
+										photo = '';
+									}}
+								>
+									Choose The Picture
+								</Button>
+							</Grid>
 						</Grid>
-						<form>
+						<form style={{ display: 'flex', paddingTop: '20px' }}>
 							<TextField
 								id='username'
 								placeholder={user.username}
 								variant='filled'
-								value={usernameValue}
+								// value={usernameValue}
 								onChange={(e) => setUsername(e.target.value)}
+								// onChange={(e) => console.log(e.target.value)}
 							/>
+							{/* <Button onClick={updateUser(usernameValue)}>Update Username</Button> */}
 						</form>
 					</Grid>
 					{/* {playerPokemon && console.log(playerPokemon)} */}
 				</Grid>
-				<Grid>
+				{/* <Grid>
 					<Button href='/myprofile'>Save</Button>
-				</Grid>
+				</Grid> */}
 			</Grid>
 			<Grid className={classes.main}>
 				<Grid
