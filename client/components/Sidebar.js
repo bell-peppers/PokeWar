@@ -48,10 +48,10 @@ const Sidebar = props => {
             alt='Mirana'
             src='/pics/Mirana_icon.png'
           />
-          <h3 style={{ margin: 0 }}>Username1</h3>
+          <h3 className='avatar-name'>Username1</h3>
         </Grid>
         <Grid>
-          <h1>⚔️</h1>
+          <h1 className='vs'>⚔️</h1>
         </Grid>
         <Grid className={classes.avatar}>
           <Avatar
@@ -59,7 +59,7 @@ const Sidebar = props => {
             alt='Phoenix'
             src='/pics/Phoenix_icon.png'
           />
-          <h3 style={{ margin: 0 }}>Username2</h3>
+          <h3 className='avatar-name'>Username2</h3>
         </Grid>
       </Grid>
       <Grid className={classes.chat}>

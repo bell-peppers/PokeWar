@@ -10,6 +10,9 @@ const Chat = props => {
   const [msg, setMsg] = useState('');
   const { feed, user, opponent } = props;
 
+  console.log(user);
+  console.log(opponent);
+
   useEffect(() => {
     const messageRef = FIREDB.ref('Match/-MhprQDsdLsk5tzwWn2H/messages');
 
