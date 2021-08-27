@@ -12,7 +12,7 @@ import {
   fetchOpponentPokemon,
   fetchMovesInfo,
 } from '../store/pokemon';
-import {getPlayerMoves} from '../store/game';
+import {getPlayerMoves, setWinner} from '../store/game';
 import {_changeTurns} from '../store/playerTurn';
 
 const useStyles = makeStyles(() => ({
@@ -60,6 +60,8 @@ const Main = (props) => {
     isTurn,
     username,
     calculatedAttacks,
+    winner,
+    setWinner,
   } = props;
 
   //test data
@@ -90,6 +92,8 @@ const Main = (props) => {
             changeTurns={changeTurns}
             isTurn={isTurn}
             matchId={matchId}
+            winner={winner}
+            setWinner={setWinner}
           />
           <Actionbar
             isTurn={isTurn}
@@ -98,6 +102,9 @@ const Main = (props) => {
             username={username}
             calculatedAttacks={calculatedAttacks}
             matchId={matchId}
+            winner={winner}
+            setWinner={setWinner}
+            opponentName={opponentName}
           />
         </div>
         <div className={classes.side}>
@@ -117,6 +124,7 @@ const mapState = (state) => {
     isTurn: state.playerTurn.isTurn,
     username: state.userData.user.username,
     calculatedAttacks: state.playerTurn.calculatedAttacks,
+    winner: state.game.winner,
   };
 };
 
@@ -127,6 +135,7 @@ const mapDispatch = (dispatch) => {
       dispatch(fetchOpponentPokemon(matchId, role)),
     getMoves: (playerPk) => dispatch(fetchMovesInfo(playerPk)),
     changeTurns: () => dispatch(_changeTurns()),
+    setWinner: (pk, user, opp) => dispatch(setWinner(pk, user, opp)),
   };
 };
 

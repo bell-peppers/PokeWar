@@ -14,6 +14,7 @@ import {applyMoves, attackOpponent} from '../store/pokemon';
 //import MoveBlock from './MoveBlock';
 import {sendPlayerMoves, getPlayerMoves} from '../store/game';
 import calculateTurn from '../../utils/calculateTurn';
+import {winCheck} from '../../utils/calculateTurn';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -63,10 +64,8 @@ const Actionbar = (props) => {
     playerTurn,
     sendMoves,
     clearPlayerTurn,
-    attackedPokemon,
     clearAttackedPokemon,
     opponentPokemon,
-    attackOpponent,
     selectedPlayerPk,
     selectPlayerPokemon,
     playerAttack,
@@ -80,6 +79,10 @@ const Actionbar = (props) => {
     applyMoves,
     clearOpponentMoves,
     matchId,
+    setWinner,
+    opponentName,
+    winner,
+    chosenPokemon,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
@@ -104,8 +107,19 @@ const Actionbar = (props) => {
       selectAttack(selectedPlayerPokemon, move);
     }
   }
+  function checkForEndGame() {
+    if (winCheck(chosenPokemon, opponentPokemon)) {
+      setWinner(chosenPokemon, username, opponentName);
+      // alert(`${winner} wins!`);
+      // history.push('/post');
+      //endmatch
+      //push to new component
+      //delete match from server
+      //add win/loss stats
+    }
+  }
 
-  function completeTurnHandler() {
+  async function completeTurnHandler() {
     // const user = 'player1';
     // const sendMove = playerTurn.map((move, index) => {
     //   return {...move, attackedPokemon: attackedPokemon[index]};
@@ -117,9 +131,10 @@ const Actionbar = (props) => {
       if (opponentMoves) {
         const thisTurn = calculateTurn(playerTurn, opponentMoves);
         setCalculatedAttacks(thisTurn);
-        sendMoves(thisTurn, username, matchId);
+        await sendMoves(thisTurn, username, matchId);
         //apply
         applyMoves(thisTurn, playerPokemon, opponentPokemon);
+        checkForEndGame();
       }
 
       //apply to opppk
@@ -131,6 +146,7 @@ const Actionbar = (props) => {
     selectPlayerPokemon({});
     clearOpponentMoves();
   }
+
   return (
     <div className={classes.actionBar}>
       <Grid container className={classes.root} spacing={1}>
@@ -244,6 +260,7 @@ const mapState = (state) => {
     selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
     playerAttack: state.playerTurn.playerAttack.attack,
     opponentMoves: state.game.opponentMoves,
+    chosenPokemon: state.pokemon.chosenPokemon,
   };
 };
 const mapDispatch = (dispatch) => {

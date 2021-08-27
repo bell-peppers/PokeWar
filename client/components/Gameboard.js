@@ -9,6 +9,8 @@ import {
 } from '../store/playerTurn';
 import {getPlayerMoves} from '../store/game';
 import {FIREDB} from '../../utils/firebase';
+import {winCheck} from '../../utils/calculateTurn';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -105,7 +107,11 @@ const Gameboard = (props) => {
     isTurn,
     role,
     matchId,
+    setWinner,
+    winner,
   } = props;
+
+  const history = useHistory();
 
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
 
@@ -132,14 +138,28 @@ const Gameboard = (props) => {
         const moves = Object.values(newMoves)[0];
         if (role === 'guest') {
           applyMoves(moves, chosenPokemon, opponentPokemon);
+          checkForEndGame();
           changeTurns();
         } else if (role === 'host') {
           getOpponentMoves(moves);
           changeTurns();
         }
+
         //setOpponentMovesLoaded(true)
       }
     });
+  }
+
+  function checkForEndGame() {
+    if (winCheck(chosenPokemon, opponentPokemon)) {
+      setWinner(chosenPokemon, username, opponentName);
+      // alert(`${winner} wins!`);
+      // history.push('/post');
+      //endmatch
+      //push to new component
+      //delete match from server
+      //add win/loss stats
+    }
   }
 
   function clickHandle(pk) {
@@ -172,8 +192,8 @@ const Gameboard = (props) => {
                     <p>{pk.name}</p>
                     <img
                       className={classes.opponentSprites}
-                      // src={pk.sprites.front_default}
-                      src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
+                      src={pk.sprites.frontGif}
+                      //src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
                       alt={pk.name}
                     />
                     <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
@@ -188,8 +208,8 @@ const Gameboard = (props) => {
                   <div className={classes.pokemonContainer} key={pk.id}>
                     <img
                       className={classes.playerSprites}
-                      // src={pk.sprites.back_default}
-                      src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
+                      src={pk.sprites.backGif}
+                      // src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
                       alt={pk.name}
                     />
                     <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
