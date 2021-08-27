@@ -63,6 +63,7 @@ export default function AllPokemon(props) {
 
   useEffect(() => {
     dispatch(fetchPokemon(0)).then(() => {
+      console.log(pokemon);
       setIsLoading(false);
     });
   }, [dispatch]);
