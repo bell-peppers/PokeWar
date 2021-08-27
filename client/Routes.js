@@ -20,6 +20,7 @@ import {useAuth} from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
 import EditProfile from './components/EditProfile'
 import Footer from './components/Footer'
+import AboutUs from './components/AboutUs'
 
 /**
  * COMPONENT
@@ -40,6 +41,7 @@ const Routes = () => {
         <Route path='/login' exact component={LoginPage} />
         <Route path='/signup' exact component={SignupPage} />
         <Route path='/editprofile' exact component={EditProfile} />
+        <Route path='/aboutus' exact component={AboutUs} />
         <Route exact path='/' component={MatchSearch} />
         <Route path='*' component={FourOhFour} />
       </Switch>
