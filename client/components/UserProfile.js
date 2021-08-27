@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { CardMedia } from '@material-ui/core';
-import Image from 'material-ui-image';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { getUserData } from '../store/userData';
 import { fetchPlayerOnePokemon } from '../store/pokemon';
@@ -13,42 +11,27 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { useHistory } from 'react-router-dom';
 import 'firebase/database';
 import 'firebase/auth';
 
 const useStyles = makeStyles((theme) => ({
 	main: {
 		fontFamily: 'Courier New, monospace',
-		// display: 'flex',
-		// flex: '1',
 		backgroundColor: 'royalBlue',
 		position: 'relative',
 		maxWidth: '1018px',
-		// minHeight: '224px',
 		paddingBottom: '0px',
 		margin: '0 auto',
-		// flexWrap: 'nowrap',
-
-		// maxWidth: '960px',
-		// position: 'relative'
-		// height: '600px',
-		// flexDirection: 'column',
-		// justifyContent: 'center',
-		// margin: '0  100px 0 100px'
 	},
 	root: {
-		// flexWrap: 'nowrap',
 		width: '400px',
 		margin: '30px',
 	},
 	container: {
-		// flexWrap: 'nowrap',
 		height: 440,
 	},
 	cards: {
 		display: 'flex',
-		// flexWrap: 'wrap',
 		'& > *': {
 			margin: theme.spacing(1),
 			width: theme.spacing(8),
@@ -56,8 +39,6 @@ const useStyles = makeStyles((theme) => ({
 		},
 		imageRoot: {
 			display: 'flex',
-			// flexWrap: 'nowrap',
-			// width: '350px',
 			justifyContent: 'space-around',
 			overflow: 'hidden',
 			backgroundColor: theme.palette.background.paper,
@@ -74,17 +55,12 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	console.log(JSON.stringify(props))
-	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
-	const history = useHistory();
 	const { currentUser } = useAuth();
 	const classes = useStyles();
-	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (currentUser && currentUser.uid !== user.uid) {
 			getUserData(currentUser.uid);
-			// fetchPokemon(user.pokemon);
 		}
 		if (playerPokemon && !playerPokemon.length) {
 				fetchPokemon(user.pokemon, user.username);
@@ -118,14 +94,6 @@ const UserProfile = (props) => {
 				}}
 			>
 				<Grid style={{ display: 'flex' }}>
-					{/* <CardMedia
-						style={{
-							width: '180px',
-							height: '180px',
-							border: '5px solid darkBlue',
-							margin: '0 20px 0 0',
-						}}
-					> */}
 					<Grid style={{ margin: '0 20px 0 0' }}>
 						{currentUser && (
 							<img
@@ -136,7 +104,6 @@ const UserProfile = (props) => {
 							/>
 						)}
 					</Grid>
-					{/* </CardMedia> */}
 					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
 				</Grid>
 				<Grid>
@@ -180,10 +147,6 @@ const UserProfile = (props) => {
 					<Typography style={{ fontSize: '18px', marginBottom: '8px' }}>
 						My Pokemon
 					</Typography>
-					{console.log(JSON.stringify(playerPokemon))}
-					{console.log(playerPokemon && playerPokemon.length)}
-					{console.log(playerPokemon? playerPokemon.length: -1)}
-					<div key={playerPokemon}></div>
 					{playerPokemon && playerPokemon.length ? (
 						<div className={classes.imageRoot}>
 							<ImageList
@@ -285,8 +248,6 @@ const UserProfile = (props) => {
 };
 
 const mapState = (state) => {
-	console.log("ms")
-	console.log(JSON.stringify(state.pokemon))
 	return {
 		playerPokemon: state.pokemon.playerOnePokemon,
 		user: state.userData.user,

@@ -18,8 +18,10 @@ import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
 import { useAuth } from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
-import EditProfile from './components/EditProfile';
-import Footer from './components/Footer';
+
+import EditProfile from './components/EditProfile'
+import Footer from './components/Footer'
+import AboutUs from './components/AboutUs'
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 
@@ -44,6 +46,7 @@ const Routes = () => {
         <Route path='/signup' exact component={SignupPage} />
         <Route path='/post' component={PostGame} />
         <Route path='/editprofile' exact component={EditProfile} />
+        <Route path='/aboutus' exact component={AboutUs} />
         <Route exact path='/' component={MatchSearch} />
         <Route exact path='/store' component={Store} />
         <Route path='*' component={FourOhFour} />

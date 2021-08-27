@@ -242,6 +242,7 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
     });
 
 
+
     return dispatch(_getPlayerOnePokemon(playerPk));
   } catch (error) {
     console.error(error);
