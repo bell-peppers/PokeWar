@@ -50,7 +50,6 @@ const Navbar = (props) => {
   const [error, setError] = useState('');
   const classes = useStyles();
   const {currentUser, logout} = useAuth();
-
   const {username} = props;
 
   // console.log(firebase.auth());

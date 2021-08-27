@@ -74,20 +74,21 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
+	console.log(JSON.stringify(props))
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
 	const history = useHistory();
 	const { currentUser } = useAuth();
-	console.log('current user ==>', currentUser);
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (currentUser && currentUser.uid !== user.uid) {
 			getUserData(currentUser.uid);
-
-			// fetchPokemon(Object.keys(currentUser))
-			fetchPokemon(user.pokemon);
+			// fetchPokemon(user.pokemon);
 		}
+		if (playerPokemon && !playerPokemon.length) {
+				fetchPokemon(user.pokemon, user.username);
+			}
 	}, [user, currentUser]);
 
 	const [clicked, setClicked] = useState(false);
@@ -106,6 +107,7 @@ const UserProfile = (props) => {
 
 	return (
 		<Grid className={classes.main}>
+			<div key={playerPokemon}></div>
 			<Grid
 				style={{
 					display: 'flex',
@@ -116,16 +118,25 @@ const UserProfile = (props) => {
 				}}
 			>
 				<Grid style={{ display: 'flex' }}>
-					<CardMedia
+					{/* <CardMedia
 						style={{
 							width: '180px',
 							height: '180px',
 							border: '5px solid darkBlue',
 							margin: '0 20px 0 0',
 						}}
-					>
-						{user && <Image src={user.photoUrl} />}
-					</CardMedia>
+					> */}
+					<Grid style={{ margin: '0 20px 0 0' }}>
+						{currentUser && (
+							<img
+								src={currentUser.photoURL}
+								width='180px'
+								height='180px'
+								border='5px solid darkBlue'
+							/>
+						)}
+					</Grid>
+					{/* </CardMedia> */}
 					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
 				</Grid>
 				<Grid>
@@ -169,6 +180,10 @@ const UserProfile = (props) => {
 					<Typography style={{ fontSize: '18px', marginBottom: '8px' }}>
 						My Pokemon
 					</Typography>
+					{console.log(JSON.stringify(playerPokemon))}
+					{console.log(playerPokemon && playerPokemon.length)}
+					{console.log(playerPokemon? playerPokemon.length: -1)}
+					<div key={playerPokemon}></div>
 					{playerPokemon && playerPokemon.length ? (
 						<div className={classes.imageRoot}>
 							<ImageList
@@ -208,37 +223,52 @@ const UserProfile = (props) => {
 					</Typography>
 					<Grid
 						style={{ backgroundColor: 'white', width: '180px', height: '90px' }}
-					>
-					</Grid>
+					></Grid>
 				</Grid>
 			</Grid>
-			<Grid style={{display: 'flex', justifyContent: 'space-between'}}><Grid style={{ display: 'flex', flexDirection: 'column' }}>
-				<Grid>
-					<Typography
+			<Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Grid style={{ display: 'flex', flexDirection: 'column' }}>
+					<Grid>
+						<Typography
+							style={{
+								fontSize: '20px',
+								paddingLeft: '20px',
+								paddingTop: '20px',
+							}}
+						>
+							Inventory
+						</Typography>
+					</Grid>
+					<Grid
 						style={{
-							fontSize: '20px',
 							paddingLeft: '20px',
 							paddingTop: '20px',
+							paddingBottom: '10px',
 						}}
 					>
-						Inventory
-					</Typography>
+						<Typography style={{ fontSize: '20px' }}>Comments</Typography>
+						<Grid
+							style={{
+								backgroundColor: 'white',
+								width: '450px',
+								height: '150px',
+							}}
+						></Grid>
+					</Grid>
 				</Grid>
-				<Grid style={{ paddingLeft: '20px', paddingTop: '20px', paddingBottom: '10px' }}>
-					<Typography style={{ fontSize: '20px' }}>Comments</Typography>
+				<Grid>
+					<Typography style={{ fontSize: '18px', paddingRight: '175px' }}>
+						Friends
+					</Typography>{' '}
 					<Grid
 						style={{
 							backgroundColor: 'white',
-							width: '450px',
-							height: '150px',
+							width: '200px',
+							height: '220px',
 						}}
 					></Grid>
 				</Grid>
 			</Grid>
-			<Grid><Typography  style={{ fontSize: '18px', paddingRight: '175px' }}>Friends</Typography>	<Grid
-						style={{ backgroundColor: 'white', width: '200px', height: '220px' }}
-					>
-					</Grid></Grid></Grid>
 			{/* <Grid>
 					<Button
 						onClick={() =>
@@ -255,7 +285,8 @@ const UserProfile = (props) => {
 };
 
 const mapState = (state) => {
-	// console.log(state.pokemon)
+	console.log("ms")
+	console.log(JSON.stringify(state.pokemon))
 	return {
 		playerPokemon: state.pokemon.playerOnePokemon,
 		user: state.userData.user,
