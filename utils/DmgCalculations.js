@@ -25,7 +25,7 @@ export function calcDamage(move, target, attacker) {
     const dmg1 = damageClass(move.type.name, target.types[0].type.name);
     const dmg2 = damageClass(move.type.name, target.types[1].type.name);
 
-    Type = (dmg1.damage + dmg2.damage).toFixed(2);
+    Type = (dmg1.damage * dmg2.damage).toFixed(2);
     Class = dmg1.damage >= dmg2.damage ? dmg1.class : dmg2.class;
   } else {
     const dmg = damageClass(move.type.name, target.types[0].type.name);
