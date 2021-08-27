@@ -12,14 +12,15 @@ import {
   fetchOpponentPokemon,
   fetchMovesInfo,
 } from '../store/pokemon';
-import { getPlayerMoves } from '../store/game';
-import { _changeTurns } from '../store/playerTurn';
+import {getPlayerMoves, setWinner} from '../store/game';
+import {_changeTurns} from '../store/playerTurn';
 
 const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
-    backgroundColor: 'red',
+    backgroundColor: '#F8E8DC',
+    borderRadius: '25px',
     width: '100vw',
     height: '100vh',
     maxHeight: '1200px',
@@ -35,10 +36,10 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'green',
+    //backgroundColor: 'green',
     width: '75%',
     height: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
   },
   side: {
     width: '25%',
@@ -60,20 +61,23 @@ const Main = props => {
     isTurn,
     username,
     calculatedAttacks,
+    winner,
+    setWinner,
   } = props;
 
   //test data
   const playerPkIds = [45, 23, 98];
   const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
 
-  useEffect(() => {
-    //getPlayerPokemon(playerPkIds);
-    if (opponentPokemon.length == 0) {
-      fetchOpponentPokemon(matchId, role);
-    }
+  // useEffect(() => {
+  //   //getPlayerPokemon(playerPkIds);
 
-    // fetchOpponentPokemon(matchId, role);
-  }, [opponentPokemon]);
+  //   // if (opponentPokemon.length == 0) {
+  //   //   fetchOpponentPokemon(matchId, role);
+  //   // }
+
+  //   fetchOpponentPokemon(matchId, role);
+  // }, []);
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -89,7 +93,10 @@ const Main = props => {
             changeTurns={changeTurns}
             isTurn={isTurn}
             matchId={matchId}
+            winner={winner}
+            setWinner={setWinner}
           />
+
           <Actionbar
             isTurn={isTurn}
             changeTurns={changeTurns}
@@ -97,6 +104,9 @@ const Main = props => {
             username={username}
             calculatedAttacks={calculatedAttacks}
             matchId={matchId}
+            winner={winner}
+            setWinner={setWinner}
+            opponentName={opponentName}
           />
         </div>
         <div className={classes.side}>
@@ -117,6 +127,7 @@ const mapState = state => {
     isTurn: state.playerTurn.isTurn,
     username: state.userData.user.username,
     calculatedAttacks: state.playerTurn.calculatedAttacks,
+    winner: state.game.winner,
   };
 };
 
@@ -127,6 +138,7 @@ const mapDispatch = dispatch => {
       dispatch(fetchOpponentPokemon(matchId, role)),
     getMoves: playerPk => dispatch(fetchMovesInfo(playerPk)),
     changeTurns: () => dispatch(_changeTurns()),
+    setWinner: (pk, user, opp) => dispatch(setWinner(pk, user, opp)),
   };
 };
 

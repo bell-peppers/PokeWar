@@ -13,7 +13,7 @@ const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
 const UNCHOOSE_PLAYER_POKEMON = 'UNCHOOSE_PLAYER_POKEMON';
 const SEND_CHOSEN_POKEMON = 'SEND_CHOSEN_POKEMON';
 
-const _sendChosenPokemon = pokemon => {
+const _sendChosenPokemon = (pokemon) => {
   return {
     type: SEND_CHOSEN_POKEMON,
     pokemon,
@@ -104,20 +104,29 @@ export const fetchSinglePokemon = id => async dispatch => {
 export const applyMoves = (moves, playerPk, oppPk) => dispatch => {
   const feed = [];
   console.log('moves', moves);
-  moves.forEach(move => {
+  console.log('opp', oppPk);
+  moves.forEach((move) => {
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'
         ? `${move.report.Class}`
         : '';
-    const action =
-      `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} for ${move.report.Damage} on ${move.attackedPokemon.name}. ` +
-      reportClass;
-    playerPk.forEach(pk => {
+    const crit = move.report.isCrit ? ' Critcal hit!' : '';
+    const action = {
+      message:
+        `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} for ${move.report.Damage} on ${move.attackedPokemon.name}. ` +
+        reportClass +
+        crit,
+    };
+    playerPk.forEach((pk) => {
       if (
         pk.owner === move.attackedPokemon.owner &&
         pk.name == move.attackedPokemon.name
       ) {
         pk.stats[0].base_stat -= move.report.Damage;
+        if (pk.stats[0].base_stat <= 0 && pk.active) {
+          pk.active = false;
+          action.message += `${pk.name} was killed in battle.`;
+        }
       }
     });
 
@@ -127,6 +136,10 @@ export const applyMoves = (moves, playerPk, oppPk) => dispatch => {
         pk.name == move.attackedPokemon.name
       ) {
         pk.stats[0].base_stat -= move.report.Damage;
+        if (pk.stats[0].base_stat <= 0 && pk.active) {
+          pk.active = false;
+          action.message += `${pk.name} was killed in battle.`;
+        }
       }
     });
     feed.push(action);
@@ -134,8 +147,8 @@ export const applyMoves = (moves, playerPk, oppPk) => dispatch => {
 
   const updatedPlayerPk = [...playerPk];
   const updatedOppPk = [...oppPk];
-  console.log(feed);
-  dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
+  feed.forEach((f) => console.log(f.message));
+  dispatch(_applyMoves(updatedPlayerPk, updatedOppPk));
 };
 
 export const attackOpponent = (oppPokemon, turn) => dispatch => {
@@ -155,23 +168,81 @@ export const attackOpponent = (oppPokemon, turn) => dispatch => {
 
 export const fetchPlayerOnePokemon = (pkId, username) => async dispatch => {
   try {
-    const playerPk = [];
-    await pkId.forEach(async id => {
+     let playerPk = await Promise.all(pkId.map(async (id) => {
       const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
-      const movesArr = [
-        pk.data.moves[0],
-        pk.data.moves[1],
-        pk.data.moves[2],
-        pk.data.moves[3],
-      ];
-      await movesArr.forEach(async move => {
-        const getMove = await axios.get(`${move.move.url}`);
-        move.moveData = getMove.data;
-      });
-      pk.data.moves = movesArr;
-      pk.data.owner = username;
-      playerPk.push(pk.data);
+
+      const ind = pk.data.moves.length;
+      let multiplier = Math.floor(((id * 151) % ind) / 2);
+      const movesArr = [];
+      if (ind - multiplier > 20) {
+        for (let i = 0; i < 20; i++) {
+          movesArr.push(pk.data.moves[multiplier + i]);
+        }
+      } else if (ind < 10) {
+        for (let i = 0; i < ind; i++) {
+          movesArr.push(pk.data.moves[i]);
+        }
+      } else {
+        for (let i = 0; i < 20; i++) {
+          movesArr.push(pk.data.moves[i]);
+        }
+      }
+
+      const newMoves = await Promise.all(
+        movesArr.map(async (move) => {
+          const getMove = await axios.get(`${move.move.url}`);
+          return {
+            move: move.move,
+            moveData: {
+              accuracy: getMove.data.accuracy,
+              type: getMove.data.type,
+              power: getMove.data.power,
+              damage_class: getMove.data.damage_class,
+            },
+          };
+        })
+      );
+      const newerMoves = newMoves.filter(
+        (move) => move.moveData.power !== null
+      );
+
+      // if (newerMoves < 4) {
+      //   const newestMoves = newMoves;
+      // } else {
+      //   const newestMoves = [
+      //     newerMoves[0],
+      //     newerMoves[1],
+      //     newerMoves[2],
+      //     newerMoves[3],
+      //   ];
+      // }
+
+      const newestMoves =
+        newerMoves.length < 4
+          ? newerMoves
+          : [newerMoves[0], newerMoves[1], newerMoves[2], newerMoves[3]];
+
+      const pokemon = {
+        moves: newestMoves,
+        owner: username,
+        id: pk.data.id,
+        name: pk.data.name,
+        stats: pk.data.stats,
+        types: pk.data.types,
+        active: true,
+        sprites: {
+          ...pk.data.sprites,
+          frontGif: `https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.data.name}.gif`,
+          backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
+        },
+      };
+      pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
+      pokemon.stats[0].base_stat += 100
+       
+      return pokemon;
     });
+
+
 
     return dispatch(_getPlayerOnePokemon(playerPk));
   } catch (error) {
@@ -202,14 +273,6 @@ export const fetchOpponentPokemon = (matchId, role) => async dispatch => {
     );
     console.log(oppPoke.data);
     return dispatch(_getOpponentPokemon(oppPoke.data));
-    // const oppRole = role == 'host' ? 'guestPokemon' : 'hostPokemon';
-    // await FIREDB.ref('/Match/' + matchId + oppRole).get((snapshot) => {
-    //   const oppPoke = snapshot.val();
-    //   console.log(oppPoke);
-    //   return dispatch(_getOpponentPokemon(oppPoke));
-    // });
-    // console.log(oppPoke);
-    // return dispatch(_getOpponentPokemon(oppPoke));
   } catch (error) {
     console.error(error);
   }

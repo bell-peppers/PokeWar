@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
-import {makeStyles} from '@material-ui/core';
+import {connect, useSelector} from 'react-redux';
+import {makeStyles, withStyles} from '@material-ui/core';
 import {applyMoves, attackOpponent} from '../store/pokemon';
 import {
   selectAttackedPokemon,
@@ -9,6 +9,9 @@ import {
 } from '../store/playerTurn';
 import {getPlayerMoves} from '../store/game';
 import {FIREDB} from '../../utils/firebase';
+import {winCheck} from '../../utils/calculateTurn';
+import {useHistory} from 'react-router-dom';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -27,16 +30,16 @@ const useStyles = makeStyles(() => ({
     height: '50%',
     backgroundColor: 'white',
     display: 'flex',
-    justifyContent: 'flex-start',
-    borderTopWidth: '1px',
-    borderTopStyle: 'solid',
-    borderTopColor: 'black',
+    justifyContent: 'space-between',
+    // borderTopWidth: '1px',
+    // borderTopStyle: 'solid',
+    // borderTopColor: 'black',
   },
   opponentSide: {
     height: '50%',
     backgroundColor: 'white',
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
     // borderWidth: '1px',
     // borderStyle: 'solid',
@@ -62,9 +65,29 @@ const useStyles = makeStyles(() => ({
     alignSelf: 'flex-end',
     display: 'flex',
     flexDirection: 'column',
-    width: '32%',
+    width: '30%',
+    justifyContent: 'flex-end',
     height: '100%',
-    justifyContent: 'center',
+    padding: '5px',
+  },
+  oppPokemonContainer: {
+    alignSelf: 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '30%',
+    justifyContent: 'flex-start',
+    height: '100%',
+    padding: '5px',
+  },
+  oppPokemonContainerMDown: {
+    alignSelf: 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '30%',
+    justifyContent: 'flex-start',
+    height: '100%',
+    padding: '5px',
+    backgroundColor: '#9EDEF9',
   },
   pokemonName: {
     alignText: 'center',
@@ -84,6 +107,12 @@ const useStyles = makeStyles(() => ({
   hp: {
     fontSize: '20px',
     alignText: 'center',
+  },
+  nameBar: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    paddingBottom: '10px',
   },
 }));
 
@@ -105,21 +134,45 @@ const Gameboard = (props) => {
     isTurn,
     role,
     matchId,
+    setWinner,
+    winner,
   } = props;
 
+  const history = useHistory();
+
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
+  const [oppMouseDown, setOppMouseDown] = useState([false, false, false]);
+
+  const BorderLinearProgress = withStyles((theme) => ({
+    root: {
+      height: 15,
+      borderRadius: 5,
+      width: '85%',
+    },
+    colorPrimary: {
+      backgroundColor:
+        theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
+    },
+    bar: {
+      backgroundColor: 'red',
+    },
+  }))(LinearProgress);
 
   useEffect(() => {
+    console.log(opponentPokemon);
+
     listenForOpponentMoves();
   }, []);
 
   function listenForOpponentMoves() {
+    console.log(opponentPokemon);
+
     // const match = 'Match1';
     // const opponent = 'player2';
     //firebase looking for updates to this match
     console.log(isTurn);
     const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
-    console.log(matchId, opponentName);
+    console.log(matchId, opponentName, opponentPokemon);
     dbUpdates.limitToLast(1).on('value', (snapshot) => {
       console.log(snapshot);
       const newMoves = snapshot.val();
@@ -128,27 +181,32 @@ const Gameboard = (props) => {
         const moves = Object.values(newMoves)[0];
         if (role === 'guest') {
           applyMoves(moves, chosenPokemon, opponentPokemon);
+          checkForEndGame();
           changeTurns();
-          // if (
-          //   chosenPokemon.length > 0 &&
-          //   opponentMovesLoaded == false &&
-          //   !isTurn
-          // ) {
-          //   setOpponentMovesLoaded(true);
-          //   getOpponentMoves(newMoves);
-          //   applyMoves(newMoves, chosenPokemon, opponentPokemon);
-          //   changeTurns();
-          // }
         } else if (role === 'host') {
           getOpponentMoves(moves);
           changeTurns();
         }
+
+        //setOpponentMovesLoaded(true)
       }
     });
   }
 
+  function checkForEndGame() {
+    if (winCheck(chosenPokemon, opponentPokemon)) {
+      setWinner(chosenPokemon, username, opponentName);
+      // alert(`${winner} wins!`);
+      // history.push('/post');
+      //endmatch
+      //push to new component
+      //delete match from server
+      //add win/loss stats
+    }
+  }
+
   function clickHandle(pk) {
-    if (playerAttack && selectedPlayerPk) {
+    if (playerAttack && selectedPlayerPk && pk.active) {
       selectAttacked(pk, playerAttack.attack, selectedPlayerPk);
       console.log(
         `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
@@ -157,30 +215,57 @@ const Gameboard = (props) => {
       resetPlayerPokemon();
     }
   }
+
+  function handleMouse(e, i) {
+    console.log(e, i);
+    if (e.type === 'mousedown') {
+      const arr = oppMouseDown;
+      arr.splice(i, 1, true);
+      console.log(arr);
+      console.log(oppMouseDown[i]);
+      setOppMouseDown(arr);
+    } else {
+      const arr = oppMouseDown;
+      arr.splice(i, 1, false);
+      setOppMouseDown(arr);
+    }
+  }
+
   return (
     <div>
       {opponentPokemon ? (
         <div className={classes.main}>
           <div className={classes.opponentSide}>
             <div className={classes.playerName}>
-              <h1>{opponentName}</h1>
+              {/* <h1>{opponentName}</h1> */}
             </div>
             {opponentPokemon &&
-              opponentPokemon.map((pk) => {
+              opponentPokemon.map((pk, i) => {
                 return (
                   <div
-                    className={classes.pokemonContainer}
+                    className={
+                      oppMouseDown[i] === true
+                        ? classes.oppPokemonContainerMDown
+                        : classes.oppPokemonContainer
+                    }
                     key={pk.id}
                     onClick={() => clickHandle(pk)}
+                    onMouseDown={(e) => handleMouse(e, i)}
+                    onMouseUp={(e) => handleMouse(e, i)}
                   >
-                    <p>{pk.name}</p>
+                    <div className={classes.nameBar}>
+                      <p>{pk.name}</p>
+                      <BorderLinearProgress
+                        variant='determinate'
+                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
+                      />
+                    </div>
                     <img
                       className={classes.opponentSprites}
-                      // src={pk.sprites.front_default}
-                      src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
+                      src={pk.sprites.frontGif}
+                      //src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
                       alt={pk.name}
                     />
-                    <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
                   </div>
                 );
               })}
@@ -192,16 +277,23 @@ const Gameboard = (props) => {
                   <div className={classes.pokemonContainer} key={pk.id}>
                     <img
                       className={classes.playerSprites}
-                      // src={pk.sprites.back_default}
-                      src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
+                      src={pk.sprites.backGif}
+                      // src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
                       alt={pk.name}
                     />
-                    <p className={classes.hp}>hp: {pk.stats[0].base_stat}</p>
+
+                    <div className={classes.nameBar}>
+                      <p>{pk.name}</p>
+                      <BorderLinearProgress
+                        variant='determinate'
+                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
+                      />
+                    </div>
                   </div>
                 );
               })}
             <div className={classes.playerName}>
-              <h1>{username}</h1>
+              {/* <h1>{username}</h1> */}
             </div>
           </div>
         </div>

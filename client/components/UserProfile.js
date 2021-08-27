@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import { CardMedia } from '@material-ui/core';
-import Image from 'material-ui-image';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { getUserData } from '../store/userData';
 import { fetchPlayerOnePokemon } from '../store/pokemon';
@@ -21,34 +11,27 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import firebase from 'firebase/app';
-import { FIREDB } from '../../utils/firebase';
 import 'firebase/database';
 import 'firebase/auth';
 
 const useStyles = makeStyles((theme) => ({
 	main: {
 		fontFamily: 'Courier New, monospace',
-		display: 'flex',
-		backgroundColor: 'green',
-		// flexWrap: 'nowrap',
-		// width: '100%',
-		// height: '600px',
-		flexDirection: 'column',
-		justifyContent: 'space-around',
+		backgroundColor: 'royalBlue',
+		position: 'relative',
+		maxWidth: '1018px',
+		paddingBottom: '0px',
+		margin: '0 auto',
 	},
 	root: {
-		// flexWrap: 'nowrap',
 		width: '400px',
 		margin: '30px',
 	},
 	container: {
-		// flexWrap: 'nowrap',
 		height: 440,
 	},
 	cards: {
 		display: 'flex',
-		// flexWrap: 'wrap',
 		'& > *': {
 			margin: theme.spacing(1),
 			width: theme.spacing(8),
@@ -56,8 +39,6 @@ const useStyles = makeStyles((theme) => ({
 		},
 		imageRoot: {
 			display: 'flex',
-			// flexWrap: 'nowrap',
-			// width: '350px',
 			justifyContent: 'space-around',
 			overflow: 'hidden',
 			backgroundColor: theme.palette.background.paper,
@@ -74,18 +55,16 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
 	const { currentUser } = useAuth();
 	const classes = useStyles();
-	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (currentUser && currentUser.uid !== user.uid) {
 			getUserData(currentUser.uid);
 		}
-		if (user.pokemon) {
-			fetchPokemon(user.pokemon);
-		}
+		if (playerPokemon && !playerPokemon.length) {
+				fetchPokemon(user.pokemon, user.username);
+			}
 	}, [user, currentUser]);
 
 	const [clicked, setClicked] = useState(false);
@@ -103,48 +82,80 @@ const UserProfile = (props) => {
 	};
 
 	return (
-		<div>
-			<Grid className={classes.main}>
-				<Grid
-					style={{ display: 'flex', justifyContent: 'center', padding: '5px' }}
-				>
-					POKEWARS
+		<Grid className={classes.main}>
+			<div key={playerPokemon}></div>
+			<Grid
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					margin: '0 50px 30px 25px',
+					paddingLeft: '9px',
+					paddingTop: '50px',
+				}}
+			>
+				<Grid style={{ display: 'flex' }}>
+					<Grid style={{ margin: '0 20px 0 0' }}>
+						{currentUser && (
+							<img
+								src={currentUser.photoURL}
+								width='180px'
+								height='180px'
+								border='5px solid darkBlue'
+							/>
+						)}
+					</Grid>
+					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
 				</Grid>
+				<Grid>
+					<Typography
+						style={{ display: 'flex', fontSize: '25px', paddingRight: '80px' }}
+					>
+						Level
+						<Typography
+							style={{
+								height: '40px',
+								width: '40px',
+								display: 'table-cell',
+								textAlign: 'center',
+								verticalAlign: 'middle',
+								borderRadius: '50%',
+								background: 'white',
+								fontSize: '25px',
+								marginLeft: '4px',
+							}}
+						>
+							1
+						</Typography>
+					</Typography>
+					<Button
+						style={{ padding: '0', marginTop: '6px' }}
+						href='/editprofile'
+					>
+						Edit Profile
+					</Button>
+				</Grid>
+			</Grid>
+			<Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<Grid
 					style={{
-						display: 'flex',
-						flexDirection: 'row',
-						justifyContent: 'space-around',
+						width: '450px',
+						marginLeft: '20px',
+						minHeight: '243px',
+						paddingBottom: '10px',
 					}}
 				>
-					<Grid>
-						<Grid>
-							<CardMedia
-								style={{
-									width: '150px',
-									height: '150px',
-									border: '5px solid blue',
-								}}
-							>
-								{currentUser && currentUser.photoUrl
-								? (
-									<Image src={currentUser.photoUrl} />
-								) : (
-									<Image src='/pics/default.png' />
-								)
-								}
-							</CardMedia>
-							{user.username}
-						</Grid>
-					</Grid>
-					{/* {playerPokemon && console.log(playerPokemon)} */}
-
-					{playerPokemon && (
+					<Typography style={{ fontSize: '18px', marginBottom: '8px' }}>
+						My Pokemon
+					</Typography>
+					{playerPokemon && playerPokemon.length ? (
 						<div className={classes.imageRoot}>
-							My Pokemon
 							<ImageList
 								cols={2.5}
-								style={{ display: 'flex', flexWrap: 'nowrap', width: '350px' }}
+								style={{
+									display: 'flex',
+									flexWrap: 'nowrap',
+									border: '5px solid grey',
+								}}
 							>
 								{playerPokemon.map((item) => (
 									<ImageListItem key={item.id} style={{ width: '150px' }}>
@@ -167,10 +178,61 @@ const UserProfile = (props) => {
 								))}
 							</ImageList>
 						</div>
-					)}
+					) : null}
 				</Grid>
 				<Grid>
-					<Button href='/editprofile'>Edit Profile</Button>
+					<Typography style={{ fontSize: '18px', paddingRight: '175px' }}>
+						Badges
+					</Typography>
+					<Grid
+						style={{ backgroundColor: 'white', width: '180px', height: '90px' }}
+					></Grid>
+				</Grid>
+			</Grid>
+			<Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Grid style={{ display: 'flex', flexDirection: 'column' }}>
+					<Grid>
+						<Typography
+							style={{
+								fontSize: '20px',
+								paddingLeft: '20px',
+								paddingTop: '20px',
+							}}
+						>
+							Inventory
+						</Typography>
+					</Grid>
+					<Grid
+						style={{
+							paddingLeft: '20px',
+							paddingTop: '20px',
+							paddingBottom: '10px',
+						}}
+					>
+						<Typography style={{ fontSize: '20px' }}>Comments</Typography>
+						<Grid
+							style={{
+								backgroundColor: 'white',
+								width: '450px',
+								height: '150px',
+							}}
+						></Grid>
+					</Grid>
+				</Grid>
+				<Grid>
+					<Typography style={{ fontSize: '18px', paddingRight: '175px' }}>
+						Friends
+					</Typography>{' '}
+					<Grid
+						style={{
+							backgroundColor: 'white',
+							width: '200px',
+							height: '220px',
+						}}
+					></Grid>
+				</Grid>
+			</Grid>
+			{/* <Grid>
 					<Button
 						onClick={() =>
 							alert(
@@ -180,14 +242,12 @@ const UserProfile = (props) => {
 					>
 						Add Friend
 					</Button>
-				</Grid>
-			</Grid>
-		</div>
+				</Grid> */}
+		</Grid>
 	);
 };
 
 const mapState = (state) => {
-	// console.log(state.pokemon)
 	return {
 		playerPokemon: state.pokemon.playerOnePokemon,
 		user: state.userData.user,

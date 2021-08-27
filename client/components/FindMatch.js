@@ -71,7 +71,7 @@ export default function FindMatch(props) {
                   <TableCell align='center'>{row.matchid}</TableCell>
                   <TableCell align='center'>
                     <Fab
-                      onClick={() => joinClick(row.matchId)}
+                      onClick={() => joinClick(row.matchid)}
                       color='primary'
                       aria-label='join'
                     >

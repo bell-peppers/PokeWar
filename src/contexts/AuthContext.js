@@ -15,22 +15,23 @@ export function AuthProvider({children}) {
 
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
-  async function signup(email, password, username, url='/pics/default.png') {
+  async function signup(email, password, username) {
     const user = await auth.createUserWithEmailAndPassword(email, password);
-    createNewAccount(user.user.uid, user.user.email, username, url);
+    createNewAccount(user.user.uid, user.user.email, username);
     return user;
     // firebase.auth().createUserWithEmailAndPassword(email, password);
   }
 
-  function createNewAccount(uid, email, name, url) {
+  function createNewAccount(uid, email, name) {
     FIREDB.ref('users/' + uid).set({
       uid: uid,
       email: email,
       pokemon: [68, 44, 58, 76, 105, 234, 192, 204, 169, 151],
       username: name,
-      photoUrl: url
+      photoUrl: ''
     });
   }
+
   async function login(email, password) {
     const user = await auth.signInWithEmailAndPassword(email, password);
     //getUserData(user.user.uid);

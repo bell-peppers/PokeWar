@@ -53,8 +53,15 @@ const useStyles = makeStyles(() => ({
 
 const PreGame = (props) => {
   const classes = useStyles();
-  const {matchId, username, cancelGame, setOppInfo, opponent, playerPokemon} =
-    props;
+  const {
+    matchId,
+    username,
+    cancelGame,
+    setOppInfo,
+    opponent,
+    playerPokemon,
+    role,
+  } = props;
   const history = useHistory();
 
   const [playerJoined, setPlayerJoined] = useState(false);
@@ -71,15 +78,11 @@ const PreGame = (props) => {
     dbUpdates.on('value', (snapshot) => {
       const playerTwo = snapshot.val();
       console.log(playerTwo);
-      if (playerTwo) {
+      if (playerTwo && role === 'host') {
         setOppInfo(playerTwo);
         setPlayerJoined(true);
-        // if (playerTwo.guestId) {
-        //   setOppInfo(playerTwo);
-        //   setPlayerJoined(true);
-        // } else {
-        //   setPlayerJoined(false);
-        // }
+      } else if (playerTwo) {
+        setPlayerJoined(true);
       }
     });
   }
@@ -115,7 +118,11 @@ const PreGame = (props) => {
               </div>
             ) : (
               <div className={classes.waiting}>
-                <h3>{opponent.username} joined!</h3>
+                {role === 'host' ? (
+                  <h3>{opponent.username} joined!</h3>
+                ) : (
+                  <h3>Joined {opponent.username} game!</h3>
+                )}
                 <Button
                   onClick={() => setChoosePk(true)}
                   variant='contained'
@@ -141,6 +148,7 @@ const mapState = (state) => {
     username: state.userData.username,
     opponent: state.game.opponentInfo,
     playerPokemon: state.pokemon.playerOnePokemon,
+    role: state.game.role,
   };
 };
 
