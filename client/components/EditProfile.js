@@ -83,6 +83,21 @@ function EditProfile(props) {
 		}
 	};
 
+	const changePhoto = (imgUrl) => {
+					currentUser
+						.updateProfile({
+							photoURL: imgUrl,
+						})
+						.then(() => {
+							console.log('hey', url, currentUser);
+						})
+						.catch((error) => {
+							console.log(error);
+						});
+	}
+	// const returnTheImgSrc = (img) => {
+	// 	alert(img)
+	// }
 	const handleUpload = async () => {
 		const uploadTask = storage.ref(`images/${currentUser.uid}`).put(image);
 		uploadTask.on('state_changed', () => {
@@ -164,16 +179,22 @@ function EditProfile(props) {
 									height='150px'
 									padding='10px'
 									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/bulbasaur.png?alt=media&token=92102872-97ff-4fd3-8b81-65e7ce211a5f'
+									alt='bulbasaur'
+									onClick={() => changePhoto('https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/bulbasaur.png?alt=media&token=92102872-97ff-4fd3-8b81-65e7ce211a5f')}
 								/>
 								<img
 									width='150px'
 									height='150px'
 									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/charmander.png?alt=media&token=726a00eb-7fa6-4446-8152-cfb767f673e6'
+									alt='charmander'
+									onClick={() => changePhoto('https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/charmander.png?alt=media&token=726a00eb-7fa6-4446-8152-cfb767f673e6')}
 								/>
 								<img
 									width='150px'
 									height='150px'
 									src='https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2'
+									alt='cute_poke'
+									onClick={() => changePhoto('https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2')}
 								/>
 							</Grid>
 						</Grid>

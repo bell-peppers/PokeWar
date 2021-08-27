@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	console.log(JSON.stringify(props))
+	// console.log(JSON.stringify(props))
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
 	const history = useHistory();
 	const { currentUser } = useAuth();
@@ -180,10 +180,10 @@ const UserProfile = (props) => {
 					<Typography style={{ fontSize: '18px', marginBottom: '8px' }}>
 						My Pokemon
 					</Typography>
-					{console.log(JSON.stringify(playerPokemon))}
-					{console.log(playerPokemon && playerPokemon.length)}
-					{console.log(playerPokemon? playerPokemon.length: -1)}
-					<div key={playerPokemon}></div>
+					{/* {console.log(JSON.stringify(playerPokemon))} */}
+					{/* {console.log(playerPokemon && playerPokemon.length)} */}
+					{/* {console.log(playerPokemon? playerPokemon.length: -1)} */}
+					{/* <div key={playerPokemon}></div> */}
 					{playerPokemon && playerPokemon.length ? (
 						<div className={classes.imageRoot}>
 							<ImageList
@@ -285,8 +285,8 @@ const UserProfile = (props) => {
 };
 
 const mapState = (state) => {
-	console.log("ms")
-	console.log(JSON.stringify(state.pokemon))
+	// console.log("ms")
+	// console.log(JSON.stringify(state.pokemon))
 	return {
 		playerPokemon: state.pokemon.playerOnePokemon,
 		user: state.userData.user,

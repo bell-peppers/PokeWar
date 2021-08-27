@@ -328,8 +328,8 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
       return pk.data
       // playerPk.push();
     }));
-    console.log("infetch")
-    console.log(JSON.stringify(playerPk))
+    // console.log("infetch")
+    // console.log(JSON.stringify(playerPk))
     return dispatch(_getPlayerOnePokemon(playerPk));
   } catch (error) {
     console.error(error);
