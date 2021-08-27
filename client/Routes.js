@@ -25,7 +25,6 @@ import AboutUs from './components/AboutUs'
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 
-
 /**
  * COMPONENT
  */
@@ -40,6 +39,7 @@ const Routes = () => {
         <Route path='/allpokemon' exact component={AllPokemon} />
         <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
+        <Route path='/chat' exact component={Sidebar} />
         <Route path='/myprofile' exact component={UserProfile} />
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' exact component={LoginPage} />
@@ -51,7 +51,7 @@ const Routes = () => {
         <Route exact path='/store' component={Store} />
         <Route path='*' component={FourOhFour} />
       </Switch>
-      <Footer />
+      {/* <Footer /> */}
       {/* </div>
       ) : (
         <div>

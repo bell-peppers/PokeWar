@@ -1,7 +1,7 @@
 import axios from 'axios';
 import history from '../history';
-import {FIREDB} from '../../utils/firebase';
-import {FeedbackSharp} from '@material-ui/icons';
+import { FIREDB } from '../../utils/firebase';
+import { FeedbackSharp } from '@material-ui/icons';
 
 const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_OPPONENT_POKEMON = 'GET_OPPONENT_POKEMON';
@@ -19,80 +19,80 @@ const _sendChosenPokemon = (pokemon) => {
     pokemon,
   };
 };
-const _choosePlayerPokemon = (pokemon) => {
+const _choosePlayerPokemon = pokemon => {
   return {
     type: CHOOSE_PLAYER_POKEMON,
     pokemon,
   };
 };
 
-const _unchoosePlayerPokemon = (pokemon) => {
+const _unchoosePlayerPokemon = pokemon => {
   return {
     type: UNCHOOSE_PLAYER_POKEMON,
     pokemon,
   };
 };
 
-const _getPlayerOnePokemon = (pokemon) => {
+const _getPlayerOnePokemon = pokemon => {
   return {
     type: GET_PLAYERONE_POKEMON,
     pokemon,
   };
 };
 
-const _getOpponentPokemon = (pokemon) => {
+const _getOpponentPokemon = pokemon => {
   return {
     type: GET_OPPONENT_POKEMON,
     pokemon,
   };
 };
 
-const _attackOpponent = (pokemon) => {
+const _attackOpponent = pokemon => {
   return {
     type: ATTACK_OPPONENT,
     pokemon,
   };
 };
 
-const _applyMoves = (playerPk, oppPk) => {
+const _applyMoves = (playerPk, oppPk, feed) => {
   return {
     type: APPLY_MOVES,
     playerPk,
     oppPk,
+    feed,
   };
 };
 
-const _fetchSinglePokemon = (pokemon) => {
+const _fetchSinglePokemon = pokemon => {
   return {
     type: FETCH_SINGLE_POKEMON,
     pokemon,
   };
 };
 
-const _fetchMovesInfo = (moves) => {
+const _fetchMovesInfo = moves => {
   return {
     type: FETCH_MOVES_INFO,
     moves,
   };
 };
 
-export const sendChosenPokemon =
-  (pokemon, matchId, role) => async (dispatch) => {
-    const playerInfo =
-      role == 'host' ? {hostPokemon: pokemon} : {guestPokemon: pokemon};
+export const sendChosenPokemon = (pokemon, matchId, role) => async dispatch => {
+  const playerInfo =
+    role == 'host' ? { hostPokemon: pokemon } : { guestPokemon: pokemon };
 
-    await FIREDB.ref('/Match/' + matchId).update(playerInfo);
-    return dispatch(_sendChosenPokemon(pokemon));
-  };
-export const choosePlayerPokemon = (pk) => (dispatch) => {
+  await FIREDB.ref('/Match/' + matchId).update(playerInfo);
+  return dispatch(_sendChosenPokemon(pokemon));
+};
+export const choosePlayerPokemon = pk => dispatch => {
   return dispatch(_choosePlayerPokemon(pk));
 };
 
-export const unchoosePlayerPokemon = (pk) => (dispatch) => {
+export const unchoosePlayerPokemon = pk => dispatch => {
   return dispatch(_unchoosePlayerPokemon(pk));
 };
 
-export const fetchSinglePokemon = (id) => async (dispatch) => {
+export const fetchSinglePokemon = id => async dispatch => {
   try {
     const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
     return dispatch(_fetchSinglePokemon(pk));
@@ -101,7 +101,7 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
   }
 };
 
-export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
+export const applyMoves = (moves, playerPk, oppPk) => dispatch => {
   const feed = [];
   console.log('moves', moves);
   console.log('opp', oppPk);
@@ -130,7 +130,7 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
       }
     });
 
-    oppPk.forEach((pk) => {
+    oppPk.forEach(pk => {
       if (
         pk.owner === move.attackedPokemon.owner &&
         pk.name == move.attackedPokemon.name
@@ -151,8 +151,8 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   dispatch(_applyMoves(updatedPlayerPk, updatedOppPk));
 };
 
-export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
-  const updatedPk = oppPokemon.map((pk) => {
+export const attackOpponent = (oppPokemon, turn) => dispatch => {
+  const updatedPk = oppPokemon.map(pk => {
     for (let i = 0; i < turn.length; i++) {
       if (turn[i].attackedPokemon === pk.name) {
         pk.stats.hp -= turn[i].attack.damage;
@@ -166,7 +166,7 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
   return dispatch(_attackOpponent(updatedPk));
 };
 
-export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
+export const fetchPlayerOnePokemon = (pkId, username) => async dispatch => {
   try {
      let playerPk = await Promise.all(pkId.map(async (id) => {
       const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -237,8 +237,9 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
         },
       };
       pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
-      pokemon.stats[0].base_stat += 100;
-      playerPk.push(pokemon);
+      pokemon.stats[0].base_stat += 100
+       
+      return pokemon;
     });
 
 
@@ -249,12 +250,12 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
   }
 };
 
-export const fetchMovesInfo = (pokemon) => async (dispatch) => {
+export const fetchMovesInfo = pokemon => async dispatch => {
   try {
-    const updatedPk = await pokemon.map(async (pk) => {
-      const newMoves = await pk.moves.map(async (move) => {
+    const updatedPk = await pokemon.map(async pk => {
+      const newMoves = await pk.moves.map(async move => {
         const getMove = await axios.get(`${move.move.url}`);
-        return {...move, moveData: getMove.data};
+        return { ...move, moveData: getMove.data };
       });
       return newMoves;
     });
@@ -264,7 +265,7 @@ export const fetchMovesInfo = (pokemon) => async (dispatch) => {
     console.error(error);
   }
 };
-export const fetchOpponentPokemon = (matchId, role) => async (dispatch) => {
+export const fetchOpponentPokemon = (matchId, role) => async dispatch => {
   try {
     const oppRole = role == 'host' ? 'guestPokemon' : 'hostPokemon';
     const oppPoke = await axios.get(
@@ -283,22 +284,24 @@ export default function (
     playerOnePokemon: [],
     opponentPokemon: [],
     chosenPokemon: [],
+    attackFeed: [],
   },
   action
 ) {
   switch (action.type) {
     case GET_PLAYERONE_POKEMON:
-      return {...state, playerOnePokemon: action.pokemon};
+      return { ...state, playerOnePokemon: action.pokemon };
     case GET_OPPONENT_POKEMON:
       console.log(action);
-      return {...state, opponentPokemon: action.pokemon};
+      return { ...state, opponentPokemon: action.pokemon };
     case ATTACK_OPPONENT:
-      return {...state, playerTwoPokemon: action.pokemon};
+      return { ...state, playerTwoPokemon: action.pokemon };
     case APPLY_MOVES:
       return {
         ...state,
         playerOnePokemon: action.playerPk,
         opponentPokemon: action.oppPk,
+        attackFeed: action.feed,
       };
     case CHOOSE_PLAYER_POKEMON:
       return {
@@ -307,12 +310,12 @@ export default function (
       };
     case UNCHOOSE_PLAYER_POKEMON:
       const updated = [];
-      state.chosenPokemon.map((pk) => {
+      state.chosenPokemon.map(pk => {
         if (pk.name !== action.pokemon.name) {
           updated.push(pk);
         }
       });
-      return {...state, chosenPokemon: updated};
+      return { ...state, chosenPokemon: updated };
     case SEND_CHOSEN_POKEMON:
       return state;
     default:
