@@ -147,7 +147,7 @@ const Gameboard = (props) => {
     playerAttack,
     resetPlayerPokemon,
     chosenPokemon,
-    username,
+    user,
     opponentPokemon,
     changeTurns,
     opponentName,
@@ -215,13 +215,8 @@ const Gameboard = (props) => {
 
   function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      setWinner(chosenPokemon, username, opponentName);
-      // alert(`${winner} wins!`);
-      // history.push('/post');
-      //endmatch
-      //push to new component
-      //delete match from server
-      //add win/loss stats
+      setWinner(chosenPokemon, user, opponentName);
+      history.push('/post');
     }
   }
 

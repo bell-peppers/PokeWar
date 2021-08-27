@@ -91,10 +91,9 @@ const Actionbar = (props) => {
     isTurn,
     changeTurns,
     role,
-    username,
+    user,
     opponentMoves,
     setCalculatedAttacks,
-    calculatedAttacks,
     applyMoves,
     clearOpponentMoves,
     matchId,
@@ -134,9 +133,9 @@ const Actionbar = (props) => {
   }
   function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      setWinner(chosenPokemon, username, opponentName);
+      setWinner(chosenPokemon, user, opponentName);
       // alert(`${winner} wins!`);
-      // history.push('/post');
+      history.push('/post');
       //endmatch
       //push to new component
       //delete match from server
@@ -150,13 +149,15 @@ const Actionbar = (props) => {
     //   return {...move, attackedPokemon: attackedPokemon[index]};
     // });
     if (role === 'guest') {
-      sendMoves(playerTurn, username, matchId);
+      console.log(user);
+      sendMoves(playerTurn, user.username, matchId);
     } else if (role === 'host') {
       //make sure we have moves
       if (opponentMoves) {
         const thisTurn = calculateTurn(playerTurn, opponentMoves);
         setCalculatedAttacks(thisTurn);
-        await sendMoves(thisTurn, username, matchId);
+
+        await sendMoves(thisTurn, user.username, matchId);
         //apply
         applyMoves(thisTurn, playerPokemon, opponentPokemon);
         checkForEndGame();

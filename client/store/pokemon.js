@@ -227,12 +227,12 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
             backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
           },
         };
-        pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
-        pokemon.stats[0].base_stat += 100;
+        // pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
+        // pokemon.stats[0].base_stat += 100;
 
         //lowered hp for testing
-        // pokemon.stats[0].max = pokemon.stats[0].base_stat / 2;
-        // pokemon.stats[0].base_stat = pokemon.stats[0].base_stat / 2;
+        pokemon.stats[0].max = pokemon.stats[0].base_stat / 3;
+        pokemon.stats[0].base_stat = pokemon.stats[0].base_stat / 3;
 
         return pokemon;
       })

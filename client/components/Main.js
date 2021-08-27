@@ -59,7 +59,7 @@ const Main = (props) => {
     opponentName,
     changeTurns,
     isTurn,
-    username,
+    user,
     calculatedAttacks,
     winner,
     setWinner,
@@ -88,7 +88,7 @@ const Main = (props) => {
             playerPokemon={playerPokemon}
             opponentPokemon={opponentPokemon}
             opponentName={opponentName}
-            username={username}
+            user={user}
             role={role}
             changeTurns={changeTurns}
             isTurn={isTurn}
@@ -101,7 +101,7 @@ const Main = (props) => {
             isTurn={isTurn}
             changeTurns={changeTurns}
             role={role}
-            username={username}
+            user={user}
             calculatedAttacks={calculatedAttacks}
             matchId={matchId}
             winner={winner}
@@ -129,7 +129,7 @@ const mapState = (state) => {
     role: state.game.role,
     opponentName: state.game.opponentInfo.username,
     isTurn: state.playerTurn.isTurn,
-    username: state.userData.user.username,
+    user: state.userData.user,
     calculatedAttacks: state.playerTurn.calculatedAttacks,
     winner: state.game.winner,
   };

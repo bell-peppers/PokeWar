@@ -96,10 +96,10 @@ export const setWinner = (playerPk, user, oppName) => async (dispatch) => {
   const winner = playerCheck === 0 ? oppName : user.username;
   alert(`${winner} wins!`);
   if (winner === user.username) {
-    let userRec = {gamesPlayed: user.gamesPlayed + 1, wins: user.wins + 1};
+    let userRec = {totalGames: user.totalGames + 1, wins: user.wins + 1};
     await FIREDB.ref('/users/' + user.uid).update(userRec);
   } else {
-    let userRec = {gamesPlayed: user.gamesPlayed + 1};
+    let userRec = {totalGames: user.totalGames + 1};
     await FIREDB.ref('/users/' + user.uid).update(userRec);
   }
 

@@ -29,6 +29,8 @@ export function AuthProvider({children}) {
       photoUrl: '',
       wins: 0,
       totalGames: 0,
+      coins: 100,
+      friends: [],
     });
   }
 
