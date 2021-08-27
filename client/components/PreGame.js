@@ -121,7 +121,7 @@ const PreGame = (props) => {
                 {role === 'host' ? (
                   <h3>{opponent.username} joined!</h3>
                 ) : (
-                  <h3>Joined {opponent.username} game!</h3>
+                  <h3>Joined {opponent.username}'s game!</h3>
                 )}
                 <Button
                   onClick={() => setChoosePk(true)}

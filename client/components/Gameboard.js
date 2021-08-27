@@ -53,6 +53,15 @@ const useStyles = makeStyles(() => ({
     objectFit: 'contain',
     alignSelf: 'flex-start',
   },
+  deadPlayerSprites: {
+    maxWidth: '100%',
+    width: '200px',
+    height: 'auto',
+    maxHeight: '200px',
+    objectFit: 'contain',
+    alignSelf: 'flex-start',
+    opacity: '25%',
+  },
   opponentSprites: {
     maxWidth: '100%',
     width: '185px',
@@ -60,6 +69,15 @@ const useStyles = makeStyles(() => ({
     maxHeight: '200px',
     objectFit: 'contain',
     alignSelf: 'flex-end',
+  },
+  opponentDeadSprites: {
+    maxWidth: '100%',
+    width: '185px',
+    height: 'auto',
+    maxHeight: '200px',
+    objectFit: 'contain',
+    alignSelf: 'flex-end',
+    opacity: '25%',
   },
   pokemonContainer: {
     alignSelf: 'flex-end',
@@ -70,6 +88,7 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     padding: '5px',
   },
+
   oppPokemonContainer: {
     alignSelf: 'flex-start',
     display: 'flex',
@@ -88,6 +107,7 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     padding: '5px',
     backgroundColor: '#9EDEF9',
+    opacity: '25%',
   },
   pokemonName: {
     alignText: 'center',
@@ -241,7 +261,7 @@ const Gameboard = (props) => {
             </div>
             {opponentPokemon &&
               opponentPokemon.map((pk, i) => {
-                return (
+                return pk.active ? (
                   <div
                     className={
                       oppMouseDown[i] === true
@@ -263,7 +283,21 @@ const Gameboard = (props) => {
                     <img
                       className={classes.opponentSprites}
                       src={pk.sprites.frontGif}
-                      //src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
+                      alt={pk.name}
+                    />
+                  </div>
+                ) : (
+                  <div className={classes.oppPokemonContainer}>
+                    <div className={classes.nameBar}>
+                      <p>{pk.name}</p>
+                      <BorderLinearProgress
+                        variant='determinate'
+                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
+                      />
+                    </div>
+                    <img
+                      className={classes.opponentDeadSprites}
+                      src={pk.sprites.front_default}
                       alt={pk.name}
                     />
                   </div>
@@ -276,8 +310,14 @@ const Gameboard = (props) => {
                 return (
                   <div className={classes.pokemonContainer} key={pk.id}>
                     <img
-                      className={classes.playerSprites}
-                      src={pk.sprites.backGif}
+                      className={
+                        pk.active
+                          ? classes.playerSprites
+                          : classes.deadPlayerSprites
+                      }
+                      src={
+                        pk.active ? pk.sprites.backGif : pk.sprites.back_default
+                      }
                       // src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
                       alt={pk.name}
                     />
