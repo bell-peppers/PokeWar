@@ -118,7 +118,11 @@ const PreGame = (props) => {
               </div>
             ) : (
               <div className={classes.waiting}>
-                <h3>{opponent.username} joined!</h3>
+                {role === 'host' ? (
+                  <h3>{opponent.username} joined!</h3>
+                ) : (
+                  <h3>Joined {opponent.username} game!</h3>
+                )}
                 <Button
                   onClick={() => setChoosePk(true)}
                   variant='contained'
