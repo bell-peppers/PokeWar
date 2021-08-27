@@ -77,7 +77,6 @@ const UserProfile = (props) => {
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
 	const history = useHistory();
 	const { currentUser } = useAuth();
-	console.log('current user ==>', currentUser);
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
@@ -124,7 +123,10 @@ const UserProfile = (props) => {
 							margin: '0 20px 0 0',
 						}}
 					>
-						{user && <Image src={user.photoUrl} />}
+
+						{currentUser && (
+							<Image src={currentUser.photoURL} />
+						)}
 					</CardMedia>
 					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
 				</Grid>
@@ -208,37 +210,52 @@ const UserProfile = (props) => {
 					</Typography>
 					<Grid
 						style={{ backgroundColor: 'white', width: '180px', height: '90px' }}
-					>
-					</Grid>
+					></Grid>
 				</Grid>
 			</Grid>
-			<Grid style={{display: 'flex', justifyContent: 'space-between'}}><Grid style={{ display: 'flex', flexDirection: 'column' }}>
-				<Grid>
-					<Typography
+			<Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Grid style={{ display: 'flex', flexDirection: 'column' }}>
+					<Grid>
+						<Typography
+							style={{
+								fontSize: '20px',
+								paddingLeft: '20px',
+								paddingTop: '20px',
+							}}
+						>
+							Inventory
+						</Typography>
+					</Grid>
+					<Grid
 						style={{
-							fontSize: '20px',
 							paddingLeft: '20px',
 							paddingTop: '20px',
+							paddingBottom: '10px',
 						}}
 					>
-						Inventory
-					</Typography>
+						<Typography style={{ fontSize: '20px' }}>Comments</Typography>
+						<Grid
+							style={{
+								backgroundColor: 'white',
+								width: '450px',
+								height: '150px',
+							}}
+						></Grid>
+					</Grid>
 				</Grid>
-				<Grid style={{ paddingLeft: '20px', paddingTop: '20px', paddingBottom: '10px' }}>
-					<Typography style={{ fontSize: '20px' }}>Comments</Typography>
+				<Grid>
+					<Typography style={{ fontSize: '18px', paddingRight: '175px' }}>
+						Friends
+					</Typography>{' '}
 					<Grid
 						style={{
 							backgroundColor: 'white',
-							width: '450px',
-							height: '150px',
+							width: '200px',
+							height: '220px',
 						}}
 					></Grid>
 				</Grid>
 			</Grid>
-			<Grid><Typography  style={{ fontSize: '18px', paddingRight: '175px' }}>Friends</Typography>	<Grid
-						style={{ backgroundColor: 'white', width: '200px', height: '220px' }}
-					>
-					</Grid></Grid></Grid>
 			{/* <Grid>
 					<Button
 						onClick={() =>
