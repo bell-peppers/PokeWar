@@ -13,7 +13,7 @@ import Loading from './Loading';
 /**
  * COMPONENT
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   PokeCards: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function AllPokemon(props) {
-  const pokemon = useSelector((state) => state.allPokemon);
+  const pokemon = useSelector(state => state.allPokemon);
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -63,6 +63,7 @@ export default function AllPokemon(props) {
 
   useEffect(() => {
     dispatch(fetchPokemon(0)).then(() => {
+      console.log(pokemon);
       setIsLoading(false);
     });
   }, [dispatch]);

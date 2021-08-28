@@ -57,27 +57,31 @@ export default function FindMatch(props) {
           <Table className={classes.table} aria-label='simple table'>
             <TableHead>
               <TableRow>
-                <TableCell>Opponent Name</TableCell>
-                <TableCell align='center'>Match ID</TableCell>
-                <TableCell align='right'>Join Game</TableCell>
+                <TableCell style={{fontWeight: 'bold'}} align='center'>
+                  Opponent Name
+                </TableCell>
+                <TableCell style={{fontWeight: 'bold'}} align='center'>
+                  Match ID
+                </TableCell>
+                <TableCell align='right'></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row, i) => (
                 <TableRow key={i}>
-                  <TableCell component='th' scope='row'>
+                  <TableCell component='th' scope='row' align='center'>
                     {row.opponent}
                   </TableCell>
                   <TableCell align='center'>{row.matchid}</TableCell>
                   <TableCell align='center'>
-                    <Fab
+                    <Button
                       onClick={() => joinClick(row.matchid)}
                       color='primary'
                       aria-label='join'
+                      variant='contained'
                     >
-                      <PlayArrowIcon />
-                    </Fab>
-                    {/* <Button onClick={() => joinClick(row.matchId)}>Join</Button> */}
+                      Join Match
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

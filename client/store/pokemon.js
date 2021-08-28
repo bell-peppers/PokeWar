@@ -13,162 +13,6 @@ const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
 const UNCHOOSE_PLAYER_POKEMON = 'UNCHOOSE_PLAYER_POKEMON';
 const SEND_CHOSEN_POKEMON = 'SEND_CHOSEN_POKEMON';
 
-const playerOnePokemon = [
-  {
-    name: 'Blastoise',
-    id: 9,
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/9.png',
-    frontImg:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        damage: 5,
-      },
-      {
-        move: 'blizzard',
-        damage: 25,
-      },
-      {
-        move: 'hydro-pump',
-        damage: 15,
-      },
-    ],
-    stats: {hp: 60},
-  },
-  {
-    name: 'Clefairy',
-    id: 35,
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/35.png',
-    frontImg:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        id: 1,
-        damage: 5,
-      },
-      {
-        move: 'rage',
-        id: 2,
-        damage: 25,
-      },
-      {
-        move: 'skull-bash',
-        id: 3,
-        damage: 15,
-      },
-    ],
-    stats: {hp: 50},
-  },
-  {
-    name: 'Gengar',
-    type: 'type',
-    id: 94,
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/94.png',
-    frontImg:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png',
-    moves: [
-      {
-        move: 'mega-punch',
-        damage: 5,
-      },
-      {
-        move: 'fire-punch',
-        damage: 25,
-      },
-      {
-        move: 'head-butt',
-        damage: 15,
-      },
-    ],
-    stats: {hp: 40},
-  },
-];
-
-const playerTwoPokemon = [
-  {
-    name: 'Diglett',
-    id: 50,
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/9.png',
-    frontImg:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        damage: 5,
-      },
-      {
-        move: 'blizzard',
-        damage: 25,
-      },
-      {
-        move: 'hydro-pump',
-        damage: 15,
-      },
-    ],
-    stats: {hp: 40},
-  },
-  {
-    name: 'Vaporeon',
-    id: 134,
-    type: 'type',
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/35.png',
-    frontImg:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png',
-    moves: [
-      {
-        move: 'bodyslam',
-        id: 1,
-        damage: 5,
-      },
-      {
-        move: 'rage',
-        id: 2,
-        damage: 25,
-      },
-      {
-        move: 'skull-bash',
-        id: 3,
-        damage: 15,
-      },
-    ],
-    stats: {hp: 50},
-  },
-  {
-    name: 'Charizard',
-    type: 'type',
-    id: 6,
-    imgUrl:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/94.png',
-    frontImg:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png',
-    moves: [
-      {
-        move: 'mega-punch',
-        damage: 5,
-      },
-      {
-        move: 'fire-punch',
-        damage: 25,
-      },
-      {
-        move: 'head-butt',
-        damage: 15,
-      },
-    ],
-    stats: {hp: 70},
-  },
-];
-
 const _sendChosenPokemon = (pokemon) => {
   return {
     type: SEND_CHOSEN_POKEMON,
@@ -210,11 +54,12 @@ const _attackOpponent = (pokemon) => {
   };
 };
 
-const _applyMoves = (playerPk, oppPk) => {
+const _applyMoves = (playerPk, oppPk, feed) => {
   return {
     type: APPLY_MOVES,
     playerPk,
     oppPk,
+    feed,
   };
 };
 
@@ -266,10 +111,12 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
       move.report.Class && move.report.Class !== 'Normal'
         ? `${move.report.Class}`
         : '';
+    const crit = move.report.isCrit ? ' Critical hit!' : '';
     const action = {
       message:
-        `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} for ${move.report.Damage} on ${move.attackedPokemon.name}. ` +
-        reportClass,
+        `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
+        reportClass +
+        crit,
     };
     playerPk.forEach((pk) => {
       if (
@@ -277,6 +124,10 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         pk.name == move.attackedPokemon.name
       ) {
         pk.stats[0].base_stat -= move.report.Damage;
+        if (pk.stats[0].base_stat <= 0 && pk.active) {
+          pk.active = false;
+          action.message += `${pk.name} was killed in battle.`;
+        }
       }
     });
 
@@ -286,6 +137,10 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         pk.name == move.attackedPokemon.name
       ) {
         pk.stats[0].base_stat -= move.report.Damage;
+        if (pk.stats[0].base_stat <= 0 && pk.active) {
+          pk.active = false;
+          action.message += `${pk.name} was killed in battle.`;
+        }
       }
     });
     feed.push(action);
@@ -293,8 +148,8 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
 
   const updatedPlayerPk = [...playerPk];
   const updatedOppPk = [...oppPk];
-  console.log(feed);
-  dispatch(_applyMoves(updatedPlayerPk, updatedOppPk));
+  feed.forEach((f) => console.log(f.message));
+  dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
 };
 
 export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
@@ -314,25 +169,75 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
 
 export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
   try {
-     let playerPk = await Promise.all(pkId.map(async (id) => {
-      const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
-      const movesArr = [
-        pk.data.moves[0],
-        pk.data.moves[1],
-        pk.data.moves[2],
-        pk.data.moves[3],
-      ];
-      await movesArr.forEach(async (move) => {
-        const getMove = await axios.get(`${move.move.url}`);
-        move.moveData = getMove.data;
-      });
-      pk.data.moves = movesArr;
-      pk.data.owner = username;
-      return pk.data
-      // playerPk.push();
-    }));
-    // console.log("infetch")
-    // console.log(JSON.stringify(playerPk))
+    let playerPk = await Promise.all(
+      pkId.map(async (id) => {
+        const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
+        const ind = pk.data.moves.length;
+        let multiplier = Math.floor(((id * 151) % ind) / 2);
+        const movesArr = [];
+        if (ind - multiplier > 20) {
+          for (let i = 0; i < 20; i++) {
+            movesArr.push(pk.data.moves[multiplier + i]);
+          }
+        } else if (ind < 10) {
+          for (let i = 0; i < ind; i++) {
+            movesArr.push(pk.data.moves[i]);
+          }
+        } else {
+          for (let i = 0; i < 20; i++) {
+            movesArr.push(pk.data.moves[i]);
+          }
+        }
+
+        const newMoves = await Promise.all(
+          movesArr.map(async (move) => {
+            const getMove = await axios.get(`${move.move.url}`);
+            return {
+              move: move.move,
+              moveData: {
+                accuracy: getMove.data.accuracy,
+                type: getMove.data.type,
+                power: getMove.data.power,
+                damage_class: getMove.data.damage_class,
+              },
+            };
+          })
+        );
+        const newerMoves = newMoves.filter(
+          (move) => move.moveData.power !== null
+        );
+
+        const newestMoves =
+          newerMoves.length < 4
+            ? newerMoves
+            : [newerMoves[0], newerMoves[1], newerMoves[2], newerMoves[3]];
+
+        const pokemon = {
+          moves: newestMoves,
+          owner: username,
+          id: pk.data.id,
+          name: pk.data.name,
+          stats: pk.data.stats,
+          types: pk.data.types,
+          active: true,
+          sprites: {
+            ...pk.data.sprites,
+            frontGif: `https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.data.name}.gif`,
+            backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
+          },
+        };
+        pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
+        pokemon.stats[0].base_stat += 100;
+
+        //lowered hp for testing
+        // pokemon.stats[0].max = pokemon.stats[0].base_stat / 10;
+        // pokemon.stats[0].base_stat = pokemon.stats[0].base_stat / 10;
+
+        return pokemon;
+      })
+    );
+
     return dispatch(_getPlayerOnePokemon(playerPk));
   } catch (error) {
     console.error(error);
@@ -373,6 +278,7 @@ export default function (
     playerOnePokemon: [],
     opponentPokemon: [],
     chosenPokemon: [],
+    attackFeed: [],
   },
   action
 ) {
@@ -389,6 +295,7 @@ export default function (
         ...state,
         playerOnePokemon: action.playerPk,
         opponentPokemon: action.oppPk,
+        attackFeed: action.feed,
       };
     case CHOOSE_PLAYER_POKEMON:
       return {

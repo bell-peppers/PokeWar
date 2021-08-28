@@ -1,18 +1,18 @@
-import React, {useState, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {connect} from 'react-redux';
-import {Link, useHistory} from 'react-router-dom';
-import {Button, makeStyles} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { Button, makeStyles } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import {Typography, Grid, CardContent} from '@material-ui/core';
+import { Typography, Grid, CardContent } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import {useAuth} from '../../src/contexts/AuthContext';
-import {auth} from '../../utils/firebase';
+import { useAuth } from '../../src/contexts/AuthContext';
+import { auth } from '../../utils/firebase';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
-import {FIREDB} from '../../utils/firebase';
+import { FIREDB } from '../../utils/firebase';
 
 // import firebase from 'firebase/app';
 
@@ -45,7 +45,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Navbar = (props) => {
+const Navbar = props => {
   const history = useHistory();
   const [error, setError] = useState('');
   const classes = useStyles();
@@ -74,7 +74,7 @@ const Navbar = (props) => {
       {/* {currentUser && currentUser.email} */}
       {error && console.log(error)}
       <Toolbar className={classes.cart}>
-        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
           {/* <a className={classes.p} href='/'>
           Poke Wars
         </a> */}
@@ -88,7 +88,10 @@ const Navbar = (props) => {
         // </Grid> */}
 
           <Link to='/'>
-            <p className={classes.p}>PokeWar</p>
+            <img
+              src='https://fontmeme.com/permalink/210826/592ea97aacfe17f8048b8b966b5e0c57.png'
+              alt='pokewar'
+            />
           </Link>
           <Link to='/allpokemon'>
             <p className={classes.p}>All Pokemon</p>
@@ -99,7 +102,7 @@ const Navbar = (props) => {
         </div>
         <div>
           {currentUser ? (
-            <div style={{display: 'flex'}}>
+            <div style={{ display: 'flex' }}>
               <Link to='/myprofile'>
                 <p className={classes.p}>My Profile</p>
               </Link>
@@ -108,7 +111,7 @@ const Navbar = (props) => {
               </p>
             </div>
           ) : (
-            <div style={{display: 'flex'}}>
+            <div style={{ display: 'flex' }}>
               <Link to='/signup'>
                 <p className={classes.p}>Sign Up</p>
               </Link>
@@ -125,13 +128,13 @@ const Navbar = (props) => {
   );
 };
 
-const mapState = (state) => {
+const mapState = state => {
   return {
     username: state.userData.user.username,
   };
 };
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = dispatch => {
   return {};
 };
 

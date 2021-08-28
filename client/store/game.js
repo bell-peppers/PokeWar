@@ -10,6 +10,22 @@ const CANCEL_GAME = 'CANCEL_GAME';
 const SET_HOSTGUEST = 'SET_HOSTGUEST';
 const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
 const SET_PLAYER_READY = 'SET_PLAYER_READY';
+const SET_WINNER = 'SET_WINNER';
+const SET_WIN_RECORD = 'SET_WIN_RECORD';
+
+const _setWinRecord = (userId) => {
+  return {
+    type: SET_WIN_RECORD,
+    userId,
+  };
+};
+
+const _setWinner = (player) => {
+  return {
+    type: SET_WINNER,
+    player,
+  };
+};
 
 const _setPlayerReady = (ready) => {
   return {
@@ -70,6 +86,24 @@ const _joinGame = (data, matchId) => {
     data,
     matchId,
   };
+};
+
+export const setWinner = (playerPk, user, oppName) => async (dispatch) => {
+  const playerCheck = playerPk.filter((pk) => {
+    return pk.active;
+  }).length;
+
+  const winner = playerCheck === 0 ? oppName : user.username;
+  alert(`${winner} wins!`);
+  if (winner === user.username) {
+    let userRec = {totalGames: user.totalGames + 1, wins: user.wins + 1};
+    await FIREDB.ref('/users/' + user.uid).update(userRec);
+  } else {
+    let userRec = {totalGames: user.totalGames + 1};
+    await FIREDB.ref('/users/' + user.uid).update(userRec);
+  }
+
+  return dispatch(_setWinner(winner));
 };
 
 export const setPlayerReady = (matchId, role, ready) => async (dispatch) => {
@@ -186,6 +220,7 @@ let initialState = {
   matchId: null,
   role: null,
   playerReady: false,
+  winner: null,
 };
 
 export default function (state = initialState, action) {
@@ -220,6 +255,8 @@ export default function (state = initialState, action) {
       return {...state, role: action.role};
     case SET_PLAYER_READY:
       return {...state, playerReady: action.ready};
+    case SET_WINNER:
+      return {...state, winner: action.player};
     default:
       return state;
   }

@@ -35,11 +35,13 @@ const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
-    backgroundColor: 'green',
+    backgroundColor: '#CC0000',
     width: '100%',
     height: '600px',
     justifyContent: 'space-around',
     flexDirection: 'row',
+    border: '2px solid #000',
+    borderRadius: '25px',
   },
   root: {
     width: '400px',
@@ -50,18 +52,23 @@ const useStyles = makeStyles((theme) => ({
   },
   buttons: {
     display: 'flex',
-    width: '150px',
+    width: '250px',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    padding: '120px 0 120px 0',
+    // padding: '120px 0 120px 0',
+  },
+  button: {
+    height: '100px',
+    fontSize: '20px',
   },
   paper: {
     position: 'absolute',
     width: 600,
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    //border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    borderRadius: '25px',
   },
 }));
 const columns = [
@@ -113,7 +120,7 @@ const MatchSearch = (props) => {
     setRole,
     changeTurns,
   } = props;
-  //const joinMatchId = useRef();
+
   const {currentUser} = useAuth();
 
   const handleOpen = async () => {
@@ -163,7 +170,9 @@ const MatchSearch = (props) => {
     //const matchId = '-MhpRo167oCYp3cT5O7-';
     //const matchId = joinMatchId.current.value;
     let matchId = prompt('Please enter a match id');
-    if (matchId !== '') {
+    if (matchId === null) {
+      return;
+    } else if (matchId !== '') {
       if (user.uid !== '') {
         console.log(matchId);
         joinGame(matchId, user);
@@ -207,16 +216,27 @@ const MatchSearch = (props) => {
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
           <Button
-            style={{backgroundColor: 'red'}}
+            variant='contained'
+            color='primary'
+            size='large'
+            className={classes.button}
             onClick={async () => handleNewMatchClick()}
           >
-            Create Match
+            Create New Match
           </Button>
-          <Button style={{backgroundColor: 'red'}} onClick={handleOpen}>
-            Find Games
+
+          <Button
+            variant='contained'
+            size='large'
+            onClick={handleOpen}
+            className={classes.button}
+          >
+            Find Open Match
           </Button>
           <Button
-            style={{backgroundColor: 'red'}}
+            size='large'
+            variant='contained'
+            className={classes.button}
             onClick={() => handleJoinClick()}
           >
             Join By Match Id
@@ -226,69 +246,75 @@ const MatchSearch = (props) => {
             inputRef={joinMatchId}
             variant='outlined'
           /> */}
-				</Grid>
-				<Modal
-					open={open}
-					onClose={handleClose}
-					aria-labelledby='simple-modal-title'
-					aria-describedby='simple-modal-description'
-				>
-					{modalBody}
-				</Modal>
-				<Paper className={classes.root}>
-					<h4 style={{ textAlign: 'center' }}>Leaderboard</h4>
-					<TableContainer className={classes.container}>
-						<Table stickyHeader aria-label='sticky table'>
-							<TableHead>
-								<TableRow>
-									{columns.map((column, i) => (
-										<TableCell
-											key={i}
-											align={column.align}
-											style={{ minWidth: column.minWidth }}
-										>
-											{column.label}
-										</TableCell>
-									))}
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{rows
-									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-									.map((row, i) => {
-										return (
-											<TableRow hover role='checkbox' tabIndex={-1} key={i}>
-												{columns.map((column) => {
-													const value = row[column.id];
-													return (
-														<TableCell key={column.id} align={column.align}>
-															{column.format && typeof value === 'number'
-																? column.format(value)
-																: value}
-														</TableCell>
-													);
-												})}
-											</TableRow>
-										);
-									})}
-							</TableBody>
-						</Table>
-					</TableContainer>
-					<TablePagination
-						rowsPerPageOptions={[10, 25, 100]}
-						component='div'
-						count={rows.length}
-						rowsPerPage={rowsPerPage}
-						page={page}
-						onPageChange={handleChangePage}
-						onRowsPerPageChange={handleChangeRowsPerPage}
-					/>
-				</Paper>
-			</Container>
-			<Grid>
-			<Button href='/signup' style={{backgroundColor: 'green', position: 'absolute', left: '40%'}}>Sign Up For free today</Button></Grid>
-		</div>
-	);
+        </Grid>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby='simple-modal-title'
+          aria-describedby='simple-modal-description'
+        >
+          {modalBody}
+        </Modal>
+        <Paper className={classes.root}>
+          <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead>
+                <TableRow>
+                  {columns.map((column, i) => (
+                    <TableCell
+                      key={i}
+                      align={column.align}
+                      style={{minWidth: column.minWidth}}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, i) => {
+                    return (
+                      <TableRow hover role='checkbox' tabIndex={-1} key={i}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format && typeof value === 'number'
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component='div'
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
+      </Container>
+      <Grid>
+        <Button
+          href='/signup'
+          style={{backgroundColor: 'green', position: 'absolute', left: '40%'}}
+        >
+          Sign Up For free today
+        </Button>
+      </Grid>
+    </div>
+  );
 };
 const mapState = (state) => {
   return {

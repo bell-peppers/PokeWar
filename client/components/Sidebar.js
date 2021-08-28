@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/core';
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
+import {makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Chat from './Chat';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   sidebar: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    backgroundColor: 'red',
     height: '100%',
     fontFamily: 'Courier New, monospace',
   },
@@ -35,8 +35,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Sidebar = props => {
+const Sidebar = (props) => {
   const classes = useStyles();
+  const {feed, user, opponent, matchId, role} = props;
+
   return (
     <Grid className={classes.sidebar}>
       <Grid className={classes.users}>
@@ -46,10 +48,10 @@ const Sidebar = props => {
             alt='Mirana'
             src='/pics/Mirana_icon.png'
           />
-          <h3 style={{ margin: 0 }}>Username1</h3>
+          <h3 className='avatar-name'>{user.username}</h3>
         </Grid>
         <Grid>
-          <h1>⚔️</h1>
+          <h1 className='vs'>⚔️</h1>
         </Grid>
         <Grid className={classes.avatar}>
           <Avatar
@@ -57,21 +59,31 @@ const Sidebar = props => {
             alt='Phoenix'
             src='/pics/Phoenix_icon.png'
           />
-          <h3 style={{ margin: 0 }}>Username2</h3>
+          <h3 className='avatar-name'>{opponent.username}</h3>
         </Grid>
       </Grid>
       <Grid className={classes.chat}>
-        <Chat />
+        <Chat
+          feed={feed}
+          user={user}
+          opponent={opponent}
+          matchId={matchId}
+          role={role}
+        />
       </Grid>
     </Grid>
   );
 };
 
-const mapState = state => {
-  return {};
+const mapState = (state) => {
+  return {
+    feed: state.pokemon.attackFeed,
+    user: state.userData.user,
+    opponent: state.game.opponentInfo,
+  };
 };
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch) => {
   return {};
 };
 
