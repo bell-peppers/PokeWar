@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
 import Gameboard from './Gameboard';
 import Actionbar from './Actionbar';
 import Sidebar from './Sidebar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core';
+import {makeStyles} from '@material-ui/core';
 import {
   fetchPlayerOnePokemon,
   fetchOpponentPokemon,
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '25px',
     width: '100vw',
     height: '100vh',
-    maxHeight: '1200px',
+    maxHeight: '1000px',
     minWidth: '800px',
     justifyContent: 'space-between',
     minHeight: '800px',
@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
     //backgroundColor: 'green',
     width: '75%',
     height: '100%',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
   },
   side: {
     width: '25%',
@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Main = props => {
+const Main = (props) => {
   const {
     getPlayerPokemon,
     fetchOpponentPokemon,
@@ -59,7 +59,7 @@ const Main = props => {
     opponentName,
     changeTurns,
     isTurn,
-    username,
+    user,
     calculatedAttacks,
     winner,
     setWinner,
@@ -88,7 +88,7 @@ const Main = props => {
             playerPokemon={playerPokemon}
             opponentPokemon={opponentPokemon}
             opponentName={opponentName}
-            username={username}
+            user={user}
             role={role}
             changeTurns={changeTurns}
             isTurn={isTurn}
@@ -101,7 +101,7 @@ const Main = props => {
             isTurn={isTurn}
             changeTurns={changeTurns}
             role={role}
-            username={username}
+            user={user}
             calculatedAttacks={calculatedAttacks}
             matchId={matchId}
             winner={winner}
@@ -110,14 +110,18 @@ const Main = props => {
           />
         </div>
         <div className={classes.side}>
-          <Sidebar calculatedAttacks={calculatedAttacks} />
+          <Sidebar
+            calculatedAttacks={calculatedAttacks}
+            matchId={matchId}
+            role={role}
+          />
         </div>
       </Container>
     </React.Fragment>
   );
 };
 
-const mapState = state => {
+const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
     opponentPokemon: state.pokemon.opponentPokemon,
@@ -125,18 +129,18 @@ const mapState = state => {
     role: state.game.role,
     opponentName: state.game.opponentInfo.username,
     isTurn: state.playerTurn.isTurn,
-    username: state.userData.user.username,
+    user: state.userData.user,
     calculatedAttacks: state.playerTurn.calculatedAttacks,
     winner: state.game.winner,
   };
 };
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch) => {
   return {
-    getPlayerPokemon: pkIds => dispatch(fetchPlayerOnePokemon(pkIds)),
+    getPlayerPokemon: (pkIds) => dispatch(fetchPlayerOnePokemon(pkIds)),
     fetchOpponentPokemon: (matchId, role) =>
       dispatch(fetchOpponentPokemon(matchId, role)),
-    getMoves: playerPk => dispatch(fetchMovesInfo(playerPk)),
+    getMoves: (playerPk) => dispatch(fetchMovesInfo(playerPk)),
     changeTurns: () => dispatch(_changeTurns()),
     setWinner: (pk, user, opp) => dispatch(setWinner(pk, user, opp)),
   };

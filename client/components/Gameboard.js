@@ -22,9 +22,10 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    // borderWidth: '1px',
+    // borderStyle: 'solid',
+    // borderColor: 'black',
+    borderRadius: '25px',
   },
   playerSide: {
     height: '50%',
@@ -41,6 +42,8 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    borderTopRightRadius: '25px',
+    borderTopLeftRadius: '25px',
     // borderWidth: '1px',
     // borderStyle: 'solid',
     // borderColor: 'black',
@@ -53,6 +56,15 @@ const useStyles = makeStyles(() => ({
     objectFit: 'contain',
     alignSelf: 'flex-start',
   },
+  deadPlayerSprites: {
+    maxWidth: '100%',
+    width: '200px',
+    height: 'auto',
+    maxHeight: '200px',
+    objectFit: 'contain',
+    alignSelf: 'flex-start',
+    opacity: '25%',
+  },
   opponentSprites: {
     maxWidth: '100%',
     width: '185px',
@@ -60,6 +72,15 @@ const useStyles = makeStyles(() => ({
     maxHeight: '200px',
     objectFit: 'contain',
     alignSelf: 'flex-end',
+  },
+  opponentDeadSprites: {
+    maxWidth: '100%',
+    width: '185px',
+    height: 'auto',
+    maxHeight: '200px',
+    objectFit: 'contain',
+    alignSelf: 'flex-end',
+    opacity: '25%',
   },
   pokemonContainer: {
     alignSelf: 'flex-end',
@@ -70,6 +91,7 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     padding: '5px',
   },
+
   oppPokemonContainer: {
     alignSelf: 'flex-start',
     display: 'flex',
@@ -88,6 +110,7 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     padding: '5px',
     backgroundColor: '#9EDEF9',
+    opacity: '25%',
   },
   pokemonName: {
     alignText: 'center',
@@ -127,7 +150,7 @@ const Gameboard = (props) => {
     playerAttack,
     resetPlayerPokemon,
     chosenPokemon,
-    username,
+    user,
     opponentPokemon,
     changeTurns,
     opponentName,
@@ -159,24 +182,15 @@ const Gameboard = (props) => {
   }))(LinearProgress);
 
   useEffect(() => {
-    console.log(opponentPokemon);
-
     listenForOpponentMoves();
   }, []);
 
   function listenForOpponentMoves() {
-    console.log(opponentPokemon);
-
-    // const match = 'Match1';
-    // const opponent = 'player2';
-    //firebase looking for updates to this match
-    console.log(isTurn);
     const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
     console.log(matchId, opponentName, opponentPokemon);
     dbUpdates.limitToLast(1).on('value', (snapshot) => {
-      console.log(snapshot);
       const newMoves = snapshot.val();
-      console.log(newMoves);
+
       if (newMoves) {
         const moves = Object.values(newMoves)[0];
         if (role === 'guest') {
@@ -187,32 +201,30 @@ const Gameboard = (props) => {
           getOpponentMoves(moves);
           changeTurns();
         }
-
-        //setOpponentMovesLoaded(true)
       }
     });
   }
 
-  function checkForEndGame() {
+  async function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      setWinner(chosenPokemon, username, opponentName);
-      // alert(`${winner} wins!`);
-      // history.push('/post');
-      //endmatch
-      //push to new component
-      //delete match from server
-      //add win/loss stats
+      await setWinner(chosenPokemon, user, opponentName);
+      history.push('/post');
+      //reset pokemon - attackFeed, chosenPokemon, opponentPokemon
+      //reset game - opponentInfo, playerMoves, role, availableGames, playerReady
     }
   }
 
   function clickHandle(pk) {
-    if (playerAttack && selectedPlayerPk && pk.active) {
+    console.log(Object.keys(playerAttack));
+    if (Object.keys(playerAttack).length > 0 && selectedPlayerPk && pk.active) {
       selectAttacked(pk, playerAttack.attack, selectedPlayerPk);
       console.log(
         `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
       );
       resetAttack();
       resetPlayerPokemon();
+    } else {
+      console.log('please select a move first');
     }
   }
 
@@ -241,7 +253,7 @@ const Gameboard = (props) => {
             </div>
             {opponentPokemon &&
               opponentPokemon.map((pk, i) => {
-                return (
+                return pk.active ? (
                   <div
                     className={
                       oppMouseDown[i] === true
@@ -263,7 +275,21 @@ const Gameboard = (props) => {
                     <img
                       className={classes.opponentSprites}
                       src={pk.sprites.frontGif}
-                      //src={`https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.name}.gif`}
+                      alt={pk.name}
+                    />
+                  </div>
+                ) : (
+                  <div className={classes.oppPokemonContainer}>
+                    <div className={classes.nameBar}>
+                      <p>{pk.name}</p>
+                      <BorderLinearProgress
+                        variant='determinate'
+                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
+                      />
+                    </div>
+                    <img
+                      className={classes.opponentDeadSprites}
+                      src={pk.sprites.front_default}
                       alt={pk.name}
                     />
                   </div>
@@ -276,8 +302,14 @@ const Gameboard = (props) => {
                 return (
                   <div className={classes.pokemonContainer} key={pk.id}>
                     <img
-                      className={classes.playerSprites}
-                      src={pk.sprites.backGif}
+                      className={
+                        pk.active
+                          ? classes.playerSprites
+                          : classes.deadPlayerSprites
+                      }
+                      src={
+                        pk.active ? pk.sprites.backGif : pk.sprites.back_default
+                      }
                       // src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
                       alt={pk.name}
                     />

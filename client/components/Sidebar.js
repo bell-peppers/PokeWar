@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/core';
+import React, {useState, useEffect} from 'react';
+import {connect} from 'react-redux';
+import {makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Chat from './Chat';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   sidebar: {
     display: 'flex',
     flexDirection: 'column',
@@ -35,9 +35,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Sidebar = props => {
+const Sidebar = (props) => {
   const classes = useStyles();
-  const { feed, user, opponent } = props;
+  const {feed, user, opponent, matchId, role} = props;
 
   return (
     <Grid className={classes.sidebar}>
@@ -48,7 +48,7 @@ const Sidebar = props => {
             alt='Mirana'
             src='/pics/Mirana_icon.png'
           />
-          <h3 className='avatar-name'>Username1</h3>
+          <h3 className='avatar-name'>{user.username}</h3>
         </Grid>
         <Grid>
           <h1 className='vs'>⚔️</h1>
@@ -59,17 +59,23 @@ const Sidebar = props => {
             alt='Phoenix'
             src='/pics/Phoenix_icon.png'
           />
-          <h3 className='avatar-name'>Username2</h3>
+          <h3 className='avatar-name'>{opponent.username}</h3>
         </Grid>
       </Grid>
       <Grid className={classes.chat}>
-        <Chat feed={feed} user={user} opponent={opponent} />
+        <Chat
+          feed={feed}
+          user={user}
+          opponent={opponent}
+          matchId={matchId}
+          role={role}
+        />
       </Grid>
     </Grid>
   );
 };
 
-const mapState = state => {
+const mapState = (state) => {
   return {
     feed: state.pokemon.attackFeed,
     user: state.userData.user,
@@ -77,7 +83,7 @@ const mapState = state => {
   };
 };
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch) => {
   return {};
 };
 

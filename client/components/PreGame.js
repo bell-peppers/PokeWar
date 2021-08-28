@@ -15,9 +15,10 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     flexDirection: 'column',
-    //backgroundColor: 'white',
+    backgroundColor: '#E64556',
+    color: 'white',
     width: '65%',
-    height: '50%',
+    height: '60%',
     justifyContent: 'center',
     alignItems: 'center',
     // borderWidth: '1px',
@@ -26,7 +27,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: '50px',
     boxShadow:
       'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px',
-    background: 'linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff)',
+    //background: 'linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff)',
   },
   main: {
     fontFamily: 'Courier New, monospace',
@@ -46,8 +47,8 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: '50%',
-    justifyContent: 'space-between',
+    height: '150px',
+    justifyContent: 'space-evenly',
   },
 }));
 
@@ -103,10 +104,14 @@ const PreGame = (props) => {
             <h2>{username}</h2>
           </div>
           <div>
-            {playerJoined == false ? (
+            {playerJoined == false && role === 'host' ? (
               <div className={classes.waiting}>
                 <h3>Waiting for a player to join...</h3>
-                <CircularProgress />
+                {/* <CircularProgress /> */}
+                <img
+                  src='pics/pkball.gif'
+                  style={{width: '100px', height: '100px'}}
+                />
                 <br />
                 <Button
                   onClick={() => cancelClick()}
@@ -121,7 +126,7 @@ const PreGame = (props) => {
                 {role === 'host' ? (
                   <h3>{opponent.username} joined!</h3>
                 ) : (
-                  <h3>Joined {opponent.username} game!</h3>
+                  <h1>Joined {opponent.username}'s game!</h1>
                 )}
                 <Button
                   onClick={() => setChoosePk(true)}

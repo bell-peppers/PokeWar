@@ -16,6 +16,7 @@ import {sendPlayerMoves, getPlayerMoves} from '../store/game';
 import calculateTurn from '../../utils/calculateTurn';
 import {winCheck} from '../../utils/calculateTurn';
 import {colorTypeGradients} from '../../utils/ColorGradientFunc';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -35,19 +36,28 @@ const useStyles = makeStyles(() => ({
   card: {
     height: 140,
     width: 100,
+    fontWeight: 'bold',
   },
   skill: {
     height: 50,
     width: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
   },
   selectedSkill: {
     height: 50,
     width: 100,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
     boxShadow: '1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue',
   },
   actionBar: {
     display: 'flex',
-    justifyContent: 'space-around',
+    alignItems: 'center',
     flexDirection: 'column',
     marginBottom: '20px',
   },
@@ -60,10 +70,11 @@ const useStyles = makeStyles(() => ({
   selected: {
     height: 140,
     width: 100,
+    fontWeight: 'bold',
     boxShadow: '1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue',
   },
   picked: {
-    opacity: '50%',
+    opacity: '30%',
   },
 }));
 const Actionbar = (props) => {
@@ -81,10 +92,9 @@ const Actionbar = (props) => {
     isTurn,
     changeTurns,
     role,
-    username,
+    user,
     opponentMoves,
     setCalculatedAttacks,
-    calculatedAttacks,
     applyMoves,
     clearOpponentMoves,
     matchId,
@@ -97,7 +107,7 @@ const Actionbar = (props) => {
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
     moves: [],
   });
-
+  const history = useHistory();
   useEffect(() => {}, []);
 
   function selectPokemon(pokemon) {
@@ -122,15 +132,11 @@ const Actionbar = (props) => {
       selectAttack(selectedPlayerPokemon, move);
     }
   }
-  function checkForEndGame() {
+  async function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      setWinner(chosenPokemon, username, opponentName);
+      await setWinner(chosenPokemon, user, opponentName);
       // alert(`${winner} wins!`);
-      // history.push('/post');
-      //endmatch
-      //push to new component
-      //delete match from server
-      //add win/loss stats
+      history.push('/post');
     }
   }
 
@@ -140,13 +146,15 @@ const Actionbar = (props) => {
     //   return {...move, attackedPokemon: attackedPokemon[index]};
     // });
     if (role === 'guest') {
-      sendMoves(playerTurn, username, matchId);
+      console.log(user);
+      sendMoves(playerTurn, user.username, matchId);
     } else if (role === 'host') {
       //make sure we have moves
       if (opponentMoves) {
         const thisTurn = calculateTurn(playerTurn, opponentMoves);
         setCalculatedAttacks(thisTurn);
-        await sendMoves(thisTurn, username, matchId);
+
+        await sendMoves(thisTurn, user.username, matchId);
         //apply
         applyMoves(thisTurn, playerPokemon, opponentPokemon);
         checkForEndGame();
@@ -173,16 +181,28 @@ const Actionbar = (props) => {
   return (
     <div className={classes.actionBar}>
       {isTurn ? (
-        <h1 style={{textAlign: 'center'}}>Your turn!</h1>
+        <h2 style={{textAlign: 'center'}}>Your turn - Choose your moves!</h2>
       ) : (
-        <h2 style={{textAlign: 'center'}}>Please wait for your turn</h2>
+        <h2 style={{textAlign: 'center'}}>
+          Please wait for {opponentName} to complete their turn
+        </h2>
       )}
       <div className={classes.subActionBar}>
         <Grid container className={classes.root} spacing={1}>
-          <Grid style={{position: 'absolute', left: '173px', bottom: '150px'}}>
+          {/* <Grid style={{position: 'absolute', left: '173px', bottom: '150px'}}>
             My deck:
-          </Grid>
-          <Grid item xs={12}>
+          </Grid> */}
+          <Grid
+            item
+            xs={12}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              textAlign: 'center',
+            }}
+          >
+            Choose a Pokemon:
             <Grid
               container
               style={{display: 'flex', flexWrap: 'nowrap'}}
@@ -254,12 +274,15 @@ const Actionbar = (props) => {
             flexDirection: 'column',
             // border: '5px solid red',
             maxWidth: '300px',
+            justifyContent: 'center',
           }}
         >
           <Grid
             style={{
               display: 'flex',
               justifyContent: 'center',
+              flexDirection: 'column',
+              textAlign: 'center',
             }}
           >
             Choose your attack:
@@ -302,9 +325,9 @@ const Actionbar = (props) => {
           }}
         >
           <Button
-            style={{
-              height: '45px',
-            }}
+            // style={{
+            //   height: '45px',
+            // }}
             variant='contained'
             color='secondary'
             disabled={!isTurn}

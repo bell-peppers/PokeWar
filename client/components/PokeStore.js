@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchPokemon } from '../store/allPokemon';
-import { fetchlegends } from '../store/pokeStore';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchPokemon} from '../store/allPokemon';
+import {fetchlegends} from '../store/pokeStore';
 import Loading from './Loading';
 
 const Store = (props) => {
   const pokemon = useSelector((state) => state.allPokemon);
-  const pokemon = useSelector((state) => state.legendaries);
+  // const pokemon = useSelector((state) => state.legendaries);
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);

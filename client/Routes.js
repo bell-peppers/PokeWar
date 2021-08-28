@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import {
   withRouter,
   Route,
@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import Main from './components/Main';
-import { me } from './store';
+import {me} from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
@@ -16,12 +16,11 @@ import PreGame from './components/PreGame';
 import AllPokemon from './components/AllPokemon';
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
-import { useAuth } from '../src/contexts/AuthContext';
+import {useAuth} from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
-
-import EditProfile from './components/EditProfile'
-import Footer from './components/Footer'
-import AboutUs from './components/AboutUs'
+import EditProfile from './components/EditProfile';
+import Footer from './components/Footer';
+import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 
@@ -29,7 +28,7 @@ import Store from './components/PokeStore';
  * COMPONENT
  */
 const Routes = () => {
-  const { currentUser } = useAuth();
+  const {currentUser} = useAuth();
   return (
     <Router>
       {/* {!currentUser ? (
@@ -39,7 +38,6 @@ const Routes = () => {
         <Route path='/allpokemon' exact component={AllPokemon} />
         <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
-        <Route path='/chat' exact component={Sidebar} />
         <Route path='/myprofile' exact component={UserProfile} />
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' exact component={LoginPage} />
