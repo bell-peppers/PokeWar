@@ -141,33 +141,29 @@ const Actionbar = (props) => {
   }
 
   async function completeTurnHandler() {
-    // const user = 'player1';
-    // const sendMove = playerTurn.map((move, index) => {
-    //   return {...move, attackedPokemon: attackedPokemon[index]};
-    // });
-    if (role === 'guest') {
-      console.log(user);
-      sendMoves(playerTurn, user.username, matchId);
-    } else if (role === 'host') {
-      //make sure we have moves
-      if (opponentMoves) {
-        const thisTurn = calculateTurn(playerTurn, opponentMoves);
-        setCalculatedAttacks(thisTurn);
-
-        await sendMoves(thisTurn, user.username, matchId);
-        //apply
-        applyMoves(thisTurn, playerPokemon, opponentPokemon);
-        checkForEndGame();
+    if (playerTurn.length > 0) {
+      if (role === 'guest') {
+        console.log(user);
+        sendMoves(playerTurn, user.username, matchId);
+      } else if (role === 'host') {
+        //make sure we have moves
+        if (opponentMoves) {
+          const thisTurn = calculateTurn(playerTurn, opponentMoves);
+          setCalculatedAttacks(thisTurn);
+          await sendMoves(thisTurn, user.username, matchId);
+          //apply
+          applyMoves(thisTurn, playerPokemon, opponentPokemon);
+          checkForEndGame();
+        }
       }
-
-      //apply to opppk
-      //turn over
+      changeTurns();
+      clearPlayerTurn();
+      clearAttackedPokemon();
+      selectPlayerPokemon({});
+      clearOpponentMoves();
+    } else {
+      alert('you should probably choose an attack first');
     }
-    changeTurns();
-    clearPlayerTurn();
-    clearAttackedPokemon();
-    selectPlayerPokemon({});
-    clearOpponentMoves();
   }
 
   function alreadyPickedCheck(pk) {
