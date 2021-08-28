@@ -22,9 +22,10 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    // borderWidth: '1px',
+    // borderStyle: 'solid',
+    // borderColor: 'black',
+    borderRadius: '25px',
   },
   playerSide: {
     height: '50%',
@@ -41,6 +42,8 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    borderTopRightRadius: '25px',
+    borderTopLeftRadius: '25px',
     // borderWidth: '1px',
     // borderStyle: 'solid',
     // borderColor: 'black',
@@ -179,24 +182,15 @@ const Gameboard = (props) => {
   }))(LinearProgress);
 
   useEffect(() => {
-    console.log(opponentPokemon);
-
     listenForOpponentMoves();
   }, []);
 
   function listenForOpponentMoves() {
-    console.log(opponentPokemon);
-
-    // const match = 'Match1';
-    // const opponent = 'player2';
-    //firebase looking for updates to this match
-    console.log(isTurn);
     const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
     console.log(matchId, opponentName, opponentPokemon);
     dbUpdates.limitToLast(1).on('value', (snapshot) => {
-      console.log(snapshot);
       const newMoves = snapshot.val();
-      console.log(newMoves);
+
       if (newMoves) {
         const moves = Object.values(newMoves)[0];
         if (role === 'guest') {
@@ -207,27 +201,30 @@ const Gameboard = (props) => {
           getOpponentMoves(moves);
           changeTurns();
         }
-
-        //setOpponentMovesLoaded(true)
       }
     });
   }
 
-  function checkForEndGame() {
+  async function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      setWinner(chosenPokemon, user, opponentName);
+      await setWinner(chosenPokemon, user, opponentName);
       history.push('/post');
+      //reset pokemon - attackFeed, chosenPokemon, opponentPokemon
+      //reset game - opponentInfo, playerMoves, role, availableGames, playerReady
     }
   }
 
   function clickHandle(pk) {
-    if (playerAttack && selectedPlayerPk && pk.active) {
+    console.log(Object.keys(playerAttack));
+    if (Object.keys(playerAttack).length > 0 && selectedPlayerPk && pk.active) {
       selectAttacked(pk, playerAttack.attack, selectedPlayerPk);
       console.log(
         `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
       );
       resetAttack();
       resetPlayerPokemon();
+    } else {
+      console.log('please select a move first');
     }
   }
 

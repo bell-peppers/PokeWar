@@ -16,6 +16,7 @@ import {sendPlayerMoves, getPlayerMoves} from '../store/game';
 import calculateTurn from '../../utils/calculateTurn';
 import {winCheck} from '../../utils/calculateTurn';
 import {colorTypeGradients} from '../../utils/ColorGradientFunc';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -106,7 +107,7 @@ const Actionbar = (props) => {
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
     moves: [],
   });
-
+  const history = useHistory();
   useEffect(() => {}, []);
 
   function selectPokemon(pokemon) {
@@ -131,15 +132,11 @@ const Actionbar = (props) => {
       selectAttack(selectedPlayerPokemon, move);
     }
   }
-  function checkForEndGame() {
+  async function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      setWinner(chosenPokemon, user, opponentName);
+      await setWinner(chosenPokemon, user, opponentName);
       // alert(`${winner} wins!`);
       history.push('/post');
-      //endmatch
-      //push to new component
-      //delete match from server
-      //add win/loss stats
     }
   }
 
@@ -186,7 +183,9 @@ const Actionbar = (props) => {
       {isTurn ? (
         <h2 style={{textAlign: 'center'}}>Your turn - Choose your moves!</h2>
       ) : (
-        <h2 style={{textAlign: 'center'}}>Please wait for your turn</h2>
+        <h2 style={{textAlign: 'center'}}>
+          Please wait for {opponentName} to complete their turn
+        </h2>
       )}
       <div className={classes.subActionBar}>
         <Grid container className={classes.root} spacing={1}>

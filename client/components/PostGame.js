@@ -66,7 +66,7 @@ function PostGame(props) {
 const mapState = (state) => {
   return {
     winner: state.game.winner,
-    user: state.game.userData.user,
+    user: state.userData.user,
     opponentName: state.game.opponentInfo.username,
     matchId: state.game.matchId,
   };

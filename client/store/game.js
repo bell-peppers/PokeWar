@@ -256,7 +256,7 @@ export default function (state = initialState, action) {
     case SET_PLAYER_READY:
       return {...state, playerReady: action.ready};
     case SET_WINNER:
-      return {...state, winner: action.winner};
+      return {...state, winner: action.player};
     default:
       return state;
   }
