@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import {makeStyles} from '@material-ui/core';
 import {applyMoves, attackOpponent} from '../store/pokemon';
 import {
@@ -110,16 +110,20 @@ const Gameboard = (props) => {
   const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
 
   useEffect(() => {
+    console.log(opponentPokemon);
+
     listenForOpponentMoves();
   }, []);
 
   function listenForOpponentMoves() {
+    console.log(opponentPokemon);
+
     // const match = 'Match1';
     // const opponent = 'player2';
     //firebase looking for updates to this match
     console.log(isTurn);
     const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
-    console.log(matchId, opponentName);
+    console.log(matchId, opponentName, opponentPokemon);
     dbUpdates.limitToLast(1).on('value', (snapshot) => {
       console.log(snapshot);
       const newMoves = snapshot.val();
@@ -129,20 +133,11 @@ const Gameboard = (props) => {
         if (role === 'guest') {
           applyMoves(moves, chosenPokemon, opponentPokemon);
           changeTurns();
-          // if (
-          //   chosenPokemon.length > 0 &&
-          //   opponentMovesLoaded == false &&
-          //   !isTurn
-          // ) {
-          //   setOpponentMovesLoaded(true);
-          //   getOpponentMoves(newMoves);
-          //   applyMoves(newMoves, chosenPokemon, opponentPokemon);
-          //   changeTurns();
-          // }
         } else if (role === 'host') {
           getOpponentMoves(moves);
           changeTurns();
         }
+        //setOpponentMovesLoaded(true)
       }
     });
   }
@@ -157,6 +152,7 @@ const Gameboard = (props) => {
       resetPlayerPokemon();
     }
   }
+
   return (
     <div>
       {opponentPokemon ? (

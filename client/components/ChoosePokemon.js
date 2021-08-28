@@ -12,6 +12,7 @@ import {
   choosePlayerPokemon,
   unchoosePlayerPokemon,
   sendChosenPokemon,
+  fetchOpponentPokemon,
 } from '../store/pokemon';
 import {setPlayerReady} from '../store/game';
 import {FIREDB} from '../../utils/firebase';
@@ -84,6 +85,7 @@ function ChoosePokemon(props) {
     matchId,
     role,
     sendChosenPokemon,
+    fetchOpponentPokemon,
     setReady,
     playerReady,
     changeTurns,
@@ -113,15 +115,17 @@ function ChoosePokemon(props) {
 
   const listenOppReady = () => {
     const readyUpdate = FIREDB.ref(`Match/${matchId}/ready`);
-    readyUpdate.on('value', (snapshot) => {
+    readyUpdate.on('value', async (snapshot) => {
       const readyCheck = snapshot.val();
       console.log(readyCheck);
       if (role === 'host') {
         if (readyCheck.guestReady === true) {
+          fetchOpponentPokemon(matchId, role);
           history.push('/game');
         }
       } else if (role === 'guest') {
         if (readyCheck.hostReady === true) {
+          await fetchOpponentPokemon(matchId, role);
           history.push('/game');
         }
       }
@@ -454,6 +458,8 @@ const mapDispatch = (dispatch) => {
       dispatch(sendChosenPokemon(pk, matchId, role)),
     setReady: (mid, role, ready) => dispatch(setPlayerReady(mid, role, ready)),
     changeTurns: () => dispatch(_changeTurns()),
+    fetchOpponentPokemon: (matchId, role) =>
+      dispatch(fetchOpponentPokemon(matchId, role)),
   };
 };
 export default connect(mapState, mapDispatch)(ChoosePokemon);

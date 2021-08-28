@@ -260,14 +260,17 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
 export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   const feed = [];
   console.log('moves', moves);
+  console.log('opp', oppPk);
   moves.forEach((move) => {
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'
         ? `${move.report.Class}`
         : '';
-    const action =
-      `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} for ${move.report.Damage} on ${move.attackedPokemon.name}. ` +
-      reportClass;
+    const action = {
+      message:
+        `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} for ${move.report.Damage} on ${move.attackedPokemon.name}. ` +
+        reportClass,
+    };
     playerPk.forEach((pk) => {
       if (
         pk.owner === move.attackedPokemon.owner &&
@@ -359,14 +362,6 @@ export const fetchOpponentPokemon = (matchId, role) => async (dispatch) => {
     );
     console.log(oppPoke.data);
     return dispatch(_getOpponentPokemon(oppPoke.data));
-    // const oppRole = role == 'host' ? 'guestPokemon' : 'hostPokemon';
-    // await FIREDB.ref('/Match/' + matchId + oppRole).get((snapshot) => {
-    //   const oppPoke = snapshot.val();
-    //   console.log(oppPoke);
-    //   return dispatch(_getOpponentPokemon(oppPoke));
-    // });
-    // console.log(oppPoke);
-    // return dispatch(_getOpponentPokemon(oppPoke));
   } catch (error) {
     console.error(error);
   }

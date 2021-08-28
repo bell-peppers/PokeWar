@@ -16,11 +16,23 @@ export const fetchPokemon = (poke = pokemon) => {
   return async (dispatch) => {
     try {
       let Pokemon = [];
-      for (let i = 0; i < poke.length; i++) {
-        let { data } = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/${poke[i]}`
-        );
-        Pokemon.push(data);
+      if (typeof poke === 'number') {
+        const end = poke === 600 ? poke + 49 : poke + 50;
+        poke += 1;
+        while (poke <= end) {
+          let { data } = await axios.get(
+            `https://pokeapi.co/api/v2/pokemon/${poke}`
+          );
+          Pokemon.push(data);
+          poke++;
+        }
+      } else {
+        for (let i = 0; i < poke.length; i++) {
+          let { data } = await axios.get(
+            `https://pokeapi.co/api/v2/pokemon/${poke[i]}`
+          );
+          Pokemon.push(data);
+        }
       }
       dispatch(_setPokemon(Pokemon));
     } catch (error) {
