@@ -1,71 +1,72 @@
-import React, {useContext, useState, useEffect} from 'react';
-import {auth} from '../../utils/firebase';
+import React, { useContext, useState, useEffect } from 'react';
+import { auth } from '../../utils/firebase';
 import firebase from 'firebase/app';
-import {FIREDB} from '../../utils/firebase';
+import { FIREDB } from '../../utils/firebase';
 
 const AuthContext = React.createContext();
 
 export function useAuth() {
-  return useContext(AuthContext);
+	return useContext(AuthContext);
 }
 
-export function AuthProvider({children}) {
-  const [currentUser, setCurrentUser] = useState(null);
+export function AuthProvider({ children }) {
+	const [currentUser, setCurrentUser] = useState(null);
+	let [count, setCount] = useState(0);
+	//when we call signup, auth.onAuthStateChanged is gonna be called for us
+	async function signup(email, password, username) {
+		const user = await auth.createUserWithEmailAndPassword(email, password);
+		createNewAccount(user.user.uid, user.user.email, username);
+		return user;
+		// firebase.auth().createUserWithEmailAndPassword(email, password);
+	}
+	function createNewAccount(uid, email, name) {
+		setCount(count + 1),
+			FIREDB.ref('users/' + uid).set({
+				uid: uid,
+				email: email,
+				pokemon: [89, 1, 24, 76, 105, 562, 33, 69],
+				username: name,
+				photoUrl: '',
+				wins: 0,
+				totalGames: 0,
+				coins: 100,
+				friends: [],
+				id: count,
+			});
+	}
 
-  //when we call signup, auth.onAuthStateChanged is gonna be called for us
-  async function signup(email, password, username) {
-    const user = await auth.createUserWithEmailAndPassword(email, password);
-    createNewAccount(user.user.uid, user.user.email, username);
-    return user;
-    // firebase.auth().createUserWithEmailAndPassword(email, password);
-  }
+	async function login(email, password) {
+		const user = await auth.signInWithEmailAndPassword(email, password);
+		//getUserData(user.user.uid);
+		return user;
+	}
 
-  function createNewAccount(uid, email, name) {
-    FIREDB.ref('users/' + uid).set({
-      uid: uid,
-      email: email,
-      pokemon: [89, 1, 24, 76, 105, 562, 33, 69],
-      username: name,
-      photoUrl: '',
-      wins: 0,
-      totalGames: 0,
-      coins: 100,
-      friends: [],
-    });
-  }
+	function logout() {
+		return auth.signOut();
+	}
+	// function getUserData(uid) {
+	//   FIREDB.ref('users/' + uid).once('value', (snap) => {
+	//     console.log(snap.val());
+	//   });
+	// }
 
-  async function login(email, password) {
-    const user = await auth.signInWithEmailAndPassword(email, password);
-    //getUserData(user.user.uid);
-    return user;
-  }
+	//we dont want it to be in render, we want it to be in useEffect because
+	//we only want it to run once when we mount our component
+	useEffect(() => {
+		//this func returns a method and when we call this method,
+		//when we call this method its gonna unsubscribe
+		//auth.onAuthStateChanged event
+		const unsubscribe = auth.onAuthStateChanged((user) => {
+			setCurrentUser(user);
+		});
+		return unsubscribe;
+	}, []);
 
-  function logout() {
-    return auth.signOut();
-  }
-  // function getUserData(uid) {
-  //   FIREDB.ref('users/' + uid).once('value', (snap) => {
-  //     console.log(snap.val());
-  //   });
-  // }
-
-  //we dont want it to be in render, we want it to be in useEffect because
-  //we only want it to run once when we mount our component
-  useEffect(() => {
-    //this func returns a method and when we call this method,
-    //when we call this method its gonna unsubscribe
-    //auth.onAuthStateChanged event
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-    });
-    return unsubscribe;
-  }, []);
-
-  const value = {
-    currentUser,
-    login,
-    signup,
-    logout,
-  };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+	const value = {
+		currentUser,
+		login,
+		signup,
+		logout,
+	};
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
