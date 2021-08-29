@@ -103,7 +103,7 @@ const Navbar = (props) => {
 				<div>
 					{currentUser ? (
 						<div style={{ display: 'flex' }}>
-							<Link to={`/users/${user.id}`}>
+							<Link to={`/users/${currentUser.uid}`}>
 								<p className={classes.p}>My Profile</p>
 							</Link>
 							<p onClick={handleLogout} className={classes.p}>
@@ -131,7 +131,6 @@ const Navbar = (props) => {
 const mapState = (state) => {
 	return {
 		username: state.userData.user.username,
-		user: state.userData.user,
 	};
 };
 

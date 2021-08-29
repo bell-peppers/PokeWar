@@ -11,7 +11,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState(null);
-	let [count, setCount] = useState(0);
+
 	//when we call signup, auth.onAuthStateChanged is gonna be called for us
 	async function signup(email, password, username) {
 		const user = await auth.createUserWithEmailAndPassword(email, password);
@@ -20,19 +20,28 @@ export function AuthProvider({ children }) {
 		// firebase.auth().createUserWithEmailAndPassword(email, password);
 	}
 	function createNewAccount(uid, email, name) {
-		setCount(count + 1),
-			FIREDB.ref('users/' + uid).set({
-				uid: uid,
-				email: email,
-				pokemon: [89, 1, 24, 76, 105, 562, 33, 69],
-				username: name,
-				photoUrl: '',
-				wins: 0,
-				totalGames: 0,
-				coins: 100,
-				friends: [],
-				id: count,
-			});
+		// try {
+			FIREDB.ref('users/' + uid)
+				.set({
+					uid: uid,
+					email: email,
+					pokemon: [89, 1, 24, 76, 105, 562, 33, 69],
+					favPokemon: [],
+					username: name,
+					photoUrl: '',
+					wins: 0,
+					totalGames: 0,
+					coins: 100,
+					friends: [],
+				})
+				// .then(() => {
+					// FIREDB.ref('usernames/' + name).set({
+					// 	uid: uid,
+					// });
+				// });
+		// } catch (e) {
+		// 	console.log(e)
+		// }
 	}
 
 	async function login(email, password) {

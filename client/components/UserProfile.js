@@ -99,7 +99,7 @@ const UserProfile = (props) => {
 					<Grid style={{ margin: '0 20px 0 0' }}>
 						{currentUser && (
 							<img
-								src={currentUser.photoURL}
+								src={currentUser.photoURL || '/pics/default.png'}
 								width='180px'
 								height='180px'
 								border='5px solid darkBlue'
