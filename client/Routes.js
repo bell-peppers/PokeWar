@@ -23,6 +23,8 @@ import Footer from './components/Footer';
 import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
+import OtherUserProfile from './components/OtherUserProfile';
+
 
 /**
  * COMPONENT
@@ -31,6 +33,7 @@ const Routes = (props) => {
 	const { user } = props;
 	const { currentUser } = useAuth();
 	console.log(user);
+	// getOtherUser('WdkaRXJGGVfrTlDfJXTLUvPEz1r1')
 	return (
 		<Router>
 			{/* {!currentUser ? (
@@ -41,6 +44,7 @@ const Routes = (props) => {
 				<Route path='/pregame' exact component={PreGame} />
 				<Route path='/game' exact component={Main} />
 				<Route path={`/users/${user.uid}`} exact component={UserProfile} />
+				<Route path={'/users/'}  component={OtherUserProfile} />
 				<Route path='/dev/setup' component={temp} />
 				<Route path='/login' exact component={LoginPage} />
 				<Route path='/signup' exact component={SignupPage} />
