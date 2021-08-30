@@ -14,7 +14,7 @@ import {
   sendChosenPokemon,
   fetchOpponentPokemon,
 } from '../store/pokemon';
-import {setPlayerReady} from '../store/game';
+import {setPlayerReady, setWinner} from '../store/game';
 import {FIREDB} from '../../utils/firebase';
 import {_changeTurns} from '../store/playerTurn';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -96,6 +96,9 @@ function ChoosePokemon(props) {
     setReady,
     playerReady,
     changeTurns,
+    user,
+    opponentName,
+    setWinner,
   } = props;
 
   const handleOpen = (pokemon, color) => {
@@ -127,14 +130,22 @@ function ChoosePokemon(props) {
       const readyCheck = snapshot.val();
       console.log(readyCheck);
       if (role === 'host') {
-        if (readyCheck.guestReady === true) {
+        if (readyCheck.guestReady === true && readyCheck.hostReady === true) {
           fetchOpponentPokemon(matchId, role);
           history.push('/game');
+        } else if (readyCheck.guestReady === false) {
+          alert('Other player has quit the game!');
+          await setWinner([{active: true}], user, opponentName);
+          history.push('/post');
         }
       } else if (role === 'guest') {
-        if (readyCheck.hostReady === true) {
+        if (readyCheck.hostReady === true && readyCheck.guestReady === true) {
           await fetchOpponentPokemon(matchId, role);
           history.push('/game');
+        } else if (readyCheck.hostReady === false) {
+          alert('Other player has quit the game!');
+          await setWinner([{active: true}], user, opponentName);
+          history.push('/post');
         }
       }
     });
@@ -465,7 +476,8 @@ function ChoosePokemon(props) {
 const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
-    user: state.userData,
+    user: state.userData.user,
+    opponentName: state.game.opponentInfo.username,
     chosenPokemon: state.pokemon.chosenPokemon,
     role: state.game.role,
     playerReady: state.game.playerReady,
@@ -481,6 +493,7 @@ const mapDispatch = (dispatch) => {
     changeTurns: () => dispatch(_changeTurns()),
     fetchOpponentPokemon: (matchId, role) =>
       dispatch(fetchOpponentPokemon(matchId, role)),
+    setWinner: (pk, user, opp) => dispatch(setWinner(pk, user, opp)),
   };
 };
 export default connect(mapState, mapDispatch)(ChoosePokemon);

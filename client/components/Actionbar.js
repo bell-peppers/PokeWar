@@ -17,8 +17,10 @@ import calculateTurn from '../../utils/calculateTurn';
 import {winCheck} from '../../utils/calculateTurn';
 import {colorTypeGradients} from '../../utils/ColorGradientFunc';
 import {useHistory} from 'react-router-dom';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -76,7 +78,18 @@ const useStyles = makeStyles(() => ({
   picked: {
     opacity: '30%',
   },
+  alert: {
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+  },
 }));
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+}
+
 const Actionbar = (props) => {
   const {
     playerPokemon,
@@ -107,16 +120,19 @@ const Actionbar = (props) => {
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
     moves: [],
   });
+  const [open, setOpen] = React.useState(false);
+  const [errMessage, setErrMessage] = useState('');
   const history = useHistory();
   useEffect(() => {}, []);
 
   function selectPokemon(pokemon) {
     console.log(pokemon);
-    if (pokemon.active) {
+    if (pokemon.active && !alreadyPickedCheck(pokemon)) {
       setSelectedPlayerPokemon(pokemon);
       selectPlayerPokemon(pokemon);
-    } else {
-      alert('this guy is dead');
+    } else if (!pokemon.active) {
+      setErrMessage('This Pokemon is dead');
+      setOpen(true);
     }
   }
 
@@ -125,9 +141,11 @@ const Actionbar = (props) => {
       (turn) => turn.pokemon === selectedPlayerPokemon.name
     );
     if (alreadyPicked.length > 0) {
-      alert('you have already chosen a move for this pokemon');
+      setErrMessage('You have already chosen a move for this pokemon');
+      setOpen(true);
     } else if (playerTurn.length === 3) {
-      alert("you can't chose more than three moves!");
+      setErrMessage("You can't chose more than three moves!");
+      setOpen(true);
     } else {
       selectAttack(selectedPlayerPokemon, move);
     }
@@ -162,7 +180,8 @@ const Actionbar = (props) => {
       selectPlayerPokemon({});
       clearOpponentMoves();
     } else {
-      alert('you should probably choose an attack first');
+      setErrMessage('You should probably choose an attack first');
+      setOpen(true);
     }
   }
 
@@ -174,6 +193,14 @@ const Actionbar = (props) => {
     return check.length > 0 ? true : false;
   }
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   return (
     <div className={classes.actionBar}>
       {isTurn ? (
@@ -184,6 +211,11 @@ const Actionbar = (props) => {
           moves
         </h2>
       )}
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity='error'>
+          {errMessage}
+        </Alert>
+      </Snackbar>
       <div className={classes.subActionBar}>
         <Grid container className={classes.root} spacing={1}>
           {/* <Grid style={{position: 'absolute', left: '173px', bottom: '150px'}}>
