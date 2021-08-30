@@ -45,8 +45,8 @@ const Sidebar = (props) => {
         <Grid className={classes.avatar}>
           <Avatar
             className={classes.large}
-            alt='Mirana'
-            src='/pics/Mirana_icon.png'
+            alt={user.username}
+            src={user.photoUrl}
           />
           <h3 className='avatar-name'>{user.username}</h3>
         </Grid>
@@ -56,8 +56,8 @@ const Sidebar = (props) => {
         <Grid className={classes.avatar}>
           <Avatar
             className={classes.large}
-            alt='Phoenix'
-            src='/pics/Phoenix_icon.png'
+            alt={opponent.username}
+            src={opponent.photoUrl}
           />
           <h3 className='avatar-name'>{opponent.username}</h3>
         </Grid>

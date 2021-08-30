@@ -39,7 +39,8 @@ const useStyles = makeStyles(() => ({
     //backgroundColor: 'green',
     width: '75%',
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    marginTop: '25px',
   },
   side: {
     width: '25%',

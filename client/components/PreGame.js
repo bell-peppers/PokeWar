@@ -75,7 +75,7 @@ const PreGame = (props) => {
   function listenForNewPlayer() {
     //firebase looking for a player to join the match
     console.log(matchId);
-    const dbUpdates = FIREDB.ref(`Match/${matchId}/guestUsername`);
+    const dbUpdates = FIREDB.ref(`Match/${matchId}/guest`);
     dbUpdates.on('value', (snapshot) => {
       const playerTwo = snapshot.val();
       console.log(playerTwo);

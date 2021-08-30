@@ -12,6 +12,13 @@ const FETCH_MOVES_INFO = 'UPDATE_MOVES_INFO';
 const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
 const UNCHOOSE_PLAYER_POKEMON = 'UNCHOOSE_PLAYER_POKEMON';
 const SEND_CHOSEN_POKEMON = 'SEND_CHOSEN_POKEMON';
+const RESET_POKEMON_STATE = 'RESET_POKEMON_STATE';
+
+export const _resetPokemonState = () => {
+  return {
+    type: RESET_POKEMON_STATE,
+  };
+};
 
 const _sendChosenPokemon = (pokemon) => {
   return {
@@ -227,8 +234,8 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
             backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
           },
         };
-        pokemon.stats[0].max = pokemon.stats[0].base_stat + 100;
-        pokemon.stats[0].base_stat += 100;
+        pokemon.stats[0].max = pokemon.stats[0].base_stat;
+        // pokemon.stats[0].base_stat += 100;
 
         //lowered hp for testing
         // pokemon.stats[0].max = pokemon.stats[0].base_stat / 10;
@@ -312,6 +319,8 @@ export default function (
       return {...state, chosenPokemon: updated};
     case SEND_CHOSEN_POKEMON:
       return state;
+    case RESET_POKEMON_STATE:
+      return {...state, attackFeed: [], chosenPokemon: [], opponentPokemon: []};
     default:
       return state;
   }
