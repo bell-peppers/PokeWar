@@ -77,7 +77,7 @@ export default function SignupPage() {
 			console.log(error);
 			setError('Failed to create an account');
 		}
-		console.log(currentUser);
+		// console.log(currentUser);
 		setLoading(false);
 	}
 
