@@ -379,13 +379,13 @@ const Gameboard = (props) => {
               chosenPokemon.map((pk) => {
                 return (
                   <div className={classes.pokemonContainer} key={pk.id}>
-                    <div className={classes.nameBar}>
+                    {/* <div className={classes.nameBar}>
                       <p>{pk.name}</p>
                       <BorderLinearProgress
                         variant='determinate'
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
                       />
-                    </div>
+                    </div> */}
                     <HtmlTooltip
                       title={
                         <React.Fragment>
@@ -425,13 +425,13 @@ const Gameboard = (props) => {
                         alt={pk.name}
                       />
                     </HtmlTooltip>
-                    {/* <div className={classes.nameBar}>
+                    <div className={classes.nameBar}>
                       <p>{pk.name}</p>
                       <BorderLinearProgress
                         variant='determinate'
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
                       />
-                    </div> */}
+                    </div>
                   </div>
                 );
               })}

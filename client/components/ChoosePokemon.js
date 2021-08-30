@@ -176,7 +176,7 @@ function ChoosePokemon(props) {
       <div>
         {readyClicked ? (
           <div style={{marginTop: 50, marginBottom: 40}}>
-            <h2>Waiting for other player to click ready...</h2>
+            <h2>Waiting for other player to finish choosing...</h2>
             <LinearProgress color='secondary' />
           </div>
         ) : (
@@ -189,7 +189,7 @@ function ChoosePokemon(props) {
               onClick={() => readyButtonHandle()}
               variant='contained'
               color='primary'
-              disabled={readyClicked}
+              disabled={chosenPokemon.length < 3}
             >
               READY!
             </Button>

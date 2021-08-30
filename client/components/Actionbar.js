@@ -204,12 +204,12 @@ const Actionbar = (props) => {
   return (
     <div className={classes.actionBar}>
       {isTurn ? (
-        <h2 style={{textAlign: 'center'}}>Your turn - Choose your moves!</h2>
+        <h3 style={{textAlign: 'center'}}>Your turn - Choose your moves!</h3>
       ) : (
-        <h2 style={{textAlign: 'center'}}>
-          Please wait for {opponentName} to complete their turn to submit your
-          moves
-        </h2>
+        <h3 style={{textAlign: 'center'}}>
+          Please wait for {opponentName} to complete their turn before
+          submitting your moves
+        </h3>
       )}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity='error'>
