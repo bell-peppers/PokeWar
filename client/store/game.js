@@ -13,6 +13,7 @@ const SET_PLAYER_READY = 'SET_PLAYER_READY';
 const SET_WINNER = 'SET_WINNER';
 const SET_WIN_RECORD = 'SET_WIN_RECORD';
 const RESET_GAME_STATE = 'RESET_GAME_STATE';
+// const QUIT_GAME = 'QUIT_GAME';
 
 export const _resetGameState = () => {
   return {
@@ -20,6 +21,11 @@ export const _resetGameState = () => {
   };
 };
 
+// const _quitGame = () => {
+//   return {
+//     type: QUIT_GAME,
+//   };
+// };
 const _setWinRecord = (userId) => {
   return {
     type: SET_WIN_RECORD,
@@ -118,6 +124,10 @@ export const setPlayerReady = (matchId, role, ready) => async (dispatch) => {
   await FIREDB.ref('/Match/' + matchId + '/ready/').update(update);
   return dispatch(_setPlayerReady(ready));
 };
+
+// export const quitGame = (matchId,role,ready) =>async (dispatch) =>{
+//   const update = role === 'host' ? {'hostReady': ready} : {'guestReady': ready};
+// }
 
 export const setHostGuest = (role) => (dispatch) => {
   return dispatch(_setHostGuest(role));
