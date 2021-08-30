@@ -8,6 +8,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 const Chat = (props) => {
 	const [messages, setMessages] = useState([]);
 	const [msg, setMsg] = useState('');
+	// const [round, setRound] = useState(1);
 	const { feed, user, opponent, matchId, role } = props;
 
 	// console.log(user);
@@ -16,9 +17,10 @@ const Chat = (props) => {
 	useEffect(() => {
 		const messageRef = FIREDB.ref(`Match/${matchId}/messages`);
 		let swearCounter = 0;
+
 		messageRef.on('value', (snapshot) => {
-			const messages = snapshot.val();
 			let allMessages = [];
+			const messages = snapshot.val();
 			const swear =
 				/\b((f{1,10}u{1,20}c{1,10}k{1,10}i{1,20}n{1,10}g{1,10}){1,5}|(f{1,10}u{1,20}c{1,10}k{1,10}e{1,10}d{1,10}){1,5}|(f{1,10}u{1,20}c{1,10}k{1,10}e{1,10}r{1,10}){1,5}|s{1,10}h{1,10}i{1,10}t{1,10}){1,5}|(f{1,10}u{1,20}c{1,10}k{1,10}){1,5}|(a{1,10}s{1,10}s{1,10}){1,5}|(b{1,10}i{1,20}t{1,10}c{1,10}h{1,10}){1,5}|(t{1,10}w{1,20}a{1,10}t{1,10}){1,5}|(c{1,10}u{1,20}n{1,10}t{1,10}){1,5}|(c{1,10}o{1,20}c{1,10}k{1,10}){1,5}|(d{1,10}i{1,20}c{1,10}k{1,10}){1,5}\b/gi;
 			for (let id in messages) {
@@ -27,7 +29,7 @@ const Chat = (props) => {
 						/\b((f{1,10}u{1,20}c{1,10}k{1,10}i{1,20}n{1,10}g{1,10}){1,5}|(f{1,10}u{1,20}c{1,10}k{1,10}e{1,10}d{1,10}){1,5}|(f{1,10}u{1,20}c{1,10}k{1,10}e{1,10}r{1,10}){1,5}|s{1,10}h{1,10}i{1,10}t{1,10}){1,5}|(f{1,10}u{1,20}c{1,10}k{1,10}){1,5}|(a{1,10}s{1,10}s{1,10}){1,5}|(b{1,10}i{1,20}t{1,10}c{1,10}h{1,10}){1,5}|(t{1,10}w{1,20}a{1,10}t{1,10}){1,5}|(c{1,10}u{1,20}n{1,10}t{1,10}){1,5}|(c{1,10}o{1,20}c{1,10}k{1,10}){1,5}|(d{1,10}i{1,20}c{1,10}k{1,10}){1,5}\b/gi
 					)
 				) {
-					swearCounter ++;
+					swearCounter++;
 					const swearMessageLength = messages[id].message
 						.match(swear)
 						.reduce((total, curr) => {
@@ -42,14 +44,14 @@ const Chat = (props) => {
 						user: messages[id].user,
 						message: noSwearMessage,
 					});
-          console.log(swearCounter)
-          if(swearCounter===15) {
-            allMessages.push({
-              user: 'admin',
-              message: 'Please watch your language',
-            });
-            swearCounter = 0;
-          }
+					console.log(swearCounter);
+					if (swearCounter === 15) {
+						allMessages.push({
+							user: 'admin',
+							message: 'Please watch your language',
+						});
+						swearCounter = 0;
+					}
 				} else {
 					allMessages.push({ id, ...messages[id] });
 				}
@@ -82,6 +84,7 @@ const Chat = (props) => {
 				messageRef.push(feed);
 			}, 1000);
 		});
+		// messageRef.push('hi')
 	}
 
 	return (
