@@ -266,7 +266,9 @@ const Gameboard = (props) => {
                     onMouseUp={(e) => handleMouse(e, i)}
                   >
                     <div className={classes.nameBar}>
-                      <p>{pk.name}</p>
+                      <p>
+                        {pk.name} - {pk.stats[0].base_stat} / {pk.stats[0].max}
+                      </p>
                       <BorderLinearProgress
                         variant='determinate'
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
@@ -315,7 +317,9 @@ const Gameboard = (props) => {
                     />
 
                     <div className={classes.nameBar}>
-                      <p>{pk.name}</p>
+                      <p>
+                        {pk.name} - {pk.stats[0].base_stat} / {pk.stats[0].max}
+                      </p>
                       <BorderLinearProgress
                         variant='determinate'
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}

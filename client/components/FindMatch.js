@@ -11,6 +11,11 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import UIfx from 'uifx';
+
+const readySoundFile = 'sounds/ready2.wav';
+
+const readySound = new UIfx(readySoundFile, {volume: 0.25});
 
 export default function FindMatch(props) {
   const {availableGames, joinGame, user, setRole} = props;
@@ -40,12 +45,13 @@ export default function FindMatch(props) {
   }
 
   const rows = availableGames.map((game) => {
-    return createData(game.data.hostUsername, game.matchId);
+    return createData(game.data.host.hostUsername, game.matchId);
   });
 
   const classes = useStyles();
 
   function joinClick(matchId) {
+    readySound.play();
     joinGame(matchId, user);
     setRole('guest');
     history.push('/pregame');

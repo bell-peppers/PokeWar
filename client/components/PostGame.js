@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
-import {useHistory} from 'react-router-dom';
 import {makeStyles, withStyles} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {cancelGame} from '../store/game';
+import {_resetPokemonState} from '../store/pokemon';
+import {cancelGame, _resetGameState} from '../store/game';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -28,7 +28,15 @@ const useStyles = makeStyles(() => ({
 
 function PostGame(props) {
   const classes = useStyles();
-  const {winner, user, opponentName, matchId, deleteMatch} = props;
+  const {
+    winner,
+    user,
+    opponentName,
+    matchId,
+    deleteMatch,
+    resetGameState,
+    resetPokemonState,
+  } = props;
   // const winner = 'mike';
   // const user = {username: 'mike'};
   const history = useHistory();
@@ -37,6 +45,11 @@ function PostGame(props) {
     deleteMatch(matchId);
   }, []);
 
+  function clickHandle() {
+    resetGameState();
+    resetPokemonState();
+    history.push('/');
+  }
   return (
     <div className={classes.root}>
       {winner === user.username ? (
@@ -55,7 +68,7 @@ function PostGame(props) {
           <h2>You lost!</h2>
           <img src='pics/defeat.gif' />
           <p>You have earned 10 coins for your troubles</p>
-          <Button variant='contained' color='primary' component={Link} to='/'>
+          <Button variant='contained' color='primary' onClick={clickHandle}>
             Back to Main
           </Button>
         </div>
@@ -74,6 +87,8 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     deleteMatch: (matchId) => dispatch(cancelGame(matchId)),
+    resetGameState: () => dispatch(_resetGameState()),
+    resetPokemonState: () => dispatch(_resetPokemonState()),
   };
 };
 export default connect(mapState, mapDispatch)(PostGame);

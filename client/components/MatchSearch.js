@@ -147,7 +147,7 @@ const MatchSearch = (props) => {
 
   async function handleNewMatchClick() {
     if (user.uid) {
-      await newGame(user.uid, user.username);
+      await newGame(user.uid, user.username, user.photoUrl);
       setRole('host');
       history.push('/pregame');
     } else {
@@ -325,7 +325,7 @@ const mapState = (state) => {
 };
 const mapDispatch = (dispatch) => {
   return {
-    newGame: (uid, name) => dispatch(createNewGame(uid, name)),
+    newGame: (uid, name, photo) => dispatch(createNewGame(uid, name, photo)),
     joinGame: (matchId, user) => dispatch(joinGame(matchId, user)),
     findGame: () => dispatch(findGame()),
     fetchPokemon: (pk, username) =>

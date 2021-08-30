@@ -12,6 +12,13 @@ const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
 const SET_PLAYER_READY = 'SET_PLAYER_READY';
 const SET_WINNER = 'SET_WINNER';
 const SET_WIN_RECORD = 'SET_WIN_RECORD';
+const RESET_GAME_STATE = 'RESET_GAME_STATE';
+
+export const _resetGameState = () => {
+  return {
+    type: RESET_GAME_STATE,
+  };
+};
 
 const _setWinRecord = (userId) => {
   return {
@@ -117,10 +124,7 @@ export const setHostGuest = (role) => (dispatch) => {
 };
 
 export const setOpponentInfo = (info) => (dispatch) => {
-  const oppInfo = {username: info};
-  console.log(info);
-  console.log(oppInfo);
-  return dispatch(_setOpponentInfo(oppInfo));
+  return dispatch(_setOpponentInfo(info));
 };
 
 export const getPlayerMoves = (newMoves) => (dispatch) => {
@@ -167,8 +171,11 @@ export const joinGame = (matchId, user) => async (dispatch) => {
     );
     console.log(user);
     const playerInfo = {
-      guestId: user.uid,
-      guestUsername: user.username,
+      guest: {
+        guestId: user.uid,
+        guestUsername: user.username,
+        guestPhotoUrl: user.photoUrl,
+      },
       status: 'closed',
     };
     if (gameInfo.data.status === 'open') {
@@ -183,11 +190,14 @@ export const joinGame = (matchId, user) => async (dispatch) => {
   }
 };
 
-export const createNewGame = (userId, name) => async (dispatch) => {
+export const createNewGame = (userId, name, photo) => async (dispatch) => {
   try {
     const playerInfo = {
-      hostId: userId,
-      hostUsername: name,
+      host: {
+        hostId: userId,
+        hostUsername: name,
+        hostPhotoUrl: photo,
+      },
       status: 'open',
     };
     const newGame = await axios.post(
@@ -235,7 +245,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         opponentInfo: {
-          username: action.data.hostUsername,
+          username: action.data.host.hostUsername,
+          photoUrl: action.data.host.hostPhotoUrl,
         },
         matchId: action.matchId,
       };
@@ -243,7 +254,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         opponentInfo: {
-          username: action.info.username,
+          username: action.info.guestUsername,
+          photoUrl: action.info.guestPhotoUrl,
         },
       };
     case FIND_GAME:
@@ -257,6 +269,15 @@ export default function (state = initialState, action) {
       return {...state, playerReady: action.ready};
     case SET_WINNER:
       return {...state, winner: action.player};
+    case RESET_GAME_STATE:
+      return {
+        ...state,
+        opponentInfo: {},
+        playerMoves: [],
+        role: '',
+        availableGames: [],
+        playerReady: false,
+      };
     default:
       return state;
   }

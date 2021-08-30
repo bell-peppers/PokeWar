@@ -18,6 +18,13 @@ import {setPlayerReady} from '../store/game';
 import {FIREDB} from '../../utils/firebase';
 import {_changeTurns} from '../store/playerTurn';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import UIfx from 'uifx';
+
+const selectSoundFile = 'sounds/select.wav';
+const readySoundFile = 'sounds/menu-select.mp3';
+
+const selectSound = new UIfx(selectSoundFile, {volume: 0.25});
+const readySound = new UIfx(readySoundFile, {volume: 0.25});
 
 const useStyles = makeStyles((theme) => ({
   PokeCards: {
@@ -106,6 +113,7 @@ function ChoosePokemon(props) {
   const clickHandle = (pk) => {
     if (!readyClicked) {
       if (chosenPokemon.length < 3 && !alreadyPicked(pk)) {
+        selectSound.play();
         choosePokemon(pk);
       } else {
         unchoosePokemon(pk);
@@ -133,6 +141,7 @@ function ChoosePokemon(props) {
   };
 
   const readyButtonHandle = () => {
+    readySound.play();
     setReadyClicked(true);
     if (role === 'guest') {
       changeTurns();
