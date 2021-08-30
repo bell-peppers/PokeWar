@@ -41,13 +41,14 @@ function PostGame(props) {
   // const user = {username: 'mike'};
   const history = useHistory();
 
-  useEffect(() => {
-    deleteMatch(matchId);
-  }, []);
+  // useEffect(() => {
+  //   deleteMatch(matchId);
+  // }, []);
 
   function clickHandle() {
     resetGameState();
     resetPokemonState();
+    deleteMatch(matchId);
     history.push('/');
   }
   return (

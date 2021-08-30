@@ -9,6 +9,11 @@ import {cancelGame, setOpponentInfo} from '../store/game';
 import {useHistory} from 'react-router-dom';
 import ChoosePokemon from './ChoosePokemon';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import UIfx from 'uifx';
+
+const readySoundFile = 'sounds/ready2.wav';
+
+const readySound = new UIfx(readySoundFile, {volume: 0.25});
 
 const useStyles = makeStyles(() => ({
   game: {
@@ -80,6 +85,7 @@ const PreGame = (props) => {
       const playerTwo = snapshot.val();
       console.log(playerTwo);
       if (playerTwo && role === 'host') {
+        readySound.play();
         setOppInfo(playerTwo);
         setPlayerJoined(true);
       } else if (playerTwo) {
