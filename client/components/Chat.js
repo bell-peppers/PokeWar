@@ -20,6 +20,7 @@ const Chat = (props) => {
       const messages = snapshot.val();
       let allMessages = [];
       for (let id in messages) {
+        const noSwearMessage = messages[id].replace(/\bshit|fuck\b/g, '****')
         allMessages.push({id, ...messages[id]});
       }
       setMessages(allMessages);

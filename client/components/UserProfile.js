@@ -81,7 +81,8 @@ const UserProfile = (props) => {
 		console.log(poke);
 	};
 
-	// currentUser && console.log(currentUser)
+	currentUser && console.log('currentUser', currentUser)
+	user && console.log('user', user)
 
 	return (
 		<Grid className={classes.main}>

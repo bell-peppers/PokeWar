@@ -1,15 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth } from '../../utils/firebase';
-import firebase from 'firebase/app';
+import Firebase from 'firebase/app';
 import { FIREDB } from '../../utils/firebase';
-// import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get } from '../../utils/firebase';
 
 const AuthContext = React.createContext();
 
 export function useAuth() {
 	return useContext(AuthContext);
 }
-let count = 1;
+// let count = 1;
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState(null);
 
@@ -20,27 +20,93 @@ export function AuthProvider({ children }) {
 		return user;
 		// firebase.auth().createUserWithEmailAndPassword(email, password);
 	}
+
+	function findUserProfile(userUID) {
+		const targetUser = {};
+		FIREDB.ref('users').on('value', function (snapshot) {
+			const users = snapshot.val();
+
+			for (const user in users) {
+				if (user === userUID) {
+					targetUser.email = users[user].email;
+          targetUser.coins = users[user].coins;
+          targetUser.photoUrl = users[user].photoUrl;
+          targetUser.pokemon = users[user].pokemon;
+          targetUser.totalGames = users[user].totalGames;
+          targetUser.uid = users[user].uid;
+          targetUser.username = users[user].username;
+          targetUser.wins = users[user].wins;
+				}
+			}
+			// 	console.log(Object.keys(snapshot.val()));
+			// 	console.log('There are ' + snapshot.numChildren() + ' users');
+			// 	return snapshot.val();
+			// });
+		});
+		return targetUser;
+	}
 	function createNewAccount(uid, email, name) {
 		// try {
-      const users = []
-		FIREDB.ref('users')
-			.on('value', function (snapshot) {
-				console.log('There are ' + snapshot.numChildren() + ' users');
-				return snapshot.numChildren();
-			})
-			.then((num) => {
-				FIREDB.ref('users/').on('child_added', (snap) => {
-					count++;
-          users.fill(num);
-					// const users = Promise.all()
-					console.log('users', snap.length);
-          // users.map()
-					// const users = [];
-					// users.push(snap.key);
-					// return users;
-					// console.log('added', snap.key);
-				});
-			});
+		// const users = [];
+
+		// .then((num) => {
+		// const everyone =FIREDB.ref('users').orderByKey().limitToLast(100).on('value', snap => {
+		//   console.log(snap)
+		// })
+		// console.log(everyone)
+
+		// async function getValues() {
+		//   const data =await FIREDB.ref('users').get();
+		//   return data
+		// }
+
+		// console.log('values', getValues())
+		// function getValues() {
+		// 	return Promise.all(
+		// 	FIREDB.ref('users/').on('child_added', (snap) => {
+		// const users = []
+		// users.push(snap.key);
+		//     return snap;
+		// 	})
+		//   )
+		// }
+
+		// console.log(getValues());
+		// console.log(FIREDB.ref('users').get());
+
+		//     function trying() {
+		//       Promise.all(FIREDB.ref('users').get())
+		//     }
+
+		// console.log(trying())
+		// count++;
+
+		// users.fill(num);
+		// const users = Promise.all()
+		// console.log('user', snap.key);
+		// users.map()
+		// const users = [];
+
+		// if(num <=users) {
+		//   console.log(users);
+		// }
+
+		// console.log('added', snap.key);
+		// });
+
+		// if(num <=users) {
+		// console.log(Object.values(lala));
+		// }
+		// const dbRef = ref(getDatabase());
+		// const dbRef = FIREDB.ref()
+		// const dbRef = FIREDB.ref('users');
+		// dbRef
+		// 	.then((snapshot) => {
+		// 			console.log(snapshot.val());
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error(error);
+		// 	});
 
 		FIREDB.ref('users/' + uid).set({
 			uid: uid,
@@ -53,16 +119,7 @@ export function AuthProvider({ children }) {
 			totalGames: 0,
 			coins: 100,
 			friends: [],
-			id: count,
 		});
-		// .then(() => {
-		// FIREDB.ref('usernames/' + name).set({
-		// 	uid: uid,
-		// });
-		// });
-		// } catch (e) {
-		// 	console.log(e)
-		// }
 	}
 
 	async function login(email, password) {
@@ -116,6 +173,7 @@ export function AuthProvider({ children }) {
 		login,
 		signup,
 		logout,
+		findUserProfile,
 		// getOtherUser,
 	};
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

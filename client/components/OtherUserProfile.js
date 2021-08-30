@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { getUserData } from '../store/userData';
+import { getOtherUserData, getUserData } from '../store/userData';
 import { fetchPlayerOnePokemon } from '../store/pokemon';
 import ImageList from '@material-ui/core/ImageList';
 import ImageListItem from '@material-ui/core/ImageListItem';
@@ -54,18 +55,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const OtherUserProfile = (props) => {
-	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	const { currentUser } = useAuth();
+	const location = useLocation().pathname.slice(7);
+	const {
+		user,
+		playerPokemon,
+		fetchPokemon,
+		getUserData,
+		otherUser,
+		getOtherUserData,
+	} = props;
+	const { currentUser, findUserProfile } = useAuth();
 	const classes = useStyles();
 
-	useEffect(() => {
-		if (currentUser && currentUser.uid !== user.uid) {
-			getUserData(currentUser.uid);
-		}
-		if (playerPokemon && !playerPokemon.length) {
-				fetchPokemon(user.pokemon, user.username);
-			}
-	}, [user, currentUser]);
+	// useEffect(() => {
+		// if (currentUser && currentUser.uid !== otherUser.uid) {
+			// const currUser=findUserProfile(location)
+			// console.log(location);
+			// getUserData(location);
+			// getOtherUserData(location);
+		// }
+		// if (playerPokemon && !playerPokemon.length) {
+			// fetchPokemon(user.pokemon, user.username);
+		// }
+	// }, [user, currentUser]);
 
 	const [clicked, setClicked] = useState(false);
 
@@ -80,7 +92,7 @@ const OtherUserProfile = (props) => {
 		}
 		console.log(poke);
 	};
-
+	// console.log(getOtherUserData('6biPsi7OZUdwerQyaeQIclyJRn02'));
 	// currentUser && console.log(currentUser)
 
 	return (
@@ -129,12 +141,7 @@ const OtherUserProfile = (props) => {
 							1
 						</Typography>
 					</Typography>
-					<Button
-						style={{ padding: '0', marginTop: '6px' }}
-						href='/editprofile'
-					>
-						Edit Profile
-					</Button>
+					<Button style={{ padding: '0', marginTop: '6px' }}>Add Friend</Button>
 				</Grid>
 			</Grid>
 			<Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -253,12 +260,13 @@ const mapState = (state) => {
 	return {
 		playerPokemon: state.pokemon.playerOnePokemon,
 		user: state.userData.user,
+		otherUser: state.userData.otherUser,
 	};
 };
 const mapDispatch = (dispatch) => {
 	return {
 		fetchPokemon: (pk) => dispatch(fetchPlayerOnePokemon(pk)),
-		getUserData: (uid) => dispatch(getUserData(uid)),
+		getOtherUserData: (uid) => dispatch(getOtherUserData(uid)),
 	};
 };
 export default connect(mapState, mapDispatch)(OtherUserProfile);
