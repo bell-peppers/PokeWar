@@ -180,7 +180,8 @@ const Actionbar = (props) => {
         <h2 style={{textAlign: 'center'}}>Your turn - Choose your moves!</h2>
       ) : (
         <h2 style={{textAlign: 'center'}}>
-          Please wait for {opponentName} to complete their turn
+          Please wait for {opponentName} to complete their turn to submit your
+          moves
         </h2>
       )}
       <div className={classes.subActionBar}>

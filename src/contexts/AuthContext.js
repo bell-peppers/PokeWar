@@ -7,7 +7,7 @@ import { getDatabase, ref, child, get } from '../../utils/firebase';
 const AuthContext = React.createContext();
 
 export function useAuth() {
-	return useContext(AuthContext);
+  return useContext(AuthContext);
 }
 // let count = 1;
 export function AuthProvider({ children }) {
@@ -122,20 +122,20 @@ export function AuthProvider({ children }) {
 		});
 	}
 
-	async function login(email, password) {
-		const user = await auth.signInWithEmailAndPassword(email, password);
-		//getUserData(user.user.uid);
-		return user;
-	}
+  async function login(email, password) {
+    const user = await auth.signInWithEmailAndPassword(email, password);
+    //getUserData(user.user.uid);
+    return user;
+  }
 
-	function logout() {
-		return auth.signOut();
-	}
-	// function getUserData(uid) {
-	//   FIREDB.ref('users/' + uid).once('value', (snap) => {
-	//     console.log(snap.val());
-	//   });
-	// }
+  function logout() {
+    return auth.signOut();
+  }
+  // function getUserData(uid) {
+  //   FIREDB.ref('users/' + uid).once('value', (snap) => {
+  //     console.log(snap.val());
+  //   });
+  // }
 
 	// function getOtherUser(userId) {
 	// 	FIREDB.ref('/users'),
