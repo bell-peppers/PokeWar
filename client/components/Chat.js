@@ -17,7 +17,6 @@ const Chat = (props) => {
 	useEffect(() => {
 		const messageRef = FIREDB.ref(`Match/${matchId}/messages`);
 		let swearCounter = 0;
-
 		messageRef.on('value', (snapshot) => {
 			let allMessages = [];
 			const messages = snapshot.val();
@@ -84,7 +83,6 @@ const Chat = (props) => {
 				messageRef.push(feed);
 			}, 1000);
 		});
-		// messageRef.push('hi')
 	}
 
 	return (
