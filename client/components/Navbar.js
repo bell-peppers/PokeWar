@@ -93,52 +93,53 @@ const Navbar = (props) => {
           </a>
         // </Grid> */}
 
-          <Link to='/'>
-            <img
-              src='https://fontmeme.com/permalink/210826/592ea97aacfe17f8048b8b966b5e0c57.png'
-              alt='pokewar'
-            />
-          </Link>
-          <Link to='/allpokemon'>
-            <p className={classes.p}>All Pokemon</p>
-          </Link>
-        </div>
-        <div>
-          {username && <p className={classes.p}> Welcome, {username}</p>}
-        </div>
-        <div>
-          {currentUser ? (
-            <div style={{display: 'flex'}}>
-              <Link to={`/users/${user.id}`}>
-                <p className={classes.p}>My Profile</p>
-              </Link>
-              <p onClick={handleLogout} className={classes.p}>
-                Sign Out
-              </p>
-            </div>
-          ) : (
-            <div style={{display: 'flex'}}>
-              <Link to='/signup'>
-                <p className={classes.p}>Sign Up</p>
-              </Link>
-              <Link to='/login'>
-                <p className={classes.p}>Login</p>
-              </Link>
-            </div>
-          )}
-        </div>
-      </Toolbar>
-      {error && <Alert>{error}</Alert>}
-      {/* <div>{error && <Alert>{error}</Alert>}</div> */}
-    </AppBar>
-  );
+
+					<Link to='/'>
+						<img
+							src='https://fontmeme.com/permalink/210826/592ea97aacfe17f8048b8b966b5e0c57.png'
+							alt='pokewar'
+						/>
+					</Link>
+					<Link to='/allpokemon'>
+						<p className={classes.p}>All Pokemon</p>
+					</Link>
+				</div>
+				<div>
+					{username && <p className={classes.p}> Welcome, {username}</p>}
+				</div>
+				<div>
+					{currentUser ? (
+						<div style={{ display: 'flex' }}>
+							<Link to={`/users/${currentUser.uid}`}>
+								<p className={classes.p}>My Profile</p>
+							</Link>
+							<p onClick={handleLogout} className={classes.p}>
+								Sign Out
+							</p>
+						</div>
+					) : (
+						<div style={{ display: 'flex' }}>
+							<Link to='/signup'>
+								<p className={classes.p}>Sign Up</p>
+							</Link>
+							<Link to='/login'>
+								<p className={classes.p}>Login</p>
+							</Link>
+						</div>
+					)}
+				</div>
+			</Toolbar>
+			{error && <Alert>{error}</Alert>}
+			{/* <div>{error && <Alert>{error}</Alert>}</div> */}
+		</AppBar>
+	);
 };
 
 const mapState = (state) => {
-  return {
-    username: state.userData.user.username,
-    user: state.userData.user,
-  };
+	return {
+		username: state.userData.user.username,
+	};
+
 };
 
 const mapDispatch = (dispatch) => {

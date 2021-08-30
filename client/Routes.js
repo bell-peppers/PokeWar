@@ -5,6 +5,7 @@ import {
 	Route,
 	Switch,
 	Redirect,
+	useLocation,
 	BrowserRouter as Router,
 } from 'react-router-dom';
 import Main from './components/Main';
@@ -23,14 +24,18 @@ import Footer from './components/Footer';
 import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
+import OtherUserProfile from './components/OtherUserProfile';
 
 /**
  * COMPONENT
  */
 const Routes = (props) => {
-	const { user } = props;
-	const { currentUser } = useAuth();
-	console.log(user);
+	const { user, myUID, otherUser } = props;
+	const { currentUser, findUserProfile } = useAuth();
+	const location = useLocation().pathname.slice(7)
+	// console.log('rando', JSON.stringify(findUserProfile('6biPsi7OZUdwerQyaeQIclyJRn02')))
+	// console.log(user);
+	// getOtherUser('WdkaRXJGGVfrTlDfJXTLUvPEz1r1')
 	return (
 		<Router>
 			{/* {!currentUser ? (
@@ -40,7 +45,11 @@ const Routes = (props) => {
 				<Route path='/allpokemon' exact component={AllPokemon} />
 				<Route path='/pregame' exact component={PreGame} />
 				<Route path='/game' exact component={Main} />
-				<Route path={`/users/${user.id}`} exact component={UserProfile} />
+				{user && location === myUID ? (
+					<Route path={`/users/${user.uid}`} exact component={UserProfile} />
+				) : (
+					<Route path={`/users/:id`} component={OtherUserProfile} />
+				)}
 				<Route path='/dev/setup' component={temp} />
 				<Route path='/login' exact component={LoginPage} />
 				<Route path='/signup' exact component={SignupPage} />
@@ -83,6 +92,8 @@ const FourOhFour = () => {
 const mapState = (state) => {
 	return {
 		user: state.userData.user,
+		myUID: state.userData.myUID,
+		otherUser: state.userData.otherUser
 	};
 };
 // The `withRouter` wrapper makes sure that updates are not blocked
