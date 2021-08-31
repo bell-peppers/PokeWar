@@ -16,6 +16,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import UIfx from 'uifx';
+
+const selectOppPokeSoundFile = 'sounds/selectOppPoke.wav';
+
+const selectOppSound = new UIfx(selectOppPokeSoundFile, {volume: 1});
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -30,9 +35,6 @@ const useStyles = makeStyles(() => ({
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'black',
     borderRadius: '25px',
   },
   playerSide: {
@@ -40,9 +42,6 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'space-between',
-    // borderTopWidth: '1px',
-    // borderTopStyle: 'solid',
-    // borderTopColor: 'black',
   },
   opponentSide: {
     height: '50%',
@@ -52,9 +51,6 @@ const useStyles = makeStyles(() => ({
     alignItems: 'flex-end',
     borderTopRightRadius: '25px',
     borderTopLeftRadius: '25px',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'black',
   },
   playerSprites: {
     maxWidth: '100%',
@@ -131,9 +127,6 @@ const useStyles = makeStyles(() => ({
     width: '250px',
     justifyContent: 'center',
     alignItems: 'center',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'black',
   },
   hp: {
     fontSize: '20px',
@@ -172,23 +165,17 @@ const Gameboard = (props) => {
     opponentPokemon,
     changeTurns,
     opponentName,
-    isTurn,
     role,
     matchId,
     setWinner,
-    winner,
+    soundOn,
   } = props;
 
   const history = useHistory();
 
-  const [opponentMovesLoaded, setOpponentMovesLoaded] = useState(false);
-  // const [oppMouseDown, setOppMouseDown] = useState([false, false, false]);
-
   const [oppMouseDown, setOppMouseDown] = useState(null);
-
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState('');
-  const [errMessage, setErrMessage] = useState('');
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -219,7 +206,6 @@ const Gameboard = (props) => {
 
   function listenForOpponentMoves() {
     const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
-    console.log(matchId, opponentName, opponentPokemon);
     dbUpdates.limitToLast(1).on('value', (snapshot) => {
       const newMoves = snapshot.val();
 
@@ -241,14 +227,15 @@ const Gameboard = (props) => {
     if (winCheck(chosenPokemon, opponentPokemon)) {
       await setWinner(chosenPokemon, user, opponentName);
       history.push('/post');
-      //reset pokemon - attackFeed, chosenPokemon, opponentPokemon
-      //reset game - opponentInfo, playerMoves, role, availableGames, playerReady
     }
   }
 
   function clickHandle(pk) {
     console.log(Object.keys(playerAttack));
     if (Object.keys(playerAttack).length > 0 && selectedPlayerPk && pk.active) {
+      if (soundOn) {
+        selectOppSound.play();
+      }
       selectAttacked(pk, playerAttack.attack, selectedPlayerPk);
       setMessage(
         `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
@@ -266,21 +253,6 @@ const Gameboard = (props) => {
     }
   }
 
-  // function handleMouse(e, i) {
-  //   console.log(e, i);
-  //   if (e.type === 'mousedown') {
-  //     const arr = oppMouseDown;
-  //     arr.splice(i, 1, true);
-  //     console.log(arr);
-  //     console.log(oppMouseDown[i]);
-  //     setOppMouseDown(arr);
-  //   } else {
-  //     const arr = oppMouseDown;
-  //     arr.splice(i, 1, false);
-  //     setOppMouseDown(arr);
-  //   }
-  // }
-
   function handleMouse(e, i) {
     if (e.type === 'mousedown') {
       setOppMouseDown(i);
@@ -294,9 +266,7 @@ const Gameboard = (props) => {
       {opponentPokemon ? (
         <div className={classes.main}>
           <div className={classes.opponentSide}>
-            <div className={classes.playerName}>
-              {/* <h1>{opponentName}</h1> */}
-            </div>
+            <div className={classes.playerName}></div>
             {opponentPokemon &&
               opponentPokemon.map((pk, i) => {
                 return pk.active ? (
@@ -308,8 +278,6 @@ const Gameboard = (props) => {
                     }
                     key={pk.id}
                     onClick={() => clickHandle(pk)}
-                    // onMouseDown={(e) => handleMouse(e, i)}
-                    // onMouseUp={(e) => handleMouse(e, i)}
                   >
                     <div className={classes.nameBar}>
                       <p>{pk.name}</p>
@@ -333,12 +301,6 @@ const Gameboard = (props) => {
                             <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
                             {pk.types[1] && pk.types[1].type.name}
                           </p>
-                          {/* <b>{'Types'}</b>
-                          {pk.types.map((type, i) => (
-                            <p key={i}>
-                              Type {i + 1} - {type.type.name}
-                            </p>
-                          ))} */}
                         </React.Fragment>
                       }
                     >
@@ -379,13 +341,6 @@ const Gameboard = (props) => {
               chosenPokemon.map((pk) => {
                 return (
                   <div className={classes.pokemonContainer} key={pk.id}>
-                    {/* <div className={classes.nameBar}>
-                      <p>{pk.name}</p>
-                      <BorderLinearProgress
-                        variant='determinate'
-                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
-                      />
-                    </div> */}
                     <HtmlTooltip
                       title={
                         <React.Fragment>
@@ -402,11 +357,6 @@ const Gameboard = (props) => {
                             <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
                             {pk.types[1] && pk.types[1].type.name}
                           </p>
-                          {/* {pk.types.map((type, i) => (
-                            <p key={i}>
-                              Type {i + 1} - {type.type.name}
-                            </p>
-                          ))} */}
                         </React.Fragment>
                       }
                     >
@@ -421,7 +371,6 @@ const Gameboard = (props) => {
                             ? pk.sprites.backGif
                             : pk.sprites.back_default
                         }
-                        // src={`https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.name}.gif`}
                         alt={pk.name}
                       />
                     </HtmlTooltip>
@@ -435,9 +384,7 @@ const Gameboard = (props) => {
                   </div>
                 );
               })}
-            <div className={classes.playerName}>
-              {/* <h1>{username}</h1> */}
-            </div>
+            <div className={classes.playerName}></div>
           </div>
         </div>
       ) : (

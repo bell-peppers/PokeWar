@@ -111,8 +111,6 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
 
 export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   const feed = [];
-  console.log('moves', moves);
-  console.log('opp', oppPk);
   moves.forEach((move) => {
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'
@@ -293,7 +291,6 @@ export default function (
     case GET_PLAYERONE_POKEMON:
       return {...state, playerOnePokemon: action.pokemon};
     case GET_OPPONENT_POKEMON:
-      console.log(action);
       return {...state, opponentPokemon: action.pokemon};
     case ATTACK_OPPONENT:
       return {...state, playerTwoPokemon: action.pokemon};

@@ -15,6 +15,7 @@ import {
   fetchOpponentPokemon,
 } from '../store/pokemon';
 import {setPlayerReady, setWinner} from '../store/game';
+import {startBattleMusic} from '../store/userData';
 import {FIREDB} from '../../utils/firebase';
 import {_changeTurns} from '../store/playerTurn';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -23,8 +24,8 @@ import UIfx from 'uifx';
 const selectSoundFile = 'sounds/select.wav';
 const readySoundFile = 'sounds/menu-select.mp3';
 
-const selectSound = new UIfx(selectSoundFile, {volume: 0.25});
-const readySound = new UIfx(readySoundFile, {volume: 0.25});
+const selectSound = new UIfx(selectSoundFile, {volume: 1});
+const readySound = new UIfx(readySoundFile, {volume: 1});
 
 const useStyles = makeStyles((theme) => ({
   PokeCards: {
@@ -48,14 +49,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: 400,
     border: '2px solid #000',
-    // boxShadow: theme.shadows[5],
-    // padding: theme.spacing(2, 4, 3),
   },
   main: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    // marginTop: '70px',
+
     maxWidth: '1200px',
     minWidth: '400px',
     minheight: '400px',
@@ -63,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   cardContainer: {
     display: 'flex',
     justifyContent: 'center',
-    // marginTop: '70px',
+
     maxWidth: '1400px',
     minWidth: '400px',
     minheight: '400px',
@@ -94,11 +93,13 @@ function ChoosePokemon(props) {
     sendChosenPokemon,
     fetchOpponentPokemon,
     setReady,
-    playerReady,
     changeTurns,
     user,
     opponentName,
     setWinner,
+    soundOn,
+    startMusic,
+    musicOn,
   } = props;
 
   const handleOpen = (pokemon, color) => {
@@ -116,7 +117,9 @@ function ChoosePokemon(props) {
   const clickHandle = (pk) => {
     if (!readyClicked) {
       if (chosenPokemon.length < 3 && !alreadyPicked(pk)) {
-        selectSound.play();
+        if (soundOn) {
+          selectSound.play();
+        }
         choosePokemon(pk);
       } else {
         unchoosePokemon(pk);
@@ -128,10 +131,13 @@ function ChoosePokemon(props) {
     const readyUpdate = FIREDB.ref(`Match/${matchId}/ready`);
     readyUpdate.on('value', async (snapshot) => {
       const readyCheck = snapshot.val();
-      console.log(readyCheck);
+
       if (role === 'host') {
         if (readyCheck.guestReady === true && readyCheck.hostReady === true) {
           fetchOpponentPokemon(matchId, role);
+          if (musicOn) {
+            startBattleMusic('sounds/trainerBattle.mp3');
+          }
           history.push('/game');
         } else if (readyCheck.guestReady === false) {
           alert('Other player has quit the game!');
@@ -141,6 +147,9 @@ function ChoosePokemon(props) {
       } else if (role === 'guest') {
         if (readyCheck.hostReady === true && readyCheck.guestReady === true) {
           await fetchOpponentPokemon(matchId, role);
+          if (musicOn) {
+            startMusic('sounds/trainerBattle.mp3');
+          }
           history.push('/game');
         } else if (readyCheck.hostReady === false) {
           alert('Other player has quit the game!');
@@ -152,7 +161,9 @@ function ChoosePokemon(props) {
   };
 
   const readyButtonHandle = () => {
-    readySound.play();
+    if (soundOn) {
+      readySound.play();
+    }
     setReadyClicked(true);
     if (role === 'guest') {
       changeTurns();
@@ -160,7 +171,6 @@ function ChoosePokemon(props) {
     sendChosenPokemon(chosenPokemon, matchId, role);
     setReady(matchId, role, true);
     listenOppReady();
-    // history.push('/game');
   };
 
   const alreadyPicked = (pk) => {
@@ -481,6 +491,8 @@ const mapState = (state) => {
     chosenPokemon: state.pokemon.chosenPokemon,
     role: state.game.role,
     playerReady: state.game.playerReady,
+    soundOn: state.userData.soundOn,
+    musicOn: state.userData.musicOn,
   };
 };
 const mapDispatch = (dispatch) => {
@@ -494,6 +506,7 @@ const mapDispatch = (dispatch) => {
     fetchOpponentPokemon: (matchId, role) =>
       dispatch(fetchOpponentPokemon(matchId, role)),
     setWinner: (pk, user, opp) => dispatch(setWinner(pk, user, opp)),
+    startMusic: (src) => dispatch(startBattleMusic(src)),
   };
 };
 export default connect(mapState, mapDispatch)(ChoosePokemon);
