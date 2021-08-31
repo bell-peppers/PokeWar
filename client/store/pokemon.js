@@ -118,6 +118,7 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         : '';
     const crit = move.report.isCrit ? ' Critical hit!' : '';
     const action = {
+      type: 'feed',
       message:
         `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
         reportClass +
@@ -131,7 +132,7 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         pk.stats[0].base_stat -= move.report.Damage;
         if (pk.stats[0].base_stat <= 0 && pk.active) {
           pk.active = false;
-          action.message += `${pk.name} was killed in battle.`;
+          action.message += ` ${pk.name} was killed in battle.`;
         }
       }
     });
