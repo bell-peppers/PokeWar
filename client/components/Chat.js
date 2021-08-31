@@ -6,14 +6,20 @@ import { Input, Button } from '@material-ui/core';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 const Chat = props => {
-  const bottomRef = useRef(null);
+  const messageEnd = useRef(null);
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState('');
   // const [round, setRound] = useState(1);
   const { feed, user, opponent, matchId, role } = props;
 
-  // console.log(user);
-  // console.log(opponent);
+  useEffect(() => {
+    if (messageEnd) {
+      messageEnd.current.addEventListener('DOMNodeInserted', event => {
+        const { currentTarget: target } = event;
+        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const messageRef = FIREDB.ref(`Match/${matchId}/messages`);
@@ -74,10 +80,6 @@ const Chat = props => {
 
     messageRef.push(Message);
     setMsg('');
-    bottomRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
   }
 
   function sendFeed(attackFeed) {
@@ -92,7 +94,7 @@ const Chat = props => {
 
   return (
     <div className='chat'>
-      <div className='messages'>
+      <div className='messages' ref={messageEnd}>
         {messages.map(({ id, user, message, type }) =>
           type ? (
             <div key={id} className='feed'>
@@ -106,7 +108,6 @@ const Chat = props => {
           )
         )}
       </div>
-      <div ref={bottomRef}></div>
 
       <form onSubmit={e => sendMessage(e)}>
         <Input
