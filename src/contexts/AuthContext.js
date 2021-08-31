@@ -71,6 +71,7 @@ export function AuthProvider({ children }) {
 	}
 
 	function logout() {
+		window.location.href = '/login'
 		return auth.signOut();
 	}
 
@@ -162,11 +163,16 @@ export function AuthProvider({ children }) {
 						} else {
 							console.log('first time>');
 							console.log(user)
-							createNewAccount(
+							user.displayName ? createNewAccount(
 								user.uid,
 								'',
 								user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+							) : createNewAccount(
+								user.uid,
+								'',
+								['Pickachu', 'Mew', 'Snorlax', 'Charmander', 'Bulbasaur', 'Sylveon', 'Gengar', 'Chikorita', 'Ekans'][Math.floor(Math.random()*9)] //0-8
 							);
+
 							window.location.href = '/'
 							return user;
 						}
