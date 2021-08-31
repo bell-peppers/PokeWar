@@ -111,8 +111,6 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
 
 export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   const feed = [];
-  console.log('moves', moves);
-  console.log('opp', oppPk);
   moves.forEach((move) => {
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'
@@ -120,6 +118,7 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         : '';
     const crit = move.report.isCrit ? ' Critical hit!' : '';
     const action = {
+      type: 'feed',
       message:
         `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
         reportClass +
@@ -133,7 +132,7 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
         pk.stats[0].base_stat -= move.report.Damage;
         if (pk.stats[0].base_stat <= 0 && pk.active) {
           pk.active = false;
-          action.message += `${pk.name} was killed in battle.`;
+          action.message += ` ${pk.name} was killed in battle.`;
         }
       }
     });
@@ -293,7 +292,6 @@ export default function (
     case GET_PLAYERONE_POKEMON:
       return {...state, playerOnePokemon: action.pokemon};
     case GET_OPPONENT_POKEMON:
-      console.log(action);
       return {...state, opponentPokemon: action.pokemon};
     case ATTACK_OPPONENT:
       return {...state, playerTwoPokemon: action.pokemon};

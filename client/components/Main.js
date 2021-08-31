@@ -12,7 +12,7 @@ import {
   fetchOpponentPokemon,
   fetchMovesInfo,
 } from '../store/pokemon';
-import {getPlayerMoves, setWinner} from '../store/game';
+import {setWinner} from '../store/game';
 import {_changeTurns} from '../store/playerTurn';
 
 const useStyles = makeStyles(() => ({
@@ -36,7 +36,6 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     flexDirection: 'column',
-    //backgroundColor: 'green',
     width: '75%',
     height: '100%',
     justifyContent: 'flex-start',
@@ -50,11 +49,8 @@ const useStyles = makeStyles(() => ({
 
 const Main = (props) => {
   const {
-    getPlayerPokemon,
-    fetchOpponentPokemon,
     opponentPokemon,
     playerPokemon,
-    getMoves,
     matchId,
     role,
     opponentName,
@@ -64,21 +60,9 @@ const Main = (props) => {
     calculatedAttacks,
     winner,
     setWinner,
+    soundOn,
   } = props;
 
-  //test data
-  const playerPkIds = [45, 23, 98];
-  const testMatch = '-MhsjJ7cGIuXMHc0IGZS';
-
-  // useEffect(() => {
-  //   //getPlayerPokemon(playerPkIds);
-
-  //   // if (opponentPokemon.length == 0) {
-  //   //   fetchOpponentPokemon(matchId, role);
-  //   // }
-
-  //   fetchOpponentPokemon(matchId, role);
-  // }, []);
   const classes = useStyles();
   return (
     <React.Fragment>
@@ -96,6 +80,7 @@ const Main = (props) => {
             matchId={matchId}
             winner={winner}
             setWinner={setWinner}
+            soundOn={soundOn}
           />
 
           <Actionbar
@@ -108,6 +93,7 @@ const Main = (props) => {
             winner={winner}
             setWinner={setWinner}
             opponentName={opponentName}
+            soundOn={soundOn}
           />
         </div>
         <div className={classes.side}>
@@ -133,6 +119,7 @@ const mapState = (state) => {
     user: state.userData.user,
     calculatedAttacks: state.playerTurn.calculatedAttacks,
     winner: state.game.winner,
+    soundOn: state.userData.soundOn,
   };
 };
 

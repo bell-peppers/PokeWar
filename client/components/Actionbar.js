@@ -19,6 +19,14 @@ import {colorTypeGradients} from '../../utils/ColorGradientFunc';
 import {useHistory} from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import UIfx from 'uifx';
+
+const selectPokeSoundFile = 'sounds/selectPoke.wav';
+const errorSound = 'sounds/error.wav';
+
+const completeTurnSound = new UIfx('sounds/completeTurn.wav', {volume: 1});
+const selectPkSound = new UIfx(selectPokeSoundFile, {volume: 1});
+const errSound = new UIfx(errorSound, {volume: 1});
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -115,6 +123,7 @@ const Actionbar = (props) => {
     opponentName,
     winner,
     chosenPokemon,
+    soundOn,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
@@ -128,9 +137,15 @@ const Actionbar = (props) => {
   function selectPokemon(pokemon) {
     console.log(pokemon);
     if (pokemon.active && !alreadyPickedCheck(pokemon)) {
+      if (soundOn) {
+        selectPkSound.play();
+      }
       setSelectedPlayerPokemon(pokemon);
       selectPlayerPokemon(pokemon);
     } else if (!pokemon.active) {
+      if (soundOn) {
+        errSound.play();
+      }
       setErrMessage('This Pokemon is dead');
       setOpen(true);
     }
@@ -138,15 +153,21 @@ const Actionbar = (props) => {
 
   function selectMove(move) {
     const alreadyPicked = playerTurn.filter(
-      (turn) => turn.pokemon === selectedPlayerPokemon.name
+      (turn) => turn.pokemon.name === selectedPlayerPokemon.name
     );
+    console.log(playerTurn, selectedPlayerPokemon);
     if (alreadyPicked.length > 0) {
+      errSound.play();
       setErrMessage('You have already chosen a move for this pokemon');
       setOpen(true);
     } else if (playerTurn.length === 3) {
+      errSound.play();
       setErrMessage("You can't chose more than three moves!");
       setOpen(true);
     } else {
+      if (soundOn) {
+        selectPkSound.play();
+      }
       selectAttack(selectedPlayerPokemon, move);
     }
   }
@@ -161,11 +182,16 @@ const Actionbar = (props) => {
   async function completeTurnHandler() {
     if (playerTurn.length > 0) {
       if (role === 'guest') {
-        console.log(user);
+        if (soundOn) {
+          completeTurnSound.play();
+        }
         sendMoves(playerTurn, user.username, matchId);
       } else if (role === 'host') {
         //make sure we have moves
         if (opponentMoves) {
+          if (soundOn) {
+            completeTurnSound.play();
+          }
           const thisTurn = calculateTurn(playerTurn, opponentMoves);
           setCalculatedAttacks(thisTurn);
           await sendMoves(thisTurn, user.username, matchId);
@@ -180,6 +206,7 @@ const Actionbar = (props) => {
       selectPlayerPokemon({});
       clearOpponentMoves();
     } else {
+      errSound.play();
       setErrMessage('You should probably choose an attack first');
       setOpen(true);
     }
@@ -301,7 +328,6 @@ const Actionbar = (props) => {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            // border: '5px solid red',
             maxWidth: '300px',
             justifyContent: 'center',
           }}
@@ -354,9 +380,6 @@ const Actionbar = (props) => {
           }}
         >
           <Button
-            // style={{
-            //   height: '45px',
-            // }}
             variant='contained'
             color='secondary'
             disabled={!isTurn}

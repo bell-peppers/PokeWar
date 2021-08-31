@@ -13,6 +13,10 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 import {FIREDB} from '../../utils/firebase';
+import {_toggleSound, toggleMusic} from '../store/userData';
+import IconButton from '@material-ui/core/IconButton';
+import VolumeUpIcon from '@material-ui/icons/VolumeUp';
+import VolumeOffIcon from '@material-ui/icons/VolumeOff';
 
 // import firebase from 'firebase/app';
 
@@ -50,10 +54,24 @@ const Navbar = (props) => {
   const [error, setError] = useState('');
   const classes = useStyles();
   const {currentUser, logout} = useAuth();
-  const {user, username} = props;
+  const {
+    user,
+    username,
+    soundOn,
+    toggleSound,
+    toggleMusic,
+    currentSong,
+    musicOn,
+  } = props;
 
   // console.log(firebase.auth());
   // const { currentUser } = firebase.auth();
+
+  function handleToggleSound() {
+    toggleSound();
+    console.log(currentSong);
+    toggleMusic(currentSong, musicOn);
+  }
 
   async function handleLogout() {
     setError('');
@@ -93,57 +111,65 @@ const Navbar = (props) => {
           </a>
         // </Grid> */}
 
-
-					<Link to='/'>
-						<img
-							src='https://fontmeme.com/permalink/210826/592ea97aacfe17f8048b8b966b5e0c57.png'
-							alt='pokewar'
-						/>
-					</Link>
-					<Link to='/allpokemon'>
-						<p className={classes.p}>All Pokemon</p>
-					</Link>
-				</div>
-				<div>
-					{username && <p className={classes.p}> Welcome, {username}</p>}
-				</div>
-				<div>
-					{currentUser ? (
-						<div style={{ display: 'flex' }}>
-							<Link to={`/users/${currentUser.uid}`}>
-								<p className={classes.p}>My Profile</p>
-							</Link>
-							<p onClick={handleLogout} className={classes.p}>
-								Sign Out
-							</p>
-						</div>
-					) : (
-						<div style={{ display: 'flex' }}>
-							<Link to='/signup'>
-								<p className={classes.p}>Sign Up</p>
-							</Link>
-							<Link to='/login'>
-								<p className={classes.p}>Login</p>
-							</Link>
-						</div>
-					)}
-				</div>
-			</Toolbar>
-			{error && <Alert>{error}</Alert>}
-			{/* <div>{error && <Alert>{error}</Alert>}</div> */}
-		</AppBar>
-	);
+          <Link to='/'>
+            <img
+              src='https://fontmeme.com/permalink/210826/592ea97aacfe17f8048b8b966b5e0c57.png'
+              alt='pokewar'
+            />
+          </Link>
+          <IconButton onClick={handleToggleSound}>
+            {soundOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
+          </IconButton>
+          <Link to='/allpokemon'>
+            <p className={classes.p}>All Pokemon</p>
+          </Link>
+        </div>
+        <div>
+          {username && <p className={classes.p}> Welcome, {username}</p>}
+        </div>
+        <div>
+          {currentUser ? (
+            <div style={{display: 'flex'}}>
+              <Link to={`/users/${currentUser.uid}`}>
+                <p className={classes.p}>My Profile</p>
+              </Link>
+              <p onClick={handleLogout} className={classes.p}>
+                Sign Out
+              </p>
+            </div>
+          ) : (
+            <div style={{display: 'flex'}}>
+              <Link to='/signup'>
+                <p className={classes.p}>Sign Up</p>
+              </Link>
+              <Link to='/login'>
+                <p className={classes.p}>Login</p>
+              </Link>
+            </div>
+          )}
+        </div>
+      </Toolbar>
+      {error && <Alert>{error}</Alert>}
+      {/* <div>{error && <Alert>{error}</Alert>}</div> */}
+    </AppBar>
+  );
 };
 
 const mapState = (state) => {
-	return {
-		username: state.userData.user.username,
-	};
-
+  return {
+    username: state.userData.user.username,
+    soundOn: state.userData.soundOn,
+    musicOn: state.userData.musicOn,
+    currentSong: state.userData.currentSong,
+  };
 };
 
 const mapDispatch = (dispatch) => {
-  return {};
+  return {
+    toggleSound: () => dispatch(_toggleSound()),
+    toggleMusic: (currentSong, musicOn) =>
+      dispatch(toggleMusic(currentSong, musicOn)),
+  };
 };
 
 export default connect(mapState, mapDispatch)(Navbar);

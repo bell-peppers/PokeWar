@@ -15,10 +15,10 @@ import UIfx from 'uifx';
 
 const readySoundFile = 'sounds/ready2.wav';
 
-const readySound = new UIfx(readySoundFile, {volume: 0.25});
+const readySound = new UIfx(readySoundFile, {volume: 1});
 
 export default function FindMatch(props) {
-  const {availableGames, joinGame, user, setRole} = props;
+  const {availableGames, joinGame, user, setRole, soundOn} = props;
   const history = useHistory();
 
   const useStyles = makeStyles((theme) => ({
@@ -51,7 +51,9 @@ export default function FindMatch(props) {
   const classes = useStyles();
 
   function joinClick(matchId) {
-    readySound.play();
+    if (soundOn) {
+      readySound.play();
+    }
     joinGame(matchId, user);
     setRole('guest');
     history.push('/pregame');
@@ -100,21 +102,5 @@ export default function FindMatch(props) {
         </h1>
       )}
     </div>
-
-    // <div className={classes.main}>
-    //   {availableGames.length > 1 ? (
-    //     availableGames.map((game, i) => {
-    //       return (
-    //         <div key={i} className={classes.gameInfo}>
-    //           <h3>Match ID: {game.matchId}</h3>
-    //           <h2>Host: {game.data.hostUsername}</h2>
-    //           <Button onClick={() => joinClick(game.matchId)}>Join</Button>
-    //         </div>
-    //       );
-    //     })
-    //   ) : (
-    //     <h1>There are no available matches at the moment</h1>
-    //   )}
-    // </div>
   );
 }
