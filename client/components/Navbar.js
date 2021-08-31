@@ -17,6 +17,8 @@ import {_toggleSound, toggleMusic} from '../store/userData';
 import IconButton from '@material-ui/core/IconButton';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import MusicOffIcon from '@material-ui/icons/MusicOff';
 
 // import firebase from 'firebase/app';
 
@@ -69,7 +71,9 @@ const Navbar = (props) => {
 
   function handleToggleSound() {
     toggleSound();
-    console.log(currentSong);
+  }
+
+  function handleToggleMusic() {
     toggleMusic(currentSong, musicOn);
   }
 
@@ -119,6 +123,9 @@ const Navbar = (props) => {
           </Link>
           <IconButton onClick={handleToggleSound}>
             {soundOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
+          </IconButton>
+          <IconButton onClick={handleToggleMusic}>
+            {musicOn ? <MusicNoteIcon /> : <MusicOffIcon />}
           </IconButton>
           <Link to='/allpokemon'>
             <p className={classes.p}>All Pokemon</p>
