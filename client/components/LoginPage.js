@@ -73,7 +73,7 @@ export default function LoginPage() {
 			setLoading(true);
 
 			await googleLogin();
-		  // history.push('/');
+			// history.push('/');
 		} catch (error) {
 			setError(error);
 		}
