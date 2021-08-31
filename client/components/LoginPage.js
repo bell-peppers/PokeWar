@@ -1,37 +1,38 @@
-import React, { useState, useRef } from 'react';
-import { Button, makeStyles } from '@material-ui/core';
+import React, {useState, useRef} from 'react';
+import {Button, makeStyles} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { useAuth } from '../../src/contexts/AuthContext';
+import {useAuth} from '../../src/contexts/AuthContext';
 import Alert from '@material-ui/lab/Alert';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import { OutlinedInput } from '@material-ui/core';
+import {OutlinedInput} from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-	main: {
-		fontFamily: 'Courier New, monospace',
-		display: 'flex',
-		height: '500px',
-		flexDirection: 'column',
-		justifyContent: 'space-around',
-	},
-	form: {
-		display: 'flex',
-		flexDirection: 'column',
-		width: '350px',
-		border: '5px solid grey',
-		padding: '15px',
-		backgroundColor: 'white',
-		justifyContent: 'space-between',
-	},
+  main: {
+    fontFamily: 'Courier New, monospace',
+    display: 'flex',
+    height: '500px',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '350px',
+    border: '5px solid grey',
+    padding: '15px',
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+  },
 }));
 
 export default function LoginPage() {
+
 	const classes = useStyles();
 	const emailRef = useRef();
 	const passwordRef = useRef();
@@ -43,27 +44,29 @@ export default function LoginPage() {
 		showPassword: false,
 	});
 
-	const handleClickShowPassword = () => {
-		setValues({ ...values, showPassword: !values.showPassword });
-	};
 
-	const handleMouseDownPassword = (event) => {
-		event.preventDefault();
-	};
-	async function handleSubmit(e) {
-		e.preventDefault();
+  const handleClickShowPassword = () => {
+    setValues({...values, showPassword: !values.showPassword});
+  };
 
-		try {
-			setError('');
-			setLoading(true);
-			await login(emailRef.current.value, passwordRef.current.value);
-			history.push('/');
-		} catch (error) {
-			console.log(error);
-			setError('Failed to log in');
-		}
-		setLoading(false);
-	}
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      setError('');
+      setLoading(true);
+      await login(emailRef.current.value, passwordRef.current.value);
+      history.push('/');
+    } catch (error) {
+      console.log(error);
+      setError('Failed to log in');
+    }
+    setLoading(false);
+  }
+
 
 	return (
 		<Grid className={classes.main}>
@@ -122,4 +125,5 @@ export default function LoginPage() {
 			</Grid>
 		</Grid>
 	);
+
 }

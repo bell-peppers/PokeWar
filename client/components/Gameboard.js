@@ -1,7 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {connect, useSelector} from 'react-redux';
 import {makeStyles, withStyles} from '@material-ui/core';
-import {applyMoves, attackOpponent} from '../store/pokemon';
+import {
+  applyMoves,
+  _animateOppPokemon,
+  _animatePokemon,
+  incomingAttack,
+  applySingleMove,
+} from '../store/pokemon';
 import {
   selectAttackedPokemon,
   _selectAttack,
@@ -17,6 +23,8 @@ import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import UIfx from 'uifx';
+import {Animate} from 'react-simple-animate';
+import {Translate} from '@material-ui/icons';
 
 const selectOppPokeSoundFile = 'sounds/selectOppPoke.wav';
 
@@ -90,7 +98,7 @@ const useStyles = makeStyles(() => ({
     alignSelf: 'flex-end',
     display: 'flex',
     flexDirection: 'column',
-    width: '30%',
+    //width: '30%',
     justifyContent: 'flex-end',
     height: '100%',
     padding: '5px',
@@ -169,6 +177,12 @@ const Gameboard = (props) => {
     matchId,
     setWinner,
     soundOn,
+    pkAnim,
+    oppAnim,
+    animateOppPk,
+    animatePk,
+    applySingleMove,
+    incomingAtk,
   } = props;
 
   const history = useHistory();
@@ -176,6 +190,8 @@ const Gameboard = (props) => {
   const [oppMouseDown, setOppMouseDown] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState('');
+  // const [pk1Anim, setPk1Anim] = useState(null);
+  // const [oppPkAnim, setOppPkAnim] = useState(null);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -212,9 +228,28 @@ const Gameboard = (props) => {
       if (newMoves) {
         const moves = Object.values(newMoves)[0];
         if (role === 'guest') {
-          applyMoves(moves, chosenPokemon, opponentPokemon);
-          checkForEndGame();
-          changeTurns();
+          moves.map((move, index) => {
+            setTimeout(() => {
+              applySingleMove(
+                move,
+                chosenPokemon,
+                opponentPokemon,
+                user.username,
+                soundOn
+              );
+              if (index === moves.length - 1) {
+                animatePk(null);
+                animateOppPk(null);
+                checkForEndGame();
+                changeTurns();
+              }
+            }, 2000 * index);
+          });
+          // animatePk(null);
+          // animateOppPk(null);
+          // //applyMoves(moves, chosenPokemon, opponentPokemon);
+          // checkForEndGame();
+          // changeTurns();
         } else if (role === 'host') {
           getOpponentMoves(moves);
           changeTurns();
@@ -230,8 +265,15 @@ const Gameboard = (props) => {
     }
   }
 
+  // function animatePkHandle(i) {
+  //   animatePk(i);
+  //   animateOppPk(i);
+  // }
+
   function clickHandle(pk) {
     console.log(Object.keys(playerAttack));
+    animatePk();
+
     if (Object.keys(playerAttack).length > 0 && selectedPlayerPk && pk.active) {
       if (soundOn) {
         selectOppSound.play();
@@ -286,32 +328,52 @@ const Gameboard = (props) => {
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
                       />
                     </div>
-                    <HtmlTooltip
-                      title={
-                        <React.Fragment>
-                          <Typography color='inherit'>
-                            {pk.owner}'s {pk.name}
-                          </Typography>
-                          <p>
-                            <b>{'Health'}</b> -{' '}
-                            {Math.floor(pk.stats[0].base_stat)} /{' '}
-                            {pk.stats[0].max}
-                          </p>
-                          <p>
-                            <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
-                            {pk.types[1] && pk.types[1].type.name}
-                          </p>
-                        </React.Fragment>
+                    <Animate
+                      play={i === oppAnim}
+                      start={
+                        incomingAtk
+                          ? {transform: 'scale(1)'}
+                          : {transform: 'translate(0px,0px) scale(1)'}
                       }
+                      end={
+                        incomingAtk
+                          ? {transform: 'scale(0.75)', backgroundColor: 'red'}
+                          : {transform: 'translate(-5px,100px) scale(1.5)'}
+                      }
+                      complete={
+                        incomingAtk
+                          ? {transform: 'scale(1)'}
+                          : {transform: 'translate(0px,0px) scale(1)'}
+                      }
+                      duration={0.2}
                     >
-                      <img
-                        className={classes.opponentSprites}
-                        src={pk.sprites.frontGif}
-                        alt={pk.name}
-                        onMouseDown={(e) => handleMouse(e, i)}
-                        onMouseUp={(e) => handleMouse(e, i)}
-                      />
-                    </HtmlTooltip>
+                      <HtmlTooltip
+                        title={
+                          <React.Fragment>
+                            <Typography color='inherit'>
+                              {pk.owner}'s {pk.name}
+                            </Typography>
+                            <p>
+                              <b>{'Health'}</b> -{' '}
+                              {Math.floor(pk.stats[0].base_stat)} /{' '}
+                              {pk.stats[0].max}
+                            </p>
+                            <p>
+                              <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
+                              {pk.types[1] && pk.types[1].type.name}
+                            </p>
+                          </React.Fragment>
+                        }
+                      >
+                        <img
+                          className={classes.opponentSprites}
+                          src={pk.sprites.frontGif}
+                          alt={pk.name}
+                          onMouseDown={(e) => handleMouse(e, i)}
+                          onMouseUp={(e) => handleMouse(e, i)}
+                        />
+                      </HtmlTooltip>
+                    </Animate>
                   </div>
                 ) : (
                   <div className={classes.oppPokemonContainer}>
@@ -338,48 +400,76 @@ const Gameboard = (props) => {
               </Alert>
             </Snackbar>
             {chosenPokemon.length > 0 &&
-              chosenPokemon.map((pk) => {
+              chosenPokemon.map((pk, i) => {
                 return (
-                  <div className={classes.pokemonContainer} key={pk.id}>
-                    <HtmlTooltip
-                      title={
-                        <React.Fragment>
-                          <Typography color='inherit'>
-                            {pk.owner}'s {pk.name}
-                          </Typography>
-
-                          <p>
-                            <b>{'Health'}</b> -{' '}
-                            {Math.floor(pk.stats[0].base_stat)} /{' '}
-                            {pk.stats[0].max}
-                          </p>
-                          <p>
-                            <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
-                            {pk.types[1] && pk.types[1].type.name}
-                          </p>
-                        </React.Fragment>
-                      }
+                  <div>
+                    <div
+                      className={classes.pokemonContainer}
+                      key={pk.id}
+                      // onClick={() => animatePkHandle(i)}
                     >
-                      <img
-                        className={
-                          pk.active
-                            ? classes.playerSprites
-                            : classes.deadPlayerSprites
+                      <Animate
+                        play={i === pkAnim}
+                        start={
+                          incomingAtk
+                            ? {transform: 'translate(0px,0px) scale(1)'}
+                            : {transform: 'scale(1)'}
                         }
-                        src={
-                          pk.active
-                            ? pk.sprites.backGif
-                            : pk.sprites.back_default
+                        end={
+                          incomingAtk
+                            ? {transform: 'translate(5px,-100px) scale(1.5)'}
+                            : {transform: 'scale(0.75)', backgroundColor: 'red'}
                         }
-                        alt={pk.name}
-                      />
-                    </HtmlTooltip>
-                    <div className={classes.nameBar}>
-                      <p>{pk.name}</p>
-                      <BorderLinearProgress
-                        variant='determinate'
-                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
-                      />
+                        complete={
+                          incomingAtk
+                            ? {transform: 'translate(0px,0px) scale(1)'}
+                            : {transform: 'scale(1)'}
+                        }
+                        duration={0.2}
+                      >
+                        <HtmlTooltip
+                          title={
+                            <React.Fragment>
+                              <Typography color='inherit'>
+                                {pk.owner}'s {pk.name}
+                              </Typography>
+
+                              <p>
+                                <b>{'Health'}</b> -{' '}
+                                {Math.floor(pk.stats[0].base_stat)} /{' '}
+                                {pk.stats[0].max}
+                              </p>
+                              <p>
+                                <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
+                                {pk.types[1] && pk.types[1].type.name}
+                              </p>
+                            </React.Fragment>
+                          }
+                        >
+                          <img
+                            className={
+                              pk.active
+                                ? classes.playerSprites
+                                : classes.deadPlayerSprites
+                            }
+                            src={
+                              pk.active
+                                ? pk.sprites.backGif
+                                : pk.sprites.back_default
+                            }
+                            alt={pk.name}
+                          />
+                        </HtmlTooltip>
+                      </Animate>
+                      <div className={classes.nameBar}>
+                        <p>{pk.name}</p>
+                        <BorderLinearProgress
+                          variant='determinate'
+                          value={
+                            (pk.stats[0].base_stat / pk.stats[0].max) * 100
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 );
@@ -399,13 +489,14 @@ const mapState = (state) => {
     selectedPlayerPk: state.playerTurn.selectedPlayerPokemon,
     playerAttack: state.playerTurn.playerAttack,
     chosenPokemon: state.pokemon.chosenPokemon,
+    pkAnim: state.pokemon.pkAnim,
+    oppAnim: state.pokemon.oppAnim,
+    incomingAtk: state.pokemon.incomingAtk,
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
-    attackOpponent: (pokemon, attack) =>
-      dispatch(attackOpponent(pokemon, attack)),
     resetAttack: () => dispatch(_selectAttack({})),
     selectAttacked: (atkdpk, atk, pk) =>
       dispatch(selectAttackedPokemon(atkdpk, atk, pk)),
@@ -413,6 +504,11 @@ const mapDispatch = (dispatch) => {
     applyMoves: (newMoves, plyrPk, oppPk) =>
       dispatch(applyMoves(newMoves, plyrPk, oppPk)),
     resetPlayerPokemon: () => dispatch(_selectedPlayerPokemon({})),
+    animateOppPk: (index) => dispatch(_animateOppPokemon(index)),
+    animatePk: (index) => dispatch(_animatePokemon(index)),
+    incomingAttack: () => dispatch(incomingAttack()),
+    applySingleMove: (move, playerPk, oppPk, username, soundOn) =>
+      dispatch(applySingleMove(move, playerPk, oppPk, username, soundOn)),
   };
 };
 
