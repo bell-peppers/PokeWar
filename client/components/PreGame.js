@@ -26,13 +26,9 @@ const useStyles = makeStyles(() => ({
     height: '60%',
     justifyContent: 'center',
     alignItems: 'center',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'white',
     borderRadius: '50px',
     boxShadow:
       'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px',
-    //background: 'linear-gradient(to bottom, #2980b9, #6dd5fa, #ffffff)',
   },
   main: {
     fontFamily: 'Courier New, monospace',
@@ -44,9 +40,6 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: '600px',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'black',
   },
   waiting: {
     display: 'flex',
@@ -67,6 +60,7 @@ const PreGame = (props) => {
     opponent,
     playerPokemon,
     role,
+    soundOn,
   } = props;
   const history = useHistory();
 
@@ -79,13 +73,15 @@ const PreGame = (props) => {
 
   function listenForNewPlayer() {
     //firebase looking for a player to join the match
-    console.log(matchId);
+
     const dbUpdates = FIREDB.ref(`Match/${matchId}/guest`);
     dbUpdates.on('value', (snapshot) => {
       const playerTwo = snapshot.val();
-      console.log(playerTwo);
+
       if (playerTwo && role === 'host') {
-        readySound.play();
+        if (soundOn) {
+          readySound.play();
+        }
         setOppInfo(playerTwo);
         setPlayerJoined(true);
       } else if (playerTwo) {
@@ -113,7 +109,7 @@ const PreGame = (props) => {
             {playerJoined == false && role === 'host' ? (
               <div className={classes.waiting}>
                 <h3>Waiting for a player to join...</h3>
-                {/* <CircularProgress /> */}
+
                 <img
                   src='pics/pkball.gif'
                   style={{width: '100px', height: '100px'}}
@@ -160,6 +156,7 @@ const mapState = (state) => {
     opponent: state.game.opponentInfo,
     playerPokemon: state.pokemon.playerOnePokemon,
     role: state.game.role,
+    soundOn: state.userData.soundOn,
   };
 };
 

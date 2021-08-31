@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
     width: '250px',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    // padding: '120px 0 120px 0',
   },
   button: {
     height: '100px',
@@ -65,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: 600,
     backgroundColor: theme.palette.background.paper,
-    //border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     borderRadius: '25px',
@@ -118,7 +116,7 @@ const MatchSearch = (props) => {
     fetchPokemon,
     getUserData,
     setRole,
-    changeTurns,
+    soundOn,
   } = props;
 
   const {currentUser} = useAuth();
@@ -163,18 +161,16 @@ const MatchSearch = (props) => {
         joinGame={joinGame}
         user={user}
         setRole={setRole}
+        soundOn={soundOn}
       />
     </div>
   );
   function handleJoinClick() {
-    //const matchId = '-MhpRo167oCYp3cT5O7-';
-    //const matchId = joinMatchId.current.value;
     let matchId = prompt('Please enter a match id');
     if (matchId === null) {
       return;
     } else if (matchId !== '') {
       if (user.uid !== '') {
-        console.log(matchId);
         joinGame(matchId, user);
         setRole('guest');
         history.push('/pregame');
@@ -202,16 +198,6 @@ const MatchSearch = (props) => {
         justifyContent: 'center',
       }}
     >
-      {/* <Grid
-
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          backgroundColor: 'green',
-        }}
-      >
-
-      // </Grid> */}
       <h3 style={{textAlign: 'center'}}>Leaderboard position: 34532523</h3>
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
@@ -241,11 +227,6 @@ const MatchSearch = (props) => {
           >
             Join By Match Id
           </Button>
-          {/* <TextField
-            id='join-match-id'
-            inputRef={joinMatchId}
-            variant='outlined'
-          /> */}
         </Grid>
         <Modal
           open={open}
@@ -321,6 +302,7 @@ const mapState = (state) => {
     playerPokemon: state.pokemon.playerOnePokemon,
     user: state.userData.user,
     availableGames: state.game.availableGames,
+    soundOn: state.userData.soundOn,
   };
 };
 const mapDispatch = (dispatch) => {
