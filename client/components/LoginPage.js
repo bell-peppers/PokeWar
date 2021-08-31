@@ -10,7 +10,8 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import {OutlinedInput} from '@material-ui/core';
+import { OutlinedInput } from '@material-ui/core';
+import { GitHub } from '@material-ui/icons';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -36,8 +37,10 @@ export default function LoginPage() {
 	const classes = useStyles();
 	const emailRef = useRef();
 	const passwordRef = useRef();
-	const { login, googleLogin } = useAuth();
+	const { login, googleLogin, githubLogin } = useAuth();
 	const [error, setError] = useState('');
+	const [googleUser, setGoogleUser] = useState({});
+	const [githubUser, setGithubUser] = useState({});
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
 	const [values, setValues] = React.useState({
@@ -68,60 +71,114 @@ export default function LoginPage() {
   }
 
 
+		try {
+			setError('');
+			setLoading(true);
+			await login(emailRef.current.value, passwordRef.current.value);
+			history.push('/');
+		} catch (error) {
+			console.log(error);
+			setError('Failed to log in');
+		}
+		setLoading(false);
+	}
+	async function handleGoogleLogin() {
+		try {
+			setError('');
+			setLoading(true);
+
+			await googleLogin();
+		  // history.push('/');
+		} catch (error) {
+			setError(error);
+		}
+		setLoading(false);
+	}
+	async function handleGithubLogin() {
+		try {
+			setError('');
+			setLoading(true);
+
+			const githubUser = await githubLogin();
+			if (githubUser) {
+				// history.push('/');
+			}
+		} catch (error) {
+			setError(error.message);
+			console.log(error);
+		}
+		setLoading(false);
+	}
+
+
 	return (
 		<Grid className={classes.main}>
 			<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 				<h2> SIGN IN</h2>
 			</Grid>
 			{error && <Alert severity='error'>{error}</Alert>}
-			<Grid style={{ display: 'flex', justifyContent:'center', }}>
-			<Grid style={{ display: 'flex', flexDirection:'column', }}>
-				<form className={classes.form} onSubmit={handleSubmit}>
-					<FormControl variant='outlined'>
-						<InputLabel htmlFor='login-email'>E-mail</InputLabel>
-						<OutlinedInput
-							id='login-email'
-							inputRef={emailRef}
-							labelWidth={70}
-						/>
-					</FormControl>
-					<FormControl variant='outlined'>
-						<InputLabel htmlFor='login-password'>Password</InputLabel>
-						<OutlinedInput
-							label='Password'
-							id='login-password'
-							type={values.showPassword ? 'text' : 'password'}
-							inputRef={passwordRef}
-							endAdornment={
-								<InputAdornment position='end'>
-									<IconButton
-										aria-label='toggle password visibility'
-										onClick={handleClickShowPassword}
-										onMouseDown={handleMouseDownPassword}
-										edge='end'
-									>
-										{values.showPassword ? <Visibility /> : <VisibilityOff />}
-									</IconButton>
-								</InputAdornment>
-							}
-							labelWidth={70}
-						/>
-					</FormControl>
-					<Button
-						variant='contained'
-						disabled={loading}
-						type='submit'
-						style={{ width: '100px', position: 'relative', left: '125px' }}
-					>
-						Log In
-					</Button>
+			<Grid style={{ display: 'flex', justifyContent: 'center' }}>
+				<Grid style={{ display: 'flex', flexDirection: 'column' }}>
+					<form className={classes.form} onSubmit={handleSubmit}>
+						<FormControl variant='outlined'>
+							<InputLabel htmlFor='login-email'>E-mail</InputLabel>
+							<OutlinedInput
+								id='login-email'
+								inputRef={emailRef}
+								labelWidth={70}
+							/>
+						</FormControl>
+						<FormControl variant='outlined'>
+							<InputLabel htmlFor='login-password'>Password</InputLabel>
+							<OutlinedInput
+								label='Password'
+								id='login-password'
+								type={values.showPassword ? 'text' : 'password'}
+								inputRef={passwordRef}
+								endAdornment={
+									<InputAdornment position='end'>
+										<IconButton
+											aria-label='toggle password visibility'
+											onClick={handleClickShowPassword}
+											onMouseDown={handleMouseDownPassword}
+											edge='end'
+										>
+											{values.showPassword ? <Visibility /> : <VisibilityOff />}
+										</IconButton>
+									</InputAdornment>
+								}
+								labelWidth={70}
+							/>
+						</FormControl>
+						<Button
+							variant='contained'
+							disabled={loading}
+							type='submit'
+							style={{ width: '100px', position: 'relative', left: '125px' }}
+						>
+							Log In
+						</Button>
+						<Grid style={{ display: 'flex', justifyContent: 'center' }}>
+							Need an account? <a href='/signup'> Sign Up</a>
+						</Grid>
+					</form>
 					<Grid style={{ display: 'flex', justifyContent: 'center' }}>
-						Need an account? <a href='/signup'> Sign Up</a>
+						Sign in with Google
+						<img
+							onClick={() => handleGoogleLogin()}
+							src='/pics/google.png'
+							width='35px'
+						/>
 					</Grid>
-				</form>
-				<Grid  style={{ display: 'flex', justifyContent:'center', }}>
-					Sign in with Google<img onClick={() =>googleLogin()} src='/pics/google.png' width='35px'  />
-				</Grid></Grid>
+					<Grid style={{ display: 'flex', justifyContent: 'center' }}>
+						Sign in with GitHub
+						<img
+							onClick={() => handleGithubLogin()}
+							src='/pics/github.png'
+							width='35px'
+						/>
+					</Grid>
+				</Grid>
 			</Grid>
 		</Grid>
 	);
