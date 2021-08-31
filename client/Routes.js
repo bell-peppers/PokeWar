@@ -25,7 +25,6 @@ import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 import OtherUserProfile from './components/OtherUserProfile';
-import Chat from './components/Chat';
 
 /**
  * COMPONENT
@@ -59,8 +58,6 @@ const Routes = (props) => {
         <Route path='/aboutus' exact component={AboutUs} />
         <Route exact path='/' component={MatchSearch} />
         <Route exact path='/store' component={Store} />
-        {/* vvv DELETE CHAT ROUTE vvv */}
-        <Route exact path='/chat' component={Chat} />
         <Route path='*' component={FourOhFour} />
       </Switch>
       {/* <Footer /> */}

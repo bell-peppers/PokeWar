@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import 'firebase/firestore';
-// import 'firebase/auth';
 import firebase, { FIREDB } from '../../utils/firebase';
 import { Input, Button } from '@material-ui/core';
-import ScrollToBottom from 'react-scroll-to-bottom';
 
 const Chat = props => {
   const messageEnd = useRef(null);
