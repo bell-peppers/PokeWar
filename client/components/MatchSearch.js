@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const columns = [
   {id: 'position', label: '#', minWidth: 30},
-  {id: 'name', label: 'Name', minWidth: 90},
+  {id: 'username', label: 'Username', minWidth: 90},
   {
     id: 'score',
     label: 'Score',
@@ -79,25 +79,28 @@ const columns = [
     align: 'right',
   },
 ];
-function createData(position, name, score) {
-  return {position, name, score};
+
+let position = 0;
+function createData( username, score) {
+  position+=1;
+  return {position, username, score};
 }
 const rows = [
-  createData(1, 'Gus', 3287263),
-  createData(2, 'Nick', 9596961),
-  createData(3, 'Mike', 301340),
-  createData(4, 'Angie', 9833520),
-  createData(5, 'Haram', 9984670),
-  createData(6, 'Albina', 7692024),
-  createData(7, 'Ray', 357578),
-  createData(8, 'Jason', 70273),
-  createData(9, 'Adrian', 1972550),
-  createData(10, 'Andrew', 377973),
-  createData(11, 'Sung', 640679),
-  createData(12, 'Jae', 242495),
-  createData(13, 'Andy', 17098246),
-  createData(14, 'Taya', 923768),
-  createData(15, 'Peter', 8515767),
+  createData('Gus', 3287263),
+  createData( 'Nick', 9596961),
+  createData( 'Mike', 301340),
+  createData( 'Angie', 9833520),
+  createData( 'Haram', 9984670),
+  createData( 'Albina', 7692024),
+  createData( 'Ray', 357578),
+  createData( 'Jason', 70273),
+  createData( 'Adrian', 1972550),
+  createData( 'Andrew', 377973),
+  createData( 'Sung', 640679),
+  createData( 'Jae', 242495),
+  createData( 'Andy', 17098246),
+  createData( 'Taya', 923768),
+  createData( 'Peter', 8515767),
 ];
 const MatchSearch = (props) => {
   const history = useHistory();
@@ -119,8 +122,9 @@ const MatchSearch = (props) => {
     soundOn,
   } = props;
 
-  const {currentUser} = useAuth();
+  const {currentUser, leaderboardScores} = useAuth();
 
+  console.log('scores', leaderboardScores());
   const handleOpen = async () => {
     if (user.uid) {
       await findGame();
@@ -198,7 +202,7 @@ const MatchSearch = (props) => {
         justifyContent: 'center',
       }}
     >
-      <h3 style={{textAlign: 'center'}}>Leaderboard position: 34532523</h3>
+      <h3 style={{textAlign: 'center'}}></h3>
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
           <Button

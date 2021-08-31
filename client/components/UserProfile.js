@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	const { currentUser } = useAuth();
+	const { currentUser, } = useAuth();
 	const classes = useStyles();
 
 	useEffect(() => {
