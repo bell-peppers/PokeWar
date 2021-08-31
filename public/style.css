@@ -119,6 +119,17 @@ form div {
   background-color: lightblue;
 }
 
+.feed {
+  max-width: 500px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  line-height: 1rem;
+  border-radius: 0.5rem;
+  text-align: left;
+  color: black;
+  background-color: lightcoral;
+}
+
 .messages {
   overflow-y: scroll;
   margin: 0;

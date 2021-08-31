@@ -25,6 +25,7 @@ import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 import OtherUserProfile from './components/OtherUserProfile';
+import Chat from './components/Chat';
 
 /**
  * COMPONENT
@@ -37,31 +38,33 @@ const Routes = (props) => {
 	// console.log(user);
 	// getOtherUser('WdkaRXJGGVfrTlDfJXTLUvPEz1r1')
 	return (
-		<Router>
-			{/* {!currentUser ? (
+    <Router>
+      {/* {!currentUser ? (
         <div> */}
-			<Navbar />
-			<Switch>
-				<Route path='/allpokemon' exact component={AllPokemon} />
-				<Route path='/pregame' exact component={PreGame} />
-				<Route path='/game' exact component={Main} />
-				{user && location === myUID ? (
-					<Route path={`/users/${user.uid}`} exact component={UserProfile} />
-				) : (
-					<Route path={`/users/:id`} component={OtherUserProfile} />
-				)}
-				<Route path='/dev/setup' component={temp} />
-				<Route path='/login' exact component={LoginPage} />
-				<Route path='/signup' exact component={SignupPage} />
-				<Route path='/post' component={PostGame} />
-				<Route path='/editprofile' exact component={EditProfile} />
-				<Route path='/aboutus' exact component={AboutUs} />
-				<Route exact path='/' component={MatchSearch} />
-				<Route exact path='/store' component={Store} />
-				<Route path='*' component={FourOhFour} />
-			</Switch>
-			{/* <Footer /> */}
-			{/* </div>
+      <Navbar />
+      <Switch>
+        <Route path='/allpokemon' exact component={AllPokemon} />
+        <Route path='/pregame' exact component={PreGame} />
+        <Route path='/game' exact component={Main} />
+        {user && location === myUID ? (
+          <Route path={`/users/${user.uid}`} exact component={UserProfile} />
+        ) : (
+          <Route path={`/users/:id`} component={OtherUserProfile} />
+        )}
+        <Route path='/dev/setup' component={temp} />
+        <Route path='/login' exact component={LoginPage} />
+        <Route path='/signup' exact component={SignupPage} />
+        <Route path='/post' component={PostGame} />
+        <Route path='/editprofile' exact component={EditProfile} />
+        <Route path='/aboutus' exact component={AboutUs} />
+        <Route exact path='/' component={MatchSearch} />
+        <Route exact path='/store' component={Store} />
+        {/* vvv DELETE CHAT ROUTE vvv */}
+        <Route exact path='/chat' component={Chat} />
+        <Route path='*' component={FourOhFour} />
+      </Switch>
+      {/* <Footer /> */}
+      {/* </div>
       ) : (
         <div>
           <Switch>
@@ -77,8 +80,8 @@ const Routes = (props) => {
           </Switch>
         </div>
       )} */}
-		</Router>
-	);
+    </Router>
+  );
 };
 
 const AlreadyLoggedIn = () => {
