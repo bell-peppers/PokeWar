@@ -35,7 +35,7 @@ export default function LoginPage() {
 	const classes = useStyles();
 	const emailRef = useRef();
 	const passwordRef = useRef();
-	const { login } = useAuth();
+	const { login, googleLogin } = useAuth();
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
@@ -71,7 +71,8 @@ export default function LoginPage() {
 				<h2> SIGN IN</h2>
 			</Grid>
 			{error && <Alert severity='error'>{error}</Alert>}
-			<Grid style={{ display: 'flex', justifyContent: 'center' }}>
+			<Grid style={{ display: 'flex', justifyContent:'center', }}>
+			<Grid style={{ display: 'flex', flexDirection:'column', }}>
 				<form className={classes.form} onSubmit={handleSubmit}>
 					<FormControl variant='outlined'>
 						<InputLabel htmlFor='login-email'>E-mail</InputLabel>
@@ -115,6 +116,9 @@ export default function LoginPage() {
 						Need an account? <a href='/signup'> Sign Up</a>
 					</Grid>
 				</form>
+				<Grid  style={{ display: 'flex', justifyContent:'center', }}>
+					Sign in with Google<img onClick={() =>googleLogin()} src='/pics/google.png' width='35px'  />
+				</Grid></Grid>
 			</Grid>
 		</Grid>
 	);

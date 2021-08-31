@@ -63,8 +63,8 @@ const UserProfile = (props) => {
 			getUserData(currentUser.uid);
 		}
 		if (playerPokemon && !playerPokemon.length) {
-				fetchPokemon(user.pokemon, user.username);
-			}
+			fetchPokemon(user.pokemon, user.username);
+		}
 	}, [user, currentUser]);
 
 	const [clicked, setClicked] = useState(false);
@@ -81,8 +81,8 @@ const UserProfile = (props) => {
 		console.log(poke);
 	};
 
-	currentUser && console.log('currentUser', currentUser)
-	user && console.log('user', user)
+	currentUser && console.log('currentUser', currentUser);
+	user && console.log('user', user);
 
 	return (
 		<Grid className={classes.main}>
@@ -130,6 +130,13 @@ const UserProfile = (props) => {
 							1
 						</Typography>
 					</Typography>
+					{user && user.totalGames > 0 ? (
+						<Typography>
+							Win rate: {Math.round((user.wins / user.totalGames) * 100)}%
+						</Typography>
+					) : (
+						<Typography></Typography>
+					)}
 					<Button
 						style={{ padding: '0', marginTop: '6px' }}
 						href='/editprofile'
