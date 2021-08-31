@@ -4,12 +4,13 @@ import { Button, makeStyles, Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { CardMedia } from '@material-ui/core';
 import Image from 'material-ui-image';
-import { useAuth } from '../../src/contexts/AuthContext';
+import { getAuth, updateProfile } from 'firebase/auth';
 import { getUserData } from '../store/userData';
 import { fetchPlayerOnePokemon } from '../store/pokemon';
 import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import { FIREDB, storage } from '../../utils/firebase';
+import { useAuth } from '../../src/contexts/AuthContext';
 import 'firebase/database';
 import 'firebase/auth';
 
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 function EditProfile(props) {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
 	// const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
-	const { currentUser, username } = useAuth();
+	const { currentUser, username, updateImg } = useAuth();
 	const classes = useStyles();
 
 	let photo = '';
@@ -103,8 +104,18 @@ function EditProfile(props) {
 		currentUser
 			.updateProfile({
 				photoURL: imgUrl,
+				uid: user.uid,
+				email: user.email,
+				pokemon: user.pokemon,
+				favPokemon: user.favPokemon,
+				username: user.username,
+				wins: user.wins,
+				totalGames: user.totalGames,
+				coins: user.coins,
+				friends: user.friends,
 			})
-			.then(() => {
+			.then(async () => {
+				await updateImg(currentUser.uid, imgUrl);
 				console.log('hey', imgUrl, currentUser);
 			})
 			.catch((error) => {
@@ -114,6 +125,7 @@ function EditProfile(props) {
 
 	const handleUpload = async () => {
 		const uploadTask = storage.ref(`images/${currentUser.uid}`).put(image);
+		const {uid,email,pokemon,favPokemon,username,wins,totalGames,coins,friends} = currentUser;
 		uploadTask.on('state_changed', () => {
 			storage
 				.ref('images/')
@@ -123,9 +135,20 @@ function EditProfile(props) {
 					setUrl(url);
 					currentUser
 						.updateProfile({
+							uid,
+							email,
+							pokemon: [],
+							favPokemon: [],
+							username,
 							photoURL: url,
+							wins,
+							totalGames,
+							coins,
+							friends,
 						})
-						.then(() => {
+						.then(async () => {
+							await updateImg(currentUser, url);
+							console.log('image', image);
 							console.log('hey', url, currentUser);
 						})
 						.catch((error) => {
@@ -186,10 +209,18 @@ function EditProfile(props) {
 									paddingBottom: '20px',
 								}}
 							>
-								{currentUser && (
+								{currentUser && currentUser.photoURL ? (
 									<img
 										// src={url}
 										src={url || currentUser.photoURL}
+										alt='firebase-image'
+										width='180px'
+										height='180px'
+									/>
+								) : (
+									<img
+										// src={url}
+										src={url || '/pics/default.png'}
 										alt='firebase-image'
 										width='180px'
 										height='180px'

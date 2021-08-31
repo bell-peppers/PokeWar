@@ -42,7 +42,7 @@ export default function SignupPage() {
 	const history = useHistory();
 	const [values, setValues] = React.useState({
 		showPassword: false,
-		showPasswordConf: false
+		showPasswordConf: false,
 	});
 	const handleClickShowPassword = () => {
 		setValues({ ...values, showPassword: !values.showPassword });
@@ -58,7 +58,11 @@ export default function SignupPage() {
 
 	async function handleSubmit(e) {
 		e.preventDefault();
-
+		if (usernameRef.current.value.match(/[.\[\]#$]/g)) {
+			return setError(
+				'Username contains some of the characters that are not allowed. Please try again'
+			);
+		}
 		if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
 			return setError('Passwords do not match');
 		}
@@ -148,7 +152,11 @@ export default function SignupPage() {
 											onMouseDown={handleMouseDownPassword}
 											edge='end'
 										>
-											{values.showPasswordConf ? <Visibility /> : <VisibilityOff />}
+											{values.showPasswordConf ? (
+												<Visibility />
+											) : (
+												<VisibilityOff />
+											)}
 										</IconButton>
 									</InputAdornment>
 								}
