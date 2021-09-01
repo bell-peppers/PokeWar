@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '400px',
     margin: '30px',
-    border: '3px solid darkBlue'
+    border: '3px solid darkBlue',
   },
   container: {
     height: 440,
@@ -182,6 +182,11 @@ const MatchSearch = (props) => {
       }}
     >
       <h3 style={{textAlign: 'center'}}></h3>
+      {/* <div style={{alignSelf: 'center'}}>
+        {user.username && (
+          <h3 className={classes.p}> Welcome, {user.username}</h3>
+        )}
+      </div> */}
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
           <Button

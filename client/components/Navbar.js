@@ -32,8 +32,8 @@ const useStyles = makeStyles(() => ({
     position: 'relative',
   },
   cart: {
-    width: '80vw',
-    marginLeft: '5vw',
+    // width: '80vw',
+    // marginLeft: '5vw',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -43,7 +43,7 @@ const useStyles = makeStyles(() => ({
   },
   p: {
     margin: '5px 25px 0px 25px',
-    fontSize: '20px',
+    fontSize: '18px',
     fontFamily: 'Courier New, monospace',
     cursor: 'pointer',
     textDecoration: 'none',
@@ -114,22 +114,28 @@ const Navbar = (props) => {
               alt='pokewar'
             />
           </Link>
-          <IconButton onClick={handleToggleSound}>
-            {soundOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
-          </IconButton>
-          <IconButton onClick={handleToggleMusic}>
-            {musicOn ? <MusicNoteIcon /> : <MusicOffIcon />}
-          </IconButton>
-          <Link to='/allpokemon'>
+          <div
+            style={{maxWidth: '350px', display: 'flex', alignItems: 'center'}}
+          >
+            <IconButton onClick={handleToggleSound}>
+              {soundOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
+            </IconButton>
+            <IconButton onClick={handleToggleMusic}>
+              {musicOn ? <MusicNoteIcon /> : <MusicOffIcon />}
+            </IconButton>
+            {username && <p className={classes.p}> Welcome, {username}</p>}
+          </div>
+          {/* <Link to='/allpokemon'>
             <p className={classes.p}>All Pokemon</p>
-          </Link>
+          </Link> */}
         </div>
-        <div>
-          {username && <p className={classes.p}> Welcome, {username}</p>}
-        </div>
+
         <div>
           {currentUser ? (
             <div style={{display: 'flex'}}>
+              <Link to='/allpokemon'>
+                <p className={classes.p}>All Pokemon</p>
+              </Link>
               <Link to={`/users/${currentUser.uid}`}>
                 <p className={classes.p}>My Profile</p>
               </Link>
@@ -139,6 +145,9 @@ const Navbar = (props) => {
             </div>
           ) : (
             <div style={{display: 'flex'}}>
+              <Link to='/allpokemon'>
+                <p className={classes.p}>All Pokemon</p>
+              </Link>
               <Link to='/signup'>
                 <p className={classes.p}>Sign Up</p>
               </Link>
