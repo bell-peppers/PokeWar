@@ -35,7 +35,7 @@ export default function LoginPage() {
   const classes = useStyles();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const {login} = useAuth();
+  const {login, googleLogin} = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -73,49 +73,63 @@ export default function LoginPage() {
         </Grid>
         {error && <Alert severity='error'>{error}</Alert>}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
-          <form className={classes.form} onSubmit={handleSubmit}>
-            <FormControl variant='outlined'>
-              <InputLabel htmlFor='login-email'>E-mail</InputLabel>
-              <OutlinedInput
-                id='login-email'
-                inputRef={emailRef}
-                labelWidth={70}
-              />
-            </FormControl>
-            <FormControl variant='outlined'>
-              <InputLabel htmlFor='login-password'>Password</InputLabel>
-              <OutlinedInput
-                label='Password'
-                id='login-password'
-                type={values.showPassword ? 'text' : 'password'}
-                inputRef={passwordRef}
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      aria-label='toggle password visibility'
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge='end'
-                    >
-                      {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={70}
-              />
-            </FormControl>
-            <Button
-              variant='contained'
-              disabled={loading}
-              type='submit'
-              style={{width: '100px', position: 'relative', left: '125px'}}
-            >
-              Log In
-            </Button>
+          <Grid style={{display: 'flex', flexDirection: 'column'}}>
+            <form className={classes.form} onSubmit={handleSubmit}>
+              <FormControl variant='outlined'>
+                <InputLabel htmlFor='login-email'>E-mail</InputLabel>
+                <OutlinedInput
+                  id='login-email'
+                  inputRef={emailRef}
+                  labelWidth={70}
+                />
+              </FormControl>
+              <FormControl variant='outlined'>
+                <InputLabel htmlFor='login-password'>Password</InputLabel>
+                <OutlinedInput
+                  label='Password'
+                  id='login-password'
+                  type={values.showPassword ? 'text' : 'password'}
+                  inputRef={passwordRef}
+                  endAdornment={
+                    <InputAdornment position='end'>
+                      <IconButton
+                        aria-label='toggle password visibility'
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge='end'
+                      >
+                        {values.showPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+              </FormControl>
+              <Button
+                variant='contained'
+                disabled={loading}
+                type='submit'
+                style={{width: '100px', position: 'relative', left: '125px'}}
+              >
+                Log In
+              </Button>
+              <Grid style={{display: 'flex', justifyContent: 'center'}}>
+                Need an account? <a href='/signup'> Sign Up</a>
+              </Grid>
+            </form>
             <Grid style={{display: 'flex', justifyContent: 'center'}}>
-              Need an account? <a href='/signup'> Sign Up</a>
+              Sign in with Google
+              <img
+                onClick={() => googleLogin()}
+                src='/pics/google.png'
+                width='35px'
+              />
             </Grid>
-          </form>
+          </Grid>
         </Grid>
       </Grid>
     </div>

@@ -58,7 +58,11 @@ export default function SignupPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    if (usernameRef.current.value.match(/[.\[\]#$]/g)) {
+      return setError(
+        'Username contains some of the characters that are not allowed. Please try again'
+      );
+    }
     if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
       return setError('Passwords do not match');
     }
