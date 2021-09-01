@@ -27,7 +27,7 @@ export const fetchlegends = () => {
       }
       dispatch(_setLegendary(legends));
     } catch (error) {
-      console.log('connot get legendary pokemon', error);
+      console.error('connot get legendary pokemon', error);
     }
   };
 };

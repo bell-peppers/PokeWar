@@ -85,6 +85,7 @@ export default function SignupPage() {
 		setLoading(false);
 	}
 
+
 	return (
 		<div style={{ height: '85vh' }}>
 			<Grid className={classes.main}>

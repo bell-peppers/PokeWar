@@ -36,7 +36,7 @@ export const fetchPokemon = (poke = pokemon) => {
       }
       dispatch(_setPokemon(Pokemon));
     } catch (error) {
-      console.log('cant get pokemon', error);
+      console.error('cant get pokemon', error);
     }
   };
 };

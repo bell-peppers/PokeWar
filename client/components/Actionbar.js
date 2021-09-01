@@ -144,7 +144,6 @@ const Actionbar = (props) => {
   useEffect(() => {}, []);
 
   function selectPokemon(pokemon) {
-    console.log(pokemon);
     if (pokemon.active && !alreadyPickedCheck(pokemon)) {
       if (soundOn) {
         selectPkSound.play();
@@ -164,7 +163,6 @@ const Actionbar = (props) => {
     const alreadyPicked = playerTurn.filter(
       (turn) => turn.pokemon.name === selectedPlayerPokemon.name
     );
-    console.log(playerTurn, selectedPlayerPokemon);
     if (alreadyPicked.length > 0) {
       errSound.play();
       setErrMessage('You have already chosen a move for this pokemon');

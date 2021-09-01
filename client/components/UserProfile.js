@@ -71,7 +71,6 @@ const UserProfile = (props) => {
 	const [clicked, setClicked] = useState(false);
 
 	const handleIconClick = (poke) => {
-		console.log(poke);
 		if (!poke.liked) {
 			poke.liked = true;
 			setClicked(true);
@@ -79,11 +78,7 @@ const UserProfile = (props) => {
 			poke.liked = false;
 			setClicked(false);
 		}
-		console.log(poke);
 	};
-
-	currentUser && console.log('currentUser', currentUser);
-	user && console.log('user', user);
 
 	return (
 		<Grid className={classes.main}>

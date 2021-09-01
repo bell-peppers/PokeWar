@@ -12,34 +12,52 @@ const _getUserData = (user) => {
 };
 
 const _getOtherUserData = (otherUser) => {
-	return {
-		type: GET_OTHER_USER_DATA,
-		otherUser,
-	};
+
+  return {
+    type: GET_OTHER_USER_DATA,
+    otherUser,
+  };
+};
+
+export const startBattleMusic = (musicSrc) => (dispatch) => {
+  const music = new Audio(musicSrc);
+  music.play();
+  return dispatch(_startBattleMusic(music));
+};
+
+export const toggleMusic = (music, musicOn) => (dispatch) => {
+  if (music) {
+    if (!musicOn) {
+      music.play();
+    } else if (musicOn) {
+      music.pause();
+    }
+  }
+
+  return dispatch(_toggleMusic());
 };
 
 export const getUserData = (uid) => async (dispatch) => {
-	try {
-		await FIREDB.ref('users/' + uid).once('value', (snap) => {
-			const data = snap.val();
-			// console.log(data)
-			return dispatch(_getUserData(data));
-		});
-	} catch (error) {
-		console.error(error);
-	}
+  try {
+    await FIREDB.ref('users/' + uid).once('value', (snap) => {
+      const data = snap.val();
+      return dispatch(_getUserData(data));
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const getOtherUserData = (uid) => async (dispatch) => {
-	try {
-		await FIREDB.ref('users/' + uid).once('value', (snap) => {
-			const data = snap.val();
-			console.log(data)
-			return dispatch(_getOtherUserData(data));
-		});
-	} catch (error) {
-		console.error(error);
-	}
+  try {
+    await FIREDB.ref('users/' + uid).once('value', (snap) => {
+      const data = snap.val();
+      return dispatch(_getOtherUserData(data));
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
 };
 
 const initialState = { user: {}, myUID: '', otherUser: {} };

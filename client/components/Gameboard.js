@@ -271,7 +271,6 @@ const Gameboard = (props) => {
   }
 
   function clickHandle(pk) {
-    console.log(Object.keys(playerAttack));
     animatePk();
 
     if (Object.keys(playerAttack).length > 0 && selectedPlayerPk && pk.active) {
@@ -283,15 +282,11 @@ const Gameboard = (props) => {
         `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
       );
       setOpen(true);
-      console.log(
-        `${selectedPlayerPk.name} will use ${playerAttack.attack.move.name} on ${pk.name}`
-      );
       resetAttack();
       resetPlayerPokemon();
     } else {
       setMessage('Please select a move first');
       setOpen(true);
-      console.log('please select a move first');
     }
   }
 

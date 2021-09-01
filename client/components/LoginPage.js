@@ -64,6 +64,7 @@ export default function LoginPage() {
 		} catch (error) {
 			console.log(error);
 			setError(error.message);
+
 		}
 		setLoading(false);
 	}
@@ -85,7 +86,7 @@ export default function LoginPage() {
 			await githubLogin();
 		} catch (error) {
 			setError(error.message);
-			console.log(error);
+			console.error(error);
 		}
 		setLoading(false);
 	}

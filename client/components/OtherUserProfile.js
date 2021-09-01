@@ -67,22 +67,9 @@ const OtherUserProfile = (props) => {
 	const { currentUser, findUserProfile } = useAuth();
 	const classes = useStyles();
 
-	// useEffect(() => {
-		// if (currentUser && currentUser.uid !== otherUser.uid) {
-			// const currUser=findUserProfile(location)
-			// console.log(location);
-			// getUserData(location);
-			// getOtherUserData(location);
-		// }
-		// if (playerPokemon && !playerPokemon.length) {
-			// fetchPokemon(user.pokemon, user.username);
-		// }
-	// }, [user, currentUser]);
-
 	const [clicked, setClicked] = useState(false);
 
 	const handleIconClick = (poke) => {
-		console.log(poke);
 		if (!poke.liked) {
 			poke.liked = true;
 			setClicked(true);
@@ -90,10 +77,7 @@ const OtherUserProfile = (props) => {
 			poke.liked = false;
 			setClicked(false);
 		}
-		console.log(poke);
 	};
-	// console.log(getOtherUserData('6biPsi7OZUdwerQyaeQIclyJRn02'));
-	// currentUser && console.log(currentUser)
 
 	return (
 		<Grid className={classes.main}>

@@ -33,9 +33,6 @@ const Routes = (props) => {
   const {user, myUID, otherUser} = props;
   const {currentUser, findUserProfile} = useAuth();
   const location = useLocation().pathname.slice(7);
-  // console.log('rando', JSON.stringify(findUserProfile('6biPsi7OZUdwerQyaeQIclyJRn02')))
-  // console.log(user);
-  // getOtherUser('WdkaRXJGGVfrTlDfJXTLUvPEz1r1')
   return (
     <Router>
       {/* {!currentUser ? (
@@ -48,6 +45,7 @@ const Routes = (props) => {
         {user && (
         <Route path={`/users/${user.uid}`} exact component={UserProfile} />)}
 
+
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' exact component={LoginPage} />
         <Route path='/signup' exact component={SignupPage} />
@@ -58,23 +56,6 @@ const Routes = (props) => {
         <Route exact path='/store' component={Store} />
         <Route path='*' component={FourOhFour} />
       </Switch>
-      {/* <Footer /> */}
-      {/* </div>
-      ) : (
-        <div>
-          <Switch>
-            <Route path='/allpokemon' exact component={AllPokemon} />
-            <Route path='/game' exact component={Main} />
-            <Route path='/pregame' exact component={PreGame} />
-            <Route path='/dev/setup' component={temp} />
-            <Route path='/myprofile' exact component={UserProfile} />
-            <Route path='/login' exact component={AlreadyLoggedIn} />
-            <Route path='/signup' exact component={AlreadyLoggedIn} />
-            <Route exact path='/' component={MatchSearch} />
-            <Route path='*' component={FourOhFour} />
-          </Switch>
-        </div>
-      )} */}
     </Router>
   );
 };
