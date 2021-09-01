@@ -106,7 +106,7 @@ const UserProfile = (props) => {
 					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
 				</Grid>
 				<Grid>
-					<Typography
+					<Grid
 						style={{ display: 'flex', fontSize: '25px', paddingRight: '80px' }}
 					>
 						Level
@@ -126,14 +126,13 @@ const UserProfile = (props) => {
 						>
 							1
 						</Typography>
-					</Typography>
+					</Grid>
 					{user && user.totalGames > 0 ? (
 						<Typography>
 							Win rate: {Math.round((user.wins / user.totalGames) * 100)}%
 						</Typography>
-					) : (
-						<Typography></Typography>
-					)}
+					) :
+					null}
 					<Button
 						style={{ padding: '0', marginTop: '6px' }}
 						href='/editprofile'
