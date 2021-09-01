@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {connect} from 'react-redux';
-import {Button, makeStyles} from '@material-ui/core';
+import React, { useState, useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
+import { Button, makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -11,14 +11,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Container from '@material-ui/core/Container';
-import {createNewGame, joinGame, findGame, setHostGuest} from '../store/game';
+import { createNewGame, joinGame, findGame, setHostGuest } from '../store/game';
 import TextField from '@material-ui/core/TextField';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import FindMatch from './FindMatch';
-import {fetchPlayerOnePokemon} from '../store/pokemon';
-import {useAuth} from '../../src/contexts/AuthContext';
-import {getUserData} from '../store/userData';
+import { fetchPlayerOnePokemon } from '../store/pokemon';
+import { useAuth } from '../../src/contexts/AuthContext';
+import { getUserData } from '../store/userData';
 
 function getModalStyle() {
   const top = 50;
@@ -31,7 +31,7 @@ function getModalStyle() {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
@@ -69,7 +69,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '25px',
   },
 }));
+
 const columns = [
+
   {id: 'position', label: '#', minWidth: 30},
   {id: 'username', label: 'Username', minWidth: 90},
   {
@@ -101,7 +103,6 @@ const MatchSearch = (props) => {
   } = props;
 
   const {currentUser, leaderboardScores} = useAuth();
-
   const rows = leaderboardScores();
   const handleOpen = async () => {
     if (user.uid) {
@@ -120,7 +121,8 @@ const MatchSearch = (props) => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-  const handleChangeRowsPerPage = (event) => {
+
+  const handleChangeRowsPerPage = event => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
@@ -147,6 +149,7 @@ const MatchSearch = (props) => {
       />
     </div>
   );
+
   function handleJoinClick() {
     let matchId = prompt('Please enter a match id');
     if (matchId === null) {
@@ -164,6 +167,7 @@ const MatchSearch = (props) => {
       alert('Please enter a valid match id');
     }
   }
+
   useEffect(() => {
     if (currentUser && currentUser.uid !== user.uid) {
       getUserData(currentUser.uid);
@@ -172,6 +176,7 @@ const MatchSearch = (props) => {
       fetchPokemon(user.pokemon, user.username);
     }
   }, [user, currentUser]);
+
   return (
     <div
       style={{
@@ -181,12 +186,8 @@ const MatchSearch = (props) => {
         height: '85vh',
       }}
     >
+
       <h3 style={{textAlign: 'center'}}></h3>
-      {/* <div style={{alignSelf: 'center'}}>
-        {user.username && (
-          <h3 className={classes.p}> Welcome, {user.username}</h3>
-        )}
-      </div> */}
       <Container className={classes.main}>
         <Grid className={classes.buttons}>
           <Button
@@ -225,7 +226,7 @@ const MatchSearch = (props) => {
           {modalBody}
         </Modal>
         <Paper className={classes.root}>
-          <h4 style={{textAlign: 'center'}}>Leaderboard</h4>
+          <h4 style={{ textAlign: 'center' }}>Leaderboard</h4>
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label='sticky table'>
               <TableHead>
@@ -234,7 +235,7 @@ const MatchSearch = (props) => {
                     <TableCell
                       key={i}
                       align={column.align}
-                      style={{minWidth: column.minWidth}}
+                      style={{ minWidth: column.minWidth }}
                     >
                       {column.label}
                     </TableCell>
@@ -247,7 +248,7 @@ const MatchSearch = (props) => {
                   .map((row, i) => {
                     return (
                       <TableRow hover role='checkbox' tabIndex={-1} key={i}>
-                        {columns.map((column) => {
+                        {columns.map(column => {
                           const value = row[column.id];
                           return (
                             <TableCell key={column.id} align={column.align}>
@@ -274,17 +275,11 @@ const MatchSearch = (props) => {
           />
         </Paper>
       </Container>
-      {/* <Grid>
-        <Button
-          href='/signup'
-          style={{backgroundColor: 'green', position: 'absolute', left: '40%'}}
-        >
-          Sign Up For free today
-        </Button>
-      </Grid> */}
+
     </div>
   );
 };
+
 const mapState = (state) => {
   return {
     playerPokemon: state.pokemon.playerOnePokemon,
@@ -293,6 +288,7 @@ const mapState = (state) => {
     soundOn: state.userData.soundOn,
   };
 };
+
 const mapDispatch = (dispatch) => {
   return {
     newGame: (uid, name, photo) => dispatch(createNewGame(uid, name, photo)),
@@ -300,8 +296,9 @@ const mapDispatch = (dispatch) => {
     findGame: () => dispatch(findGame()),
     fetchPokemon: (pk, username) =>
       dispatch(fetchPlayerOnePokemon(pk, username)),
-    getUserData: (uid) => dispatch(getUserData(uid)),
-    setRole: (role) => dispatch(setHostGuest(role)),
+    getUserData: uid => dispatch(getUserData(uid)),
+    setRole: role => dispatch(setHostGuest(role)),
   };
 };
+
 export default connect(mapState, mapDispatch)(MatchSearch);

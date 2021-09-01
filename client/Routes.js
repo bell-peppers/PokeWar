@@ -1,3 +1,4 @@
+
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {
@@ -29,6 +30,7 @@ import OtherUserProfile from './components/OtherUserProfile';
 /**
  * COMPONENT
  */
+
 const Routes = (props) => {
   const {user, myUID, otherUser} = props;
   const {currentUser, findUserProfile} = useAuth();
@@ -37,6 +39,7 @@ const Routes = (props) => {
     <Router>
       {/* {!currentUser ? (
         <div> */}
+
       <Navbar />
       <Switch>
         <Route path='/allpokemon' exact component={AllPokemon} />
@@ -68,6 +71,7 @@ const FourOhFour = () => {
   return <div>Sorry, this page doesn't exist</div>;
 };
 
+
 const mapState = (state) => {
   return {
     user: state.userData.user,
@@ -75,6 +79,7 @@ const mapState = (state) => {
     otherUser: state.userData.otherUser,
   };
 };
+
 // The `withRouter` wrapper makes sure that updates are not blocked
 // when the url changes
 export default withRouter(connect(mapState)(Routes));

@@ -3,7 +3,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  /* background-color: lightslategrey; */
 }
 
 img {
@@ -127,23 +126,19 @@ form div {
   background-color: lightblue;
 }
 
+.feed {
+  max-width: 500px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  line-height: 1rem;
+  border-radius: 0.5rem;
+  text-align: left;
+  color: black;
+  background-color: lightcoral;
+}
+
 .messages {
   overflow-y: scroll;
   margin: 0;
   padding: 0;
-}
-
-.sent {
-  flex-direction: row-reverse;
-}
-
-.sent p {
-  color: white;
-  background: #0b93f6;
-  align-self: flex-end;
-}
-
-.received p {
-  background: #e5e5ea;
-  color: black;
 }

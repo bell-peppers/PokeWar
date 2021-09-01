@@ -299,7 +299,7 @@ const Gameboard = (props) => {
   }
 
   return (
-    <div>
+    <React.Fragment>
       {opponentPokemon ? (
         <div className={classes.main}>
           <div className={classes.opponentSide}>
@@ -477,9 +477,10 @@ const Gameboard = (props) => {
       ) : (
         <div>please wait</div>
       )}
-    </div>
+    </React.Fragment>
   );
 };
+
 const mapState = (state) => {
   return {
     opponentMoves: state.game.opponentMoves,
