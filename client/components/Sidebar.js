@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {setPlayerReady, cancelGame, _resetGameState} from '../store/game';
 import {useHistory} from 'react-router-dom';
+import {_resetPokemonState} from '../store/pokemon';
 import {_toggleSound, toggleMusic} from '../store/userData';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';

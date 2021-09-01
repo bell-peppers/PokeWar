@@ -58,6 +58,7 @@ const Routes = (props) => {
         <Route exact path='/store' component={Store} />
         <Route path='*' component={FourOhFour} />
       </Switch>
+      <Footer />
     </Router>
   );
 };

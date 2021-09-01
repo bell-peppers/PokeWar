@@ -11,6 +11,7 @@ import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import {Link, useHistory} from 'react-router-dom';
 import 'firebase/database';
 import 'firebase/auth';
 
