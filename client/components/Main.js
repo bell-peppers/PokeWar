@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#F8E8DC',
     borderRadius: '25px',
     width: '100vw',
-    height: '100vh',
+    height: '90vh',
     maxHeight: '1000px',
     minWidth: '800px',
     justifyContent: 'space-between',
@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'black',
-    marginTop: '65px',
+    marginTop: '15px',
   },
   board: {
     fontFamily: 'Courier New, monospace',

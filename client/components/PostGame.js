@@ -62,7 +62,7 @@ function PostGame(props) {
           <h2>You win!</h2>
           <img src='pics/pktrophy.png' />
           <p>You have earned 100 coins!</p>
-          <Button variant='contained' color='primary' component={Link} to='/'>
+          <Button variant='contained' color='primary' onClick={clickHandle}>
             Back to Main
           </Button>
         </div>

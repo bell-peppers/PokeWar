@@ -49,6 +49,13 @@ const useStyles = makeStyles(() => ({
     textDecoration: 'none',
     color: 'white',
   },
+  pName: {
+    margin: '5px 25px 0px 25px',
+    fontSize: '16px',
+    fontFamily: 'Courier New, monospace',
+    textDecoration: 'none',
+    color: 'black',
+  },
 }));
 
 const Navbar = (props) => {
@@ -123,7 +130,8 @@ const Navbar = (props) => {
             <IconButton onClick={handleToggleMusic}>
               {musicOn ? <MusicNoteIcon /> : <MusicOffIcon />}
             </IconButton>
-            {username && <p className={classes.p}> Welcome, {username}</p>}
+
+            {username && <p className={classes.pName}> Welcome, {username}</p>}
           </div>
           {/* <Link to='/allpokemon'>
             <p className={classes.p}>All Pokemon</p>

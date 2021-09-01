@@ -56,17 +56,17 @@ const useStyles = makeStyles((theme) => ({
   },
   skill: {
     height: 50,
-    width: 100,
+    width: 130,
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     fontWeight: 'bold',
   },
   selectedSkill: {
     height: 50,
-    width: 100,
+    width: 130,
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     fontWeight: 'bold',
     boxShadow: '1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue',
@@ -364,6 +364,7 @@ const Actionbar = (props) => {
               justifyContent: 'center',
               flexDirection: 'column',
               textAlign: 'center',
+              marginBottom: '15px',
             }}
           >
             Choose your attack:
@@ -374,20 +375,49 @@ const Actionbar = (props) => {
             spacing={2}
           >
             {selectedPlayerPokemon.moves.length > 0
-              ? selectedPlayerPokemon.moves.map((value, i) => (
-                  <Grid key={i} item>
-                    <Paper
-                      className={
-                        value === playerAttack
-                          ? classes.selectedSkill
-                          : classes.skill
-                      }
-                      onClick={() => selectMove(value)}
-                    >
-                      <p>{value.move.name}</p>
-                    </Paper>
-                  </Grid>
-                ))
+              ? selectedPlayerPokemon.moves.map((value, i) => {
+                  let finalColor;
+
+                  finalColor = colorTypeGradients(
+                    value.moveData.type.name,
+                    value.moveData.type.name,
+                    1
+                  );
+
+                  return (
+                    <Button key={i}>
+                      <Paper
+                        className={
+                          value === playerAttack
+                            ? classes.selectedSkill
+                            : classes.skill
+                        }
+                        style={{
+                          background: `linear-gradient(${finalColor[0]}, ${finalColor[1]})`,
+                        }}
+                        onClick={() => selectMove(value)}
+                      >
+                        <img
+                          style={{width: '18px', height: '18px'}}
+                          src={`assets/${value.moveData.type.name}.png`}
+                        />
+                        <p>{value.move.name}</p>
+                      </Paper>
+                    </Button>
+                  );
+                  // <Grid key={i} item>
+                  //   <Paper
+                  //     className={
+                  //       value === playerAttack
+                  //         ? classes.selectedSkill
+                  //         : classes.skill
+                  //     }
+                  //     onClick={() => selectMove(value)}
+                  //   >
+                  //     <p>{value.move.name}</p>
+                  //   </Paper>
+                  // </Grid>
+                })
               : [1, 2, 3, 4].map((value) => (
                   <Grid key={value} item>
                     <Paper className={classes.skill}>
@@ -397,7 +427,7 @@ const Actionbar = (props) => {
                 ))}
           </Grid>
         </Grid>
-        <Grid
+        {/* <Grid
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -413,7 +443,26 @@ const Actionbar = (props) => {
           >
             Complete turn
           </Button>
-        </Grid>
+        </Grid> */}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          maxHeight: '170px',
+          width: '33%',
+          marginTop: '15px',
+        }}
+      >
+        <Button
+          variant='contained'
+          color='secondary'
+          disabled={!isTurn}
+          onClick={() => completeTurnHandler()}
+        >
+          Complete turn
+        </Button>
       </div>
     </div>
   );
