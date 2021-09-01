@@ -43,7 +43,7 @@ export default function Footer() {
           position='static'
           style={{
             // backgroundColor: 'royalBlue',
-            height: '100px',
+            height: '50px',
           }}
         >
           <Container maxWidth='md'>
@@ -83,6 +83,37 @@ export default function Footer() {
 										icon={<GitHubIcon />}
 									/> */}
               {/* </Link> */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  paddingRight: '40px',
+                  alignItems: 'center',
+                }}
+              >
+                Made with{' '}
+                <img
+                  src='/pics/heart.png'
+                  width='25px'
+                  style={{padding: '0 2px'}}
+                />{' '}
+                at
+                <Link
+                  to={{
+                    pathname:
+                      'https://www.fullstackacademy.com/software-engineering-immersive',
+                  }}
+                  target='_blank'
+                  style={{
+                    color: 'inherit',
+
+                    // padding:'0 2px 0 2px'
+                  }}
+                >
+                  {'   '}
+                  Fullstack Academy
+                </Link>
+              </div>
             </Toolbar>
           </Container>
           <Grid

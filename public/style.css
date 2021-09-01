@@ -138,6 +138,17 @@ form div {
   background-color: lightcoral;
 }
 
+.instructions {
+  max-width: 500px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  line-height: 1rem;
+  border-radius: 0.5rem;
+  text-align: left;
+  color: white;
+  background-color: rgba(0, 0, 139, 0.801);
+}
+
 .messages {
   overflow-y: scroll;
   margin: 0;

@@ -1,20 +1,56 @@
-import React, { useState, useEffect, useRef } from 'react';
-import firebase, { FIREDB } from '../../utils/firebase';
-import { Input, Button } from '@material-ui/core';
+import React, {useState, useEffect, useRef} from 'react';
+import firebase, {FIREDB} from '../../utils/firebase';
+import {Input, Button} from '@material-ui/core';
 
-const Chat = props => {
+const Chat = (props) => {
   const messageEnd = useRef(null);
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState('');
   // const [round, setRound] = useState(1);
-  const { feed, user, opponent, matchId, role } = props;
+  const {feed, user, opponent, matchId, role} = props;
 
+  const instructions = [
+    {message: 'Welcome to PokeWar!', type: 'instructions'},
+    {message: "Here's how to play:", type: 'instructions'},
+    {
+      message:
+        'First, select one of your pokemon by clicking on one of the bottom-right cards',
+      type: 'instructions',
+    },
+    {
+      message:
+        "Once selected, you can click to choose which attack you'd like to perform.",
+      type: 'instructions',
+    },
+    {
+      message:
+        "Once you have an attack selected, click on one of your opponent's active Pokemon to attack it.",
+      type: 'instructions',
+    },
+    {
+      message:
+        "Repeat this once for each of your active Pokemon. When done and when it's your turn, click complete turn.",
+      type: 'instructions',
+    },
+    {
+      message:
+        "The object of the game is to defeat all of your opponent's Pokemon.",
+      type: 'instructions',
+    },
+    {message: 'Happy Battling!', type: 'instructions'},
+  ];
 
   useEffect(() => {
     if (messageEnd) {
-      messageEnd.current.addEventListener('DOMNodeInserted', event => {
-        const { currentTarget: target } = event;
-        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+      messageEnd.current.addEventListener('DOMNodeInserted', (event) => {
+        const {currentTarget: target} = event;
+        target.scroll({top: target.scrollHeight, behavior: 'smooth'});
+      });
+    }
+    const messageRef = FIREDB.ref(`Match/${matchId}/messages`);
+    if (role === 'host') {
+      instructions.forEach((line) => {
+        messageRef.push(line);
       });
     }
   }, []);
@@ -22,7 +58,7 @@ const Chat = props => {
   useEffect(() => {
     const messageRef = FIREDB.ref(`Match/${matchId}/messages`);
     let swearCounter = 0;
-    messageRef.on('value', snapshot => {
+    messageRef.on('value', (snapshot) => {
       let allMessages = [];
       const messages = snapshot.val();
       const swear =
@@ -57,7 +93,7 @@ const Chat = props => {
             swearCounter = 0;
           }
         } else {
-          allMessages.push({ id, ...messages[id] });
+          allMessages.push({id, ...messages[id]});
         }
       }
       setMessages(allMessages);
@@ -66,7 +102,6 @@ const Chat = props => {
       sendFeed(feed);
     }
   }, [feed]);
-
 
   function sendMessage(e) {
     e.preventDefault();
@@ -84,7 +119,7 @@ const Chat = props => {
   function sendFeed(attackFeed) {
     const messageRef = firebase.database().ref(`Match/${matchId}/messages`);
 
-    attackFeed.map(feed => {
+    attackFeed.map((feed) => {
       setTimeout(() => {
         messageRef.push(feed);
       }, 1000);
@@ -94,9 +129,13 @@ const Chat = props => {
   return (
     <div className='chat'>
       <div className='messages' ref={messageEnd}>
-        {messages.map(({ id, user, message, type }) =>
-          type ? (
+        {messages.map(({id, user, message, type}) =>
+          type === 'feed' ? (
             <div key={id} className='feed'>
+              {message}
+            </div>
+          ) : type === 'instructions' ? (
+            <div key={id} className='instructions'>
               {message}
             </div>
           ) : (
@@ -108,11 +147,11 @@ const Chat = props => {
         )}
       </div>
 
-      <form onSubmit={e => sendMessage(e)}>
+      <form onSubmit={(e) => sendMessage(e)}>
         <Input
           value={msg}
           type='text'
-          onChange={e => setMsg(e.target.value)}
+          onChange={(e) => setMsg(e.target.value)}
           placeholder='Enter message here'
         />
         <Button type='submit' disabled={!msg}>
