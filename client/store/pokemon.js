@@ -154,7 +154,7 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
 
 export const applySingleMove =
   (move, playerPk, oppPk, username, soundOn) => (dispatch) => {
-    if (move.pokemon.active) {
+    if (move.pokemon.active && move.attackedPokemon.active) {
       let incoming = false;
       let PlayerPkInd = 0;
       let OppPkInd = 0;
@@ -217,8 +217,11 @@ export const applySingleMove =
       dispatch(
         _applySingleMove(PlayerPkInd, OppPkInd, incoming, newPk, newOppPk, feed)
       );
+    } else if (!move.attackedPokemon.active) {
+      let feed = `${move.pokemon.name} has died and cannot attack`;
+      dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
     } else {
-      let feed = `${move.pokemon} has died`;
+      let feed = `${move.attackedPokemon.name} has died and cannot be attacked`;
       dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
     }
   };

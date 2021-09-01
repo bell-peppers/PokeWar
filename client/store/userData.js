@@ -47,7 +47,6 @@ export const startBattleMusic = (musicSrc) => (dispatch) => {
 };
 
 export const toggleMusic = (music, musicOn) => (dispatch) => {
-  console.log(music);
   if (music) {
     if (!musicOn) {
       music.play();

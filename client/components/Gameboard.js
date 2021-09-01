@@ -41,15 +41,17 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     backgroundColor: 'white',
     width: '100%',
-    height: '100%',
+    //height: '100%',
     justifyContent: 'flex-end',
-    borderRadius: '25px',
+    borderTopLeftRadius: '25px',
+    borderBottomLeftRadius: '25px',
   },
   playerSide: {
     height: '50%',
     backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'space-between',
+    borderBottomLeftRadius: '25px',
   },
   opponentSide: {
     height: '50%',
@@ -57,7 +59,7 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    borderTopRightRadius: '25px',
+    //borderTopRightRadius: '25px',
     borderTopLeftRadius: '25px',
   },
   playerSprites: {
@@ -303,7 +305,6 @@ const Gameboard = (props) => {
       {opponentPokemon ? (
         <div className={classes.main}>
           <div className={classes.opponentSide}>
-            <div className={classes.playerName}></div>
             {opponentPokemon &&
               opponentPokemon.map((pk, i) => {
                 return pk.active ? (
@@ -471,7 +472,6 @@ const Gameboard = (props) => {
                   </div>
                 );
               })}
-            <div className={classes.playerName}></div>
           </div>
         </div>
       ) : (

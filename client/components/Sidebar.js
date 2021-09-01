@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'red',
+    backgroundColor: 'lightsteelblue',
     height: '100%',
     fontFamily: 'Courier New, monospace',
   },
@@ -149,7 +149,7 @@ const Sidebar = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle id='alert-dialog-title'>
-          {'Are you sure you want to rage quit?'}
+          {"This is a rage quit, isn't it?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
