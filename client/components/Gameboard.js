@@ -45,22 +45,25 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'flex-end',
     borderTopLeftRadius: '25px',
     borderBottomLeftRadius: '25px',
+    backgroundImage: 'url("pics/fieldbk.png")',
+    backgroundSize: 'cover',
   },
   playerSide: {
     height: '50%',
-    backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'space-between',
     borderBottomLeftRadius: '25px',
+    fontWeight: 'bold',
   },
   opponentSide: {
     height: '50%',
-    backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     //borderTopRightRadius: '25px',
     borderTopLeftRadius: '25px',
+    color: 'white',
+    fontWeight: 'bold',
   },
   playerSprites: {
     maxWidth: '100%',
@@ -214,7 +217,7 @@ const Gameboard = (props) => {
         theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
     },
     bar: {
-      // backgroundColor: 'red',
+      backgroundColor: 'red',
     },
   }))(LinearProgress);
 

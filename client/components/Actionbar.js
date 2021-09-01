@@ -383,7 +383,7 @@ const Actionbar = (props) => {
                     value.moveData.type.name,
                     1
                   );
-                  console.log(finalColor);
+
                   return (
                     <Button key={i}>
                       <Paper

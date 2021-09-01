@@ -100,7 +100,11 @@ const PreGame = (props) => {
       <CssBaseline />
       <Container className={classes.main}>
         <div className={classes.game}>
-          <h1>New Match Created</h1>
+          {role === 'host' ? (
+            <h1>New Match Created</h1>
+          ) : (
+            <h1>New Match Joined</h1>
+          )}
           <div>
             <p>Match ID:{matchId}</p>
             <h2>{username}</h2>

@@ -9,7 +9,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import {setPlayerReady} from '../store/game';
+import {setPlayerReady, cancelGame, _resetGameState} from '../store/game';
 import {useHistory} from 'react-router-dom';
 import {_toggleSound, toggleMusic} from '../store/userData';
 import Dialog from '@material-ui/core/Dialog';
@@ -62,6 +62,8 @@ const Sidebar = (props) => {
     toggleMusic,
     currentSong,
     musicOn,
+    resetGameState,
+    resetPokemonState,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -85,6 +87,8 @@ const Sidebar = (props) => {
   const handleQuitClick = () => {
     setAnchorEl(null);
     quitGame(matchId, role, false);
+    resetGameState();
+    resetPokemonState();
     history.push('/');
   };
 
@@ -186,6 +190,8 @@ const mapDispatch = (dispatch) => {
     toggleSound: () => dispatch(_toggleSound()),
     toggleMusic: (currentSong, musicOn) =>
       dispatch(toggleMusic(currentSong, musicOn)),
+    resetGameState: () => dispatch(_resetGameState()),
+    resetPokemonState: () => dispatch(_resetPokemonState()),
   };
 };
 
