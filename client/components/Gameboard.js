@@ -212,7 +212,7 @@ const Gameboard = (props) => {
         theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
     },
     bar: {
-      backgroundColor: 'red',
+      // backgroundColor: 'red',
     },
   }))(LinearProgress);
 

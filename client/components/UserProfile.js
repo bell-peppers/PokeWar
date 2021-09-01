@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: 'royalBlue',
 		position: 'relative',
 		maxWidth: '1018px',
+		height: '100vh',
 		paddingBottom: '0px',
 		margin: '0 auto',
 	},
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	const { currentUser } = useAuth();
+	const { currentUser, } = useAuth();
 	const classes = useStyles();
 
 	useEffect(() => {
@@ -103,7 +104,7 @@ const UserProfile = (props) => {
 								src={currentUser.photoURL || '/pics/default.png'}
 								width='180px'
 								height='180px'
-								border='5px solid darkBlue'
+								border='5px solid blue'
 							/>
 						)}
 					</Grid>
@@ -116,15 +117,16 @@ const UserProfile = (props) => {
 						Level
 						<Typography
 							style={{
-								height: '40px',
-								width: '40px',
+								height: '35px',
+								width: '35px',
 								display: 'table-cell',
 								textAlign: 'center',
 								verticalAlign: 'middle',
-								borderRadius: '50%',
-								background: 'white',
+								borderRadius: '90%',
+								// background: 'white',
 								fontSize: '25px',
 								marginLeft: '4px',
+								backgroundColor: 'lightBlue'
 							}}
 						>
 							1
@@ -164,7 +166,7 @@ const UserProfile = (props) => {
 								style={{
 									display: 'flex',
 									flexWrap: 'nowrap',
-									border: '5px solid grey',
+									border: '5px solid royalBlue',
 								}}
 							>
 								{playerPokemon.map((item) => (
@@ -195,7 +197,7 @@ const UserProfile = (props) => {
 						Badges
 					</Typography>
 					<Grid
-						style={{ backgroundColor: 'white', width: '180px', height: '90px' }}
+						style={{  width: '180px', height: '90px' }}
 					></Grid>
 				</Grid>
 			</Grid>
@@ -222,7 +224,7 @@ const UserProfile = (props) => {
 						<Typography style={{ fontSize: '20px' }}>Comments</Typography>
 						<Grid
 							style={{
-								backgroundColor: 'white',
+								// backgroundColor: 'white',
 								width: '450px',
 								height: '150px',
 							}}
@@ -235,7 +237,7 @@ const UserProfile = (props) => {
 					</Typography>{' '}
 					<Grid
 						style={{
-							backgroundColor: 'white',
+							// backgroundColor: 'white',
 							width: '200px',
 							height: '220px',
 						}}

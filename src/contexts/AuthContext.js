@@ -9,7 +9,6 @@ const AuthContext = React.createContext();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 const githubProvider = new firebase.auth.GithubAuthProvider();
 
-
 export function useAuth() {
 	return useContext(AuthContext);
 }
@@ -71,7 +70,7 @@ export function AuthProvider({ children }) {
 	}
 
 	function logout() {
-		window.location.href = '/login'
+		window.location.href = '/login';
 		return auth.signOut();
 	}
 
@@ -116,73 +115,104 @@ export function AuthProvider({ children }) {
 	// }
 	function googleLogin() {
 		// const auth = getAuth();
-		auth
-			.signInWithPopup(googleProvider)
-			.then((result) => {
-				const token = result.credential.accessToken;
-				const user = result.user;
-				FIREDB.ref(`users`)
-					.child(user.uid)
-					.get()
-					.then((snapshot) => {
-						if (snapshot.exists()) {
-							console.log('welcome back');
-							window.location.href = '/'
-						} else {
-							console.log('first time>');
-							createNewAccount(
-								user.uid,
-								user.email,
-								user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-							);
-							window.location.href = '/'
-							return user;
-						}
-					})
-					.catch((error) => {
-						console.log(error);
-					});
-			});
+		auth.signInWithPopup(googleProvider).then((result) => {
+			const token = result.credential.accessToken;
+			const user = result.user;
+			FIREDB.ref(`users`)
+				.child(user.uid)
+				.get()
+				.then((snapshot) => {
+					if (snapshot.exists()) {
+						console.log('welcome back');
+						window.location.href = '/';
+					} else {
+						console.log('first time>');
+						createNewAccount(
+							user.uid,
+							user.email,
+							user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+						);
+						window.location.href = '/';
+						return user;
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		});
 	}
 
 	function githubLogin() {
 		// const auth = getAuth();
-		auth
-			.signInWithPopup(githubProvider)
-			.then((result) => {
-				console.log('result', result)
-				const token = result.credential.accessToken;
-				const user = result.user;
-				FIREDB.ref(`users`)
-					.child(user.uid)
-					.get()
-					.then((snapshot) => {
-						if (snapshot.exists()) {
-							console.log('welcome back');
-							window.location.href = '/'
-						} else {
-							console.log('first time>');
-							console.log(user)
-							user.displayName ? createNewAccount(
-								user.uid,
-								'',
-								user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-							) : createNewAccount(
-								user.uid,
-								'',
-								['Pickachu', 'Mew', 'Snorlax', 'Charmander', 'Bulbasaur', 'Sylveon', 'Gengar', 'Chikorita', 'Ekans'][Math.floor(Math.random()*9)] //0-8
-							);
+		auth.signInWithPopup(githubProvider).then((result) => {
+			console.log('result', result);
+			const token = result.credential.accessToken;
+			const user = result.user;
+			FIREDB.ref(`users`)
+				.child(user.uid)
+				.get()
+				.then((snapshot) => {
+					if (snapshot.exists()) {
+						console.log('welcome back');
+						window.location.href = '/';
+					} else {
+						console.log('first time>');
+						console.log(user);
+						user.displayName
+							? createNewAccount(
+									user.uid,
+									'',
+									user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+							  )
+							: createNewAccount(
+									user.uid,
+									'',
+									[
+										'Pickachu',
+										'Mew',
+										'Snorlax',
+										'Charmander',
+										'Bulbasaur',
+										'Sylveon',
+										'Gengar',
+										'Chikorita',
+										'Ekans',
+									][Math.floor(Math.random() * 9)] //0-8
+							  );
 
-							window.location.href = '/'
-							return user;
-						}
-					})
-					.catch((error) => {
-						console.log(error);
-						// throw new error('lol');
-					});
-			});
+						window.location.href = '/';
+						return user;
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+					// throw new error('lol');
+				});
+		});
 	}
+
+	function leaderboardScores() {
+		// FIREDB.
+		const usersRef = FIREDB.ref('users');
+		const allUsers = [];
+		usersRef.on('value', (snapshot) => {
+			const users = snapshot.val();
+			// let position = 0;
+			function createData(username, score) {
+				// position += 1;
+				return { username, score };
+			}
+			for (let user in users) {
+				allUsers.push(createData(users[user].username, users[user].coins));
+				// allUsers.push([user, users[user].coins]);
+			}
+			allUsers.sort((a, b) => b.score - a.score).map((user, idx) => {user.position = idx+1; return user});
+
+		});
+
+			return allUsers;
+	}
+
 	//we dont want it to be in render, we want it to be in useEffect because
 	//we only want it to run once when we mount our component
 	useEffect(() => {
@@ -203,7 +233,8 @@ export function AuthProvider({ children }) {
 		findUserProfile,
 		updateImg,
 		googleLogin,
-		githubLogin
+		githubLogin,
+		leaderboardScores,
 		// getOtherUser,
 	};
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
