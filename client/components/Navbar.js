@@ -86,7 +86,7 @@ const Navbar = (props) => {
 
     try {
       await logout();
-      history.push('/login');
+      history.push('/');
     } catch (error) {
       setError('Failed to log out');
     }

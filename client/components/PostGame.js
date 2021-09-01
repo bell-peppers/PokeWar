@@ -15,9 +15,9 @@ const useStyles = makeStyles(() => ({
     maxWidth: '600px',
     height: '85vh',
     textAlign: 'center',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'black',
+    // borderWidth: '1px',
+    // borderStyle: 'solid',
+    // borderColor: 'black',
   },
   root: {
     display: 'flex',

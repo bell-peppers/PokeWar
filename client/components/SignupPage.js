@@ -178,7 +178,7 @@ export default function SignupPage() {
           </form>
         </Grid>
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
-          Already have an account? &nbsp; <a href='/login'> Log In</a>
+          Already have an account? &nbsp; <Link to='/login'>Log In</Link>
         </Grid>
       </Grid>
     </div>
