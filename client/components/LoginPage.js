@@ -63,7 +63,7 @@ export default function LoginPage() {
 			history.push('/');
 		} catch (error) {
 			console.log(error);
-			setError('Failed to log in');
+			setError(error.message);
 		}
 		setLoading(false);
 	}

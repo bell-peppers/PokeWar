@@ -45,11 +45,9 @@ const Routes = (props) => {
         <Route path='/allpokemon' exact component={AllPokemon} />
         <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
-        {/* {user && location === myUID ? ( */}
-        <Route path={`/users/${user.uid}`} exact component={UserProfile} />
-        {/* ) : ( */}
-        {/* <Route path={`/users/:id`} component={OtherUserProfile} /> */}
-        {/* )} */}
+        {user && (
+        <Route path={`/users/${user.uid}`} exact component={UserProfile} />)}
+
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' exact component={LoginPage} />
         <Route path='/signup' exact component={SignupPage} />
