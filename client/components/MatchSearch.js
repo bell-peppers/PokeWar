@@ -80,28 +80,6 @@ const columns = [
   },
 ];
 
-let position = 0;
-function createData( username, score) {
-  position+=1;
-  return {position, username, score};
-}
-const rows = [
-  createData('Gus', 3287263),
-  createData( 'Nick', 9596961),
-  createData( 'Mike', 301340),
-  createData( 'Angie', 9833520),
-  createData( 'Haram', 9984670),
-  createData( 'Albina', 7692024),
-  createData( 'Ray', 357578),
-  createData( 'Jason', 70273),
-  createData( 'Adrian', 1972550),
-  createData( 'Andrew', 377973),
-  createData( 'Sung', 640679),
-  createData( 'Jae', 242495),
-  createData( 'Andy', 17098246),
-  createData( 'Taya', 923768),
-  createData( 'Peter', 8515767),
-];
 const MatchSearch = (props) => {
   const history = useHistory();
   const classes = useStyles();
@@ -124,7 +102,7 @@ const MatchSearch = (props) => {
 
   const {currentUser, leaderboardScores} = useAuth();
 
-  console.log('scores', leaderboardScores());
+  const rows = leaderboardScores().sort((a,b) => b.score - a.score);
   const handleOpen = async () => {
     if (user.uid) {
       await findGame();

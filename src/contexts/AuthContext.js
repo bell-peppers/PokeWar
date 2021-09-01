@@ -191,28 +191,24 @@ export function AuthProvider({ children }) {
 		});
 	}
 
-	let position = 0;
-
 	function leaderboardScores() {
 		// FIREDB.
 		const usersRef = FIREDB.ref('users');
-
+		const allUsers = [];
 		usersRef.on('value', (snapshot) => {
-			let allUsers = [];
 			const users = snapshot.val();
-
+			let position = 0;
+			function createData(username, score) {
+				position += 1;
+				return { position, username, score };
+			}
 			for (let user in users) {
-				allUsers.push(createData(user, users[user].coins))
+				allUsers.push(createData(users[user].username, users[user].coins));
 				// allUsers.push([user, users[user].coins]);
 			}
-			console.log(allUsers);
-			// return allUsers;
+			// console.log(allUsers);
 		});
-	}
-
-	function createData(username, score) {
-		position += 1;
-		return { position, username, score };
+		return allUsers;
 	}
 
 	//we dont want it to be in render, we want it to be in useEffect because
