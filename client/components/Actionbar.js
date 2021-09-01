@@ -10,7 +10,13 @@ import {
   _setCalculatedAttacks,
 } from '../store/playerTurn';
 import {_selectedPlayerPokemon} from '../store/playerTurn';
-import {applyMoves, attackOpponent} from '../store/pokemon';
+import {
+  applyMoves,
+  attackOpponent,
+  applySingleMove,
+  _animateOppPokemon,
+  _animatePokemon,
+} from '../store/pokemon';
 //import MoveBlock from './MoveBlock';
 import {sendPlayerMoves, getPlayerMoves} from '../store/game';
 import calculateTurn from '../../utils/calculateTurn';
@@ -124,6 +130,9 @@ const Actionbar = (props) => {
     winner,
     chosenPokemon,
     soundOn,
+    applySingleMove,
+    animateOppPk,
+    animatePk,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
@@ -135,7 +144,6 @@ const Actionbar = (props) => {
   useEffect(() => {}, []);
 
   function selectPokemon(pokemon) {
-    console.log(pokemon);
     if (pokemon.active && !alreadyPickedCheck(pokemon)) {
       if (soundOn) {
         selectPkSound.play();
@@ -155,7 +163,6 @@ const Actionbar = (props) => {
     const alreadyPicked = playerTurn.filter(
       (turn) => turn.pokemon.name === selectedPlayerPokemon.name
     );
-    console.log(playerTurn, selectedPlayerPokemon);
     if (alreadyPicked.length > 0) {
       errSound.play();
       setErrMessage('You have already chosen a move for this pokemon');
@@ -196,8 +203,27 @@ const Actionbar = (props) => {
           setCalculatedAttacks(thisTurn);
           await sendMoves(thisTurn, user.username, matchId);
           //apply
-          applyMoves(thisTurn, playerPokemon, opponentPokemon);
-          checkForEndGame();
+          thisTurn.map((move, index) => {
+            setTimeout(() => {
+              applySingleMove(
+                move,
+                chosenPokemon,
+                opponentPokemon,
+                user.username,
+                soundOn
+              );
+
+              if (index === thisTurn.length - 1) {
+                // animatePk(null);
+                // animateOppPk(null);
+                checkForEndGame();
+              }
+            }, 2000 * index);
+          });
+          // animatePk(null);
+          // animateOppPk(null);
+          //applyMoves(thisTurn, playerPokemon, opponentPokemon);
+          // checkForEndGame();
         }
       }
       changeTurns();
@@ -419,6 +445,10 @@ const mapDispatch = (dispatch) => {
     applyMoves: (moves, playerPk, oppPk) =>
       dispatch(applyMoves(moves, playerPk, oppPk)),
     clearOpponentMoves: () => dispatch(getPlayerMoves([])),
+    applySingleMove: (move, playerPk, oppPk, username, soundOn) =>
+      dispatch(applySingleMove(move, playerPk, oppPk, username, soundOn)),
+    animateOppPk: (index) => dispatch(_animateOppPokemon(index)),
+    animatePk: (index) => dispatch(_animatePokemon(index)),
   };
 };
 export default connect(mapState, mapDispatch)(Actionbar);

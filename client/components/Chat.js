@@ -9,6 +9,7 @@ const Chat = props => {
   // const [round, setRound] = useState(1);
   const { feed, user, opponent, matchId, role } = props;
 
+
   useEffect(() => {
     if (messageEnd) {
       messageEnd.current.addEventListener('DOMNodeInserted', event => {
@@ -65,6 +66,7 @@ const Chat = props => {
       sendFeed(feed);
     }
   }, [feed]);
+
 
   function sendMessage(e) {
     e.preventDefault();

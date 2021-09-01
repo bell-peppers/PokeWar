@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: 'royalBlue',
 		position: 'relative',
 		maxWidth: '1018px',
+		height: '100vh',
 		paddingBottom: '0px',
 		margin: '0 auto',
 	},
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props) => {
 	const { user, playerPokemon, fetchPokemon, getUserData } = props;
-	const { currentUser } = useAuth();
+	const { currentUser, } = useAuth();
 	const classes = useStyles();
 
 	useEffect(() => {
@@ -63,14 +64,13 @@ const UserProfile = (props) => {
 			getUserData(currentUser.uid);
 		}
 		if (playerPokemon && !playerPokemon.length) {
-				fetchPokemon(user.pokemon, user.username);
-			}
+			fetchPokemon(user.pokemon, user.username);
+		}
 	}, [user, currentUser]);
 
 	const [clicked, setClicked] = useState(false);
 
 	const handleIconClick = (poke) => {
-		console.log(poke);
 		if (!poke.liked) {
 			poke.liked = true;
 			setClicked(true);
@@ -78,11 +78,7 @@ const UserProfile = (props) => {
 			poke.liked = false;
 			setClicked(false);
 		}
-		console.log(poke);
 	};
-
-	currentUser && console.log('currentUser', currentUser)
-	user && console.log('user', user)
 
 	return (
 		<Grid className={classes.main}>
@@ -103,33 +99,40 @@ const UserProfile = (props) => {
 								src={currentUser.photoURL || '/pics/default.png'}
 								width='180px'
 								height='180px'
-								border='5px solid darkBlue'
+								border='5px solid blue'
 							/>
 						)}
 					</Grid>
 					<Typography style={{ fontSize: '25px' }}>{user.username}</Typography>
 				</Grid>
 				<Grid>
-					<Typography
+					<Grid
 						style={{ display: 'flex', fontSize: '25px', paddingRight: '80px' }}
 					>
 						Level
 						<Typography
 							style={{
-								height: '40px',
-								width: '40px',
+								height: '35px',
+								width: '35px',
 								display: 'table-cell',
 								textAlign: 'center',
 								verticalAlign: 'middle',
-								borderRadius: '50%',
-								background: 'white',
+								borderRadius: '90%',
+								// background: 'white',
 								fontSize: '25px',
 								marginLeft: '4px',
+								backgroundColor: 'lightBlue'
 							}}
 						>
 							1
 						</Typography>
-					</Typography>
+					</Grid>
+					{user && user.totalGames > 0 ? (
+						<Typography>
+							Win rate: {Math.round((user.wins / user.totalGames) * 100)}%
+						</Typography>
+					) :
+					null}
 					<Button
 						style={{ padding: '0', marginTop: '6px' }}
 						href='/editprofile'
@@ -157,7 +160,7 @@ const UserProfile = (props) => {
 								style={{
 									display: 'flex',
 									flexWrap: 'nowrap',
-									border: '5px solid grey',
+									border: '5px solid royalBlue',
 								}}
 							>
 								{playerPokemon.map((item) => (
@@ -188,7 +191,7 @@ const UserProfile = (props) => {
 						Badges
 					</Typography>
 					<Grid
-						style={{ backgroundColor: 'white', width: '180px', height: '90px' }}
+						style={{  width: '180px', height: '90px' }}
 					></Grid>
 				</Grid>
 			</Grid>
@@ -215,7 +218,7 @@ const UserProfile = (props) => {
 						<Typography style={{ fontSize: '20px' }}>Comments</Typography>
 						<Grid
 							style={{
-								backgroundColor: 'white',
+								// backgroundColor: 'white',
 								width: '450px',
 								height: '150px',
 							}}
@@ -228,7 +231,7 @@ const UserProfile = (props) => {
 					</Typography>{' '}
 					<Grid
 						style={{
-							backgroundColor: 'white',
+							// backgroundColor: 'white',
 							width: '200px',
 							height: '220px',
 						}}

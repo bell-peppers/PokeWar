@@ -1,5 +1,6 @@
-import React from 'react';
-import { connect } from 'react-redux';
+
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import {
   withRouter,
   Route,
@@ -9,7 +10,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import Main from './components/Main';
-import { me } from './store';
+import {me} from './store';
 import MatchSearch from './components/MatchSearch';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
@@ -17,7 +18,7 @@ import PreGame from './components/PreGame';
 import AllPokemon from './components/AllPokemon';
 import temp from './components/PracticeFile';
 import SignupPage from './components/SignupPage';
-import { useAuth } from '../src/contexts/AuthContext';
+import {useAuth} from '../src/contexts/AuthContext';
 import Navbar from './components/Navbar';
 import EditProfile from './components/EditProfile';
 import Footer from './components/Footer';
@@ -29,54 +30,35 @@ import OtherUserProfile from './components/OtherUserProfile';
 /**
  * COMPONENT
  */
-const Routes = props => {
-  const { user, myUID, otherUser } = props;
-  const { currentUser, findUserProfile } = useAuth();
-  const location = useLocation().pathname.slice(7);
 
+const Routes = (props) => {
+  const {user, myUID, otherUser} = props;
+  const {currentUser, findUserProfile} = useAuth();
+  const location = useLocation().pathname.slice(7);
   return (
     <Router>
       {/* {!currentUser ? (
         <div> */}
+
+      <Navbar />
       <Switch>
-        <Route path='/game' exact component={Main} />
+        <Route path='/allpokemon' exact component={AllPokemon} />
         <Route path='/pregame' exact component={PreGame} />
-        <React.Fragment>
-          <Navbar />
-          <Route path='/allpokemon' exact component={AllPokemon} />
-          {user && location === myUID ? (
-            <Route path={`/users/${user.uid}`} exact component={UserProfile} />
-          ) : (
-            <Route path={`/users/:id`} component={OtherUserProfile} />
-          )}
-          <Route path='/dev/setup' component={temp} />
-          <Route path='/login' exact component={LoginPage} />
-          <Route path='/signup' exact component={SignupPage} />
-          <Route path='/post' component={PostGame} />
-          <Route path='/editprofile' exact component={EditProfile} />
-          <Route path='/aboutus' exact component={AboutUs} />
-          <Route exact path='/' component={MatchSearch} />
-          <Route exact path='/store' component={Store} />
-        </React.Fragment>
-          <Route path='*' component={FourOhFour} />
+        <Route path='/game' exact component={Main} />
+        {user && (
+        <Route path={`/users/${user.uid}`} exact component={UserProfile} />)}
+
+
+        <Route path='/dev/setup' component={temp} />
+        <Route path='/login' exact component={LoginPage} />
+        <Route path='/signup' exact component={SignupPage} />
+        <Route path='/post' component={PostGame} />
+        <Route path='/editprofile' exact component={EditProfile} />
+        <Route path='/aboutus' exact component={AboutUs} />
+        <Route exact path='/' component={MatchSearch} />
+        <Route exact path='/store' component={Store} />
+        <Route path='*' component={FourOhFour} />
       </Switch>
-      {/* <Footer /> */}
-      {/* </div>
-      ) : (
-        <div>
-          <Switch>
-            <Route path='/allpokemon' exact component={AllPokemon} />
-            <Route path='/game' exact component={Main} />
-            <Route path='/pregame' exact component={PreGame} />
-            <Route path='/dev/setup' component={temp} />
-            <Route path='/myprofile' exact component={UserProfile} />
-            <Route path='/login' exact component={AlreadyLoggedIn} />
-            <Route path='/signup' exact component={AlreadyLoggedIn} />
-            <Route exact path='/' component={MatchSearch} />
-            <Route path='*' component={FourOhFour} />
-          </Switch>
-        </div>
-      )} */}
     </Router>
   );
 };
@@ -89,7 +71,8 @@ const FourOhFour = () => {
   return <div>Sorry, this page doesn't exist</div>;
 };
 
-const mapState = state => {
+
+const mapState = (state) => {
   return {
     user: state.userData.user,
     myUID: state.userData.myUID,

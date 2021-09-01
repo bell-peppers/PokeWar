@@ -1,6 +1,5 @@
 export function PokemonOrder(pokemon) {
   quickSort(pokemon, 0, pokemon.length - 1);
-  console.log('pokemon arrary ==>', pokemon);
   return pokemon;
 }
 

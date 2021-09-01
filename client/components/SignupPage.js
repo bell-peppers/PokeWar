@@ -42,7 +42,7 @@ export default function SignupPage() {
 	const history = useHistory();
 	const [values, setValues] = React.useState({
 		showPassword: false,
-		showPasswordConf: false
+		showPasswordConf: false,
 	});
 	const handleClickShowPassword = () => {
 		setValues({ ...values, showPassword: !values.showPassword });
@@ -58,7 +58,11 @@ export default function SignupPage() {
 
 	async function handleSubmit(e) {
 		e.preventDefault();
-
+		if (usernameRef.current.value.match(/[.\[\]#$]/g)) {
+			return setError(
+				'Username contains characters that are not allowed. Please try again'
+			);
+		}
 		if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
 			return setError('Passwords do not match');
 		}
@@ -75,14 +79,15 @@ export default function SignupPage() {
 			history.push('/');
 		} catch (error) {
 			console.log(error);
-			setError('Failed to create an account');
+			setError(error.message);
 		}
 		// console.log(currentUser);
 		setLoading(false);
 	}
 
+
 	return (
-		<div>
+		<div style={{ height: '85vh' }}>
 			<Grid className={classes.main}>
 				<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 					<h2>CREATE YOUR ACCOUNT</h2>
@@ -148,7 +153,11 @@ export default function SignupPage() {
 											onMouseDown={handleMouseDownPassword}
 											edge='end'
 										>
-											{values.showPasswordConf ? <Visibility /> : <VisibilityOff />}
+											{values.showPasswordConf ? (
+												<Visibility />
+											) : (
+												<VisibilityOff />
+											)}
 										</IconButton>
 									</InputAdornment>
 								}

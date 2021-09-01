@@ -1,7 +1,7 @@
 import axios from 'axios';
 import history from '../history';
 import {FIREDB} from '../../utils/firebase';
-import {FeedbackSharp} from '@material-ui/icons';
+import {FeedbackSharp, LensOutlined} from '@material-ui/icons';
 
 const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_OPPONENT_POKEMON = 'GET_OPPONENT_POKEMON';
@@ -13,6 +13,49 @@ const CHOOSE_PLAYER_POKEMON = 'CHOOSE_PLAYER_POKEMON';
 const UNCHOOSE_PLAYER_POKEMON = 'UNCHOOSE_PLAYER_POKEMON';
 const SEND_CHOSEN_POKEMON = 'SEND_CHOSEN_POKEMON';
 const RESET_POKEMON_STATE = 'RESET_POKEMON_STATE';
+const ANIMATE_POKEMON = 'ANIMATE_POKEMON';
+const ANIMATE_OPP_POKEMON = 'ANIMATE_OPP_POKEMON';
+const INCOMING_ATTACK = 'INCOMING_ATTACK';
+const APPLY_SINGLE_MOVE = 'APPLY_SINGLE_MOVES';
+import UIfx from 'uifx';
+
+const slapSoundFile = 'sounds/slap.wav';
+const slapSound = new UIfx(slapSoundFile, {volume: 1});
+
+const punchSoundFile = 'sounds/punch.wav';
+const punchSound = new UIfx(punchSoundFile, {volume: 1});
+
+const _applySingleMove = (pk, oppPkInd, incoming, playerPk, oppPk, feed) => {
+  return {
+    type: APPLY_SINGLE_MOVE,
+    pk,
+    oppPkInd,
+    incoming,
+    playerPk,
+    oppPk,
+    feed,
+  };
+};
+export const incomingAttack = (bool) => {
+  return {
+    type: INCOMING_ATTACK,
+    bool,
+  };
+};
+
+export const _animatePokemon = (index) => {
+  return {
+    type: ANIMATE_POKEMON,
+    index,
+  };
+};
+
+export const _animateOppPokemon = (index) => {
+  return {
+    type: ANIMATE_OPP_POKEMON,
+    index,
+  };
+};
 
 export const _resetPokemonState = () => {
   return {
@@ -109,9 +152,80 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
   }
 };
 
+export const applySingleMove =
+  (move, playerPk, oppPk, username, soundOn) => (dispatch) => {
+    if (move.pokemon.active) {
+      let incoming = false;
+      let PlayerPkInd = 0;
+      let OppPkInd = 0;
+
+      const reportClass =
+        move.report.Class && move.report.Class !== 'Normal'
+          ? `${move.report.Class}`
+          : '';
+      const crit = move.report.isCrit ? ' Critical hit!' : '';
+      const feed = {
+        type: 'feed',
+        message:
+          `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
+          reportClass +
+          crit,
+      };
+
+      if (move.attackedPokemon.owner === username) {
+        incoming = true;
+        playerPk.forEach((pk, i) => {
+          if (move.attackedPokemon.name === pk.name) {
+            PlayerPkInd = i;
+            pk.stats[0].base_stat -= move.report.Damage;
+            if (soundOn) {
+              slapSound.play();
+            }
+            if (pk.stats[0].base_stat <= 0 && pk.active) {
+              pk.active = false;
+              feed.message += ` ${pk.name} was killed in battle.`;
+            }
+          }
+        });
+        oppPk.forEach((pk, i) => {
+          if (move.pokemon.name === pk.name) {
+            OppPkInd = i;
+          }
+        });
+      } else {
+        playerPk.forEach((pk, i) => {
+          if (move.pokemon.name === pk.name) {
+            PlayerPkInd = i;
+          }
+        });
+        oppPk.forEach((pk, i) => {
+          if (move.attackedPokemon.name === pk.name) {
+            OppPkInd = i;
+            pk.stats[0].base_stat -= move.report.Damage;
+            if (soundOn) {
+              punchSound.play();
+            }
+            if (pk.stats[0].base_stat <= 0 && pk.active) {
+              pk.active = false;
+              feed.message += ` ${pk.name} was killed in battle.`;
+            }
+          }
+        });
+      }
+      const newPk = [...playerPk];
+      const newOppPk = [...oppPk];
+      dispatch(
+        _applySingleMove(PlayerPkInd, OppPkInd, incoming, newPk, newOppPk, feed)
+      );
+    } else {
+      let feed = `${move.pokemon} has died`;
+      dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
+    }
+  };
+
 export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
   const feed = [];
-  moves.forEach((move) => {
+  moves.forEach((move, i) => {
     const reportClass =
       move.report.Class && move.report.Class !== 'Normal'
         ? `${move.report.Class}`
@@ -154,7 +268,6 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
 
   const updatedPlayerPk = [...playerPk];
   const updatedOppPk = [...oppPk];
-  feed.forEach((f) => console.log(f.message));
   dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
 };
 
@@ -163,8 +276,6 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
     for (let i = 0; i < turn.length; i++) {
       if (turn[i].attackedPokemon === pk.name) {
         pk.stats.hp -= turn[i].attack.damage;
-        const actionString = `${turn[i].pokemon} hit ${pk.name} for ${turn[i].attack.damage}`;
-        console.log(actionString);
       }
     }
     return pk;
@@ -259,7 +370,6 @@ export const fetchMovesInfo = (pokemon) => async (dispatch) => {
       });
       return newMoves;
     });
-    console.log(updatedPk);
     return dispatch(_fetchMovesInfo(updatedPk));
   } catch (error) {
     console.error(error);
@@ -271,7 +381,6 @@ export const fetchOpponentPokemon = (matchId, role) => async (dispatch) => {
     const oppPoke = await axios.get(
       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/${matchId}/${oppRole}.json`
     );
-    console.log(oppPoke.data);
     return dispatch(_getOpponentPokemon(oppPoke.data));
   } catch (error) {
     console.error(error);
@@ -285,6 +394,9 @@ export default function (
     opponentPokemon: [],
     chosenPokemon: [],
     attackFeed: [],
+    pkAnim: null,
+    oppAnim: null,
+    incomingAtk: false,
   },
   action
 ) {
@@ -318,7 +430,31 @@ export default function (
     case SEND_CHOSEN_POKEMON:
       return state;
     case RESET_POKEMON_STATE:
-      return {...state, attackFeed: [], chosenPokemon: [], opponentPokemon: []};
+      return {
+        ...state,
+        attackFeed: [],
+        chosenPokemon: [],
+        opponentPokemon: [],
+        pkAnim: null,
+        oppAnim: null,
+      };
+    case ANIMATE_POKEMON:
+      return {...state, pkAnim: action.index};
+    case ANIMATE_OPP_POKEMON:
+      return {...state, oppAnim: action.index};
+    case INCOMING_ATTACK:
+      return {...state, incomingAtk: !state.incomingAtk};
+    case APPLY_SINGLE_MOVE:
+      return {
+        ...state,
+        pkAnim: action.pk,
+        oppAnim: action.oppPkInd,
+        incomingAtk: action.incoming,
+        chosenPokemon: action.playerPk,
+        opponentPokemon: action.oppPk,
+        attackFeed: [action.feed],
+        // attackFeed: [...state.attackFeed, action.feed],
+      };
     default:
       return state;
   }

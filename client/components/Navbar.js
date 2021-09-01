@@ -17,21 +17,23 @@ import {_toggleSound, toggleMusic} from '../store/userData';
 import IconButton from '@material-ui/core/IconButton';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
+import MusicNoteIcon from '@material-ui/icons/MusicNote';
+import MusicOffIcon from '@material-ui/icons/MusicOff';
 
 // import firebase from 'firebase/app';
 
 const useStyles = makeStyles(() => ({
   navbar: {
-    width: '90vw',
-    margin: '0vh 5vw 0vh 5vw',
+    maxWidth: '100vw',
+    // margin: '0vh 5vw 0vh 5vw',
     borderRadius: '0px 0px 30px 30px',
-    backgroundColor: '#1574b0',
+    backgroundColor: 'royalBlue',
     color: '#3d405b',
     position: 'relative',
   },
   cart: {
-    width: '80vw',
-    marginLeft: '5vw',
+    // width: '80vw',
+    // marginLeft: '5vw',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -41,7 +43,7 @@ const useStyles = makeStyles(() => ({
   },
   p: {
     margin: '5px 25px 0px 25px',
-    fontSize: '20px',
+    fontSize: '18px',
     fontFamily: 'Courier New, monospace',
     cursor: 'pointer',
     textDecoration: 'none',
@@ -64,12 +66,11 @@ const Navbar = (props) => {
     musicOn,
   } = props;
 
-  // console.log(firebase.auth());
-  // const { currentUser } = firebase.auth();
-
   function handleToggleSound() {
     toggleSound();
-    console.log(currentSong);
+  }
+
+  function handleToggleMusic() {
     toggleMusic(currentSong, musicOn);
   }
 
@@ -80,17 +81,13 @@ const Navbar = (props) => {
       await logout();
       history.push('/login');
     } catch (error) {
-      console.log(error);
       setError('Failed to log out');
     }
   }
 
   return (
     <AppBar className={classes.navbar}>
-      {/* {console.log(currentUser)} */}
-      {/* {console.log(currentUser)} */}
-      {/* {currentUser && currentUser.email} */}
-      {error && console.log(error)}
+      {error && console.error(error)}
       <Toolbar className={classes.cart}>
         <div
           style={{
@@ -117,19 +114,28 @@ const Navbar = (props) => {
               alt='pokewar'
             />
           </Link>
-          <IconButton onClick={handleToggleSound}>
-            {soundOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
-          </IconButton>
-          <Link to='/allpokemon'>
+          <div
+            style={{maxWidth: '350px', display: 'flex', alignItems: 'center'}}
+          >
+            <IconButton onClick={handleToggleSound}>
+              {soundOn ? <VolumeUpIcon /> : <VolumeOffIcon />}
+            </IconButton>
+            <IconButton onClick={handleToggleMusic}>
+              {musicOn ? <MusicNoteIcon /> : <MusicOffIcon />}
+            </IconButton>
+            {username && <p className={classes.p}> Welcome, {username}</p>}
+          </div>
+          {/* <Link to='/allpokemon'>
             <p className={classes.p}>All Pokemon</p>
-          </Link>
+          </Link> */}
         </div>
-        <div>
-          {username && <p className={classes.p}> Welcome, {username}</p>}
-        </div>
+
         <div>
           {currentUser ? (
             <div style={{display: 'flex'}}>
+              <Link to='/allpokemon'>
+                <p className={classes.p}>All Pokemon</p>
+              </Link>
               <Link to={`/users/${currentUser.uid}`}>
                 <p className={classes.p}>My Profile</p>
               </Link>
@@ -139,6 +145,9 @@ const Navbar = (props) => {
             </div>
           ) : (
             <div style={{display: 'flex'}}>
+              <Link to='/allpokemon'>
+                <p className={classes.p}>All Pokemon</p>
+              </Link>
               <Link to='/signup'>
                 <p className={classes.p}>Sign Up</p>
               </Link>

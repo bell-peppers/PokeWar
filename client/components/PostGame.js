@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     width: '85vw',
     maxWidth: '600px',
-    height: '100%',
+    height: '85vh',
     textAlign: 'center',
     borderWidth: '1px',
     borderStyle: 'solid',
@@ -36,14 +36,17 @@ function PostGame(props) {
     deleteMatch,
     resetGameState,
     resetPokemonState,
+    music,
   } = props;
   // const winner = 'mike';
   // const user = {username: 'mike'};
   const history = useHistory();
 
-  // useEffect(() => {
-  //   deleteMatch(matchId);
-  // }, []);
+  useEffect(() => {
+    if (music) {
+      music.pause();
+    }
+  }, []);
 
   function clickHandle() {
     resetGameState();
@@ -83,6 +86,7 @@ const mapState = (state) => {
     user: state.userData.user,
     opponentName: state.game.opponentInfo.username,
     matchId: state.game.matchId,
+    music: state.userData.currentSong,
   };
 };
 const mapDispatch = (dispatch) => {

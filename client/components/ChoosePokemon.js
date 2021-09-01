@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-
+    height: '85vh',
     maxWidth: '1200px',
     minWidth: '400px',
     minheight: '400px',
@@ -136,7 +136,7 @@ function ChoosePokemon(props) {
         if (readyCheck.guestReady === true && readyCheck.hostReady === true) {
           fetchOpponentPokemon(matchId, role);
           if (musicOn) {
-            startBattleMusic('sounds/trainerBattle.mp3');
+            startMusic('sounds/trainerBattle.mp3');
           }
           history.push('/game');
         } else if (readyCheck.guestReady === false) {

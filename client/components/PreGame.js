@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     width: '100vw',
-    height: '80vh',
+    height: '85vh',
     maxHeight: '1000px',
     minWidth: '800px',
     justifyContent: 'center',

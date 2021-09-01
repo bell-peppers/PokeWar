@@ -1,15 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { auth } from '../../utils/firebase';
-import Firebase from 'firebase/app';
-import { FIREDB } from '../../utils/firebase';
-import { getDatabase, ref, child, get } from '../../utils/firebase';
+import firebase, { auth, FIREDB } from '../../utils/firebase';
+
 
 const AuthContext = React.createContext();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+const githubProvider = new firebase.auth.GithubAuthProvider();
 
 export function useAuth() {
-  return useContext(AuthContext);
+	return useContext(AuthContext);
 }
-// let count = 1;
+
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState(null);
 
@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
 		const user = await auth.createUserWithEmailAndPassword(email, password);
 		createNewAccount(user.user.uid, user.user.email, username);
 		return user;
-		// firebase.auth().createUserWithEmailAndPassword(email, password);
 	}
 
 	function findUserProfile(userUID) {
@@ -29,85 +28,19 @@ export function AuthProvider({ children }) {
 			for (const user in users) {
 				if (user === userUID) {
 					targetUser.email = users[user].email;
-          targetUser.coins = users[user].coins;
-          targetUser.photoUrl = users[user].photoUrl;
-          targetUser.pokemon = users[user].pokemon;
-          targetUser.totalGames = users[user].totalGames;
-          targetUser.uid = users[user].uid;
-          targetUser.username = users[user].username;
-          targetUser.wins = users[user].wins;
+					targetUser.coins = users[user].coins;
+					targetUser.photoUrl = users[user].photoUrl;
+					targetUser.pokemon = users[user].pokemon;
+					targetUser.totalGames = users[user].totalGames;
+					targetUser.uid = users[user].uid;
+					targetUser.username = users[user].username;
+					targetUser.wins = users[user].wins;
 				}
 			}
-			// 	console.log(Object.keys(snapshot.val()));
-			// 	console.log('There are ' + snapshot.numChildren() + ' users');
-			// 	return snapshot.val();
-			// });
 		});
 		return targetUser;
 	}
 	function createNewAccount(uid, email, name) {
-		// try {
-		// const users = [];
-
-		// .then((num) => {
-		// const everyone =FIREDB.ref('users').orderByKey().limitToLast(100).on('value', snap => {
-		//   console.log(snap)
-		// })
-		// console.log(everyone)
-
-		// async function getValues() {
-		//   const data =await FIREDB.ref('users').get();
-		//   return data
-		// }
-
-		// console.log('values', getValues())
-		// function getValues() {
-		// 	return Promise.all(
-		// 	FIREDB.ref('users/').on('child_added', (snap) => {
-		// const users = []
-		// users.push(snap.key);
-		//     return snap;
-		// 	})
-		//   )
-		// }
-
-		// console.log(getValues());
-		// console.log(FIREDB.ref('users').get());
-
-		//     function trying() {
-		//       Promise.all(FIREDB.ref('users').get())
-		//     }
-
-		// console.log(trying())
-		// count++;
-
-		// users.fill(num);
-		// const users = Promise.all()
-		// console.log('user', snap.key);
-		// users.map()
-		// const users = [];
-
-		// if(num <=users) {
-		//   console.log(users);
-		// }
-
-		// console.log('added', snap.key);
-		// });
-
-		// if(num <=users) {
-		// console.log(Object.values(lala));
-		// }
-		// const dbRef = ref(getDatabase());
-		// const dbRef = FIREDB.ref()
-		// const dbRef = FIREDB.ref('users');
-		// dbRef
-		// 	.then((snapshot) => {
-		// 			console.log(snapshot.val());
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error(error);
-		// 	});
-
 		FIREDB.ref('users/' + uid).set({
 			uid: uid,
 			email: email,
@@ -122,39 +55,119 @@ export function AuthProvider({ children }) {
 		});
 	}
 
-  async function login(email, password) {
-    const user = await auth.signInWithEmailAndPassword(email, password);
-    //getUserData(user.user.uid);
-    return user;
-  }
+	async function login(email, password) {
+		const user = await auth.signInWithEmailAndPassword(email, password);
+		return user;
+	}
 
-  function logout() {
-    return auth.signOut();
-  }
-  // function getUserData(uid) {
-  //   FIREDB.ref('users/' + uid).once('value', (snap) => {
-  //     console.log(snap.val());
-  //   });
-  // }
+	function logout() {
+		window.location.href = '/login';
+		return auth.signOut();
+	}
 
-	// function getOtherUser(userId) {
-	// 	FIREDB.ref('/users'),
-	// 	function(snapshot) {
-	// 	  console.log(JSON.stringify(snapshot))
-	// 	}
-	// 	const dbRef = FIREDB.ref(FIREDB.getDatabase());
-	// 	FIREDB.get(FIREDB.child(dbRef, `users/${userId}`))
-	// 		.then((snapshot) => {
-	// 			if (snapshot.exists()) {
-	// 				console.log(snapshot.val());
-	// 			} else {
-	// 				console.log('No data available');
-	// 			}
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error(error);
-	// 		});
-	// }
+	function updateImg(user, photoURL) {
+		FIREDB.ref('users/' + user.uid).set({
+			uid: user.uid,
+			email: user.email,
+			username: user.username,
+			photoURL,
+			wins: user.wins,
+			totalGames: user.totalGames,
+			coins: user.coins,
+			friends: user.friends,
+		});
+	}
+
+	function googleLogin() {
+		auth.signInWithPopup(googleProvider).then((result) => {
+			const token = result.credential.accessToken;
+			const user = result.user;
+			FIREDB.ref(`users`)
+				.child(user.uid)
+				.get()
+				.then((snapshot) => {
+					if (snapshot.exists()) {
+						window.location.href = '/';
+					} else {
+						createNewAccount(
+							user.uid,
+							user.email,
+							user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+						);
+						window.location.href = '/';
+						return user;
+					}
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		});
+	}
+
+	function githubLogin() {
+		// const auth = getAuth();
+		auth.signInWithPopup(githubProvider).then((result) => {
+			const token = result.credential.accessToken;
+			const user = result.user;
+			FIREDB.ref(`users`)
+				.child(user.uid)
+				.get()
+				.then((snapshot) => {
+					if (snapshot.exists()) {
+						window.location.href = '/';
+					} else {
+						user.displayName
+							? createNewAccount(
+									user.uid,
+									'',
+									user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+							  )
+							: createNewAccount(
+									user.uid,
+									'',
+									[
+										'Pickachu',
+										'Mew',
+										'Snorlax',
+										'Charmander',
+										'Bulbasaur',
+										'Sylveon',
+										'Gengar',
+										'Chikorita',
+										'Ekans',
+									][Math.floor(Math.random() * 9)] //0-8
+							  );
+
+						window.location.href = '/';
+						return user;
+					}
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		});
+	}
+
+	function leaderboardScores() {
+		const usersRef = FIREDB.ref('users');
+		const allUsers = [];
+		usersRef.on('value', (snapshot) => {
+			const users = snapshot.val();
+			// let position = 0;
+			function createData(username, score) {
+				// position += 1;
+				return { username, score };
+			}
+			for (let user in users) {
+				allUsers.push(createData(users[user].username, users[user].coins));
+				// allUsers.push([user, users[user].coins]);
+			}
+			allUsers.sort((a, b) => b.score - a.score).map((user, idx) => {user.position = idx+1; return user});
+
+		});
+
+			return allUsers;
+	}
 
 	//we dont want it to be in render, we want it to be in useEffect because
 	//we only want it to run once when we mount our component
@@ -174,6 +187,10 @@ export function AuthProvider({ children }) {
 		signup,
 		logout,
 		findUserProfile,
+		updateImg,
+		googleLogin,
+		githubLogin,
+		leaderboardScores,
 		// getOtherUser,
 	};
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
