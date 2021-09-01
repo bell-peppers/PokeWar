@@ -63,16 +63,17 @@ export default function Footer() {
               >
                 PokeWar 2021
               </Typography>
-              <Button
-                href='/aboutus'
-                style={{
-                  color: 'inherit',
-                  fontSize: '13px',
-                  // padding:'0 2px 0 2px'
-                }}
-              >
-                The Team
-              </Button>
+              <Link to='/aboutus'>
+                <Button
+                  style={{
+                    color: 'inherit',
+                    fontSize: '13px',
+                    // padding:'0 2px 0 2px'
+                  }}
+                >
+                  The Team
+                </Button>
+              </Link>
               {/* <Link
 									to={{ pathname: 'https://github.com/hitaya1' }}
 									target="_blank"

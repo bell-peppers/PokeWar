@@ -1,4 +1,3 @@
-
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {
@@ -46,14 +45,14 @@ const Routes = (props) => {
         <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
         {user && (
-        <Route path={`/users/${user.uid}`} exact component={UserProfile} />)}
-
+          <Route path={`/users/${user.uid}`} exact component={UserProfile} />
+        )}
 
         <Route path='/dev/setup' component={temp} />
-        <Route path='/login' exact component={LoginPage} />
-        <Route path='/signup' exact component={SignupPage} />
+        <Route path='/login' component={LoginPage} />
+        <Route path='/signup' component={SignupPage} />
         <Route path='/post' component={PostGame} />
-        <Route path='/editprofile' exact component={EditProfile} />
+        <Route path='/editprofile' component={EditProfile} />
         <Route path='/aboutus' exact component={AboutUs} />
         <Route exact path='/' component={MatchSearch} />
         <Route exact path='/store' component={Store} />
@@ -70,7 +69,6 @@ const AlreadyLoggedIn = () => {
 const FourOhFour = () => {
   return <div>Sorry, this page doesn't exist</div>;
 };
-
 
 const mapState = (state) => {
   return {
