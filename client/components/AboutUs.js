@@ -26,47 +26,268 @@ export default function AboutUs() {
 		<div>
 			<React.Fragment>
 				<CssBaseline />
-					<Grid style={{ display: 'flex', justifyContent: 'center', paddingTop: '50px'}}>
-            <Grid style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: '40px 0 50px 0' }}>
-						<Link
-							to={{ pathname: 'https://github.com/hitaya1' }}
-							target='_blank'
-						>
-							<SvgIcon>
-								<GitHubIcon />
-							</SvgIcon>
-						</Link>
-						<Link
-							to={{ pathname: 'https://www.linkedin.com/in/taissiya-ugay/' }}
-							target='_blank'
-						>
-							<SvgIcon>
-								<LinkedInIcon />
-							</SvgIcon>
-						</Link></Grid>
-						<Typography className={classes.h3}>
-							Hi! I am Taya. I love to play video games, my favorite one is Dota
-							2. I was excited to make a game with Mike, Nick & Gus. It was an
-							awesome experience! I hope you enjoy the game as much as we
-							enjoyed making it.
-						</Typography>
-						<CardMedia
+				<Grid>
+					<Grid
+						style={{
+							display: 'flex',
+							justifyContent: 'flexStart',
+							paddingLeft: '150px',
+						}}
+					>
+						<Grid
 							style={{
-								// marginTop: '100px',
-								width: 300,
-								// margin: 'auto',
-								// justifyContent: 'center',
+								display: 'flex',
+								justifyContent: 'center',
+								paddingTop: '80px',
+								paddingBottom: '40px',
 							}}
 						>
-							<Image
-								src='/pics/taya.jpg'
+							<CardMedia
 								style={{
-									width: '280px',
-									height: '10%',
+									// marginTop: '100px',
+									width: 300,
+									// margin: '40px 0'
+									// margin: 'auto',
+									justifyContent: 'center',
 								}}
-							></Image>
-						</CardMedia>
+							>
+								<img
+									src='/pics/mike.png'
+									// height = '80%'
+									style={{
+										width: '320px',
+										height: '250px',
+										// height: '10%',
+									}}
+								></img>
+							</CardMedia>
+							<Typography className={classes.h3}>
+								Hi! I am Mike. <br /> 1v1 me bro
+							</Typography>
+							<Grid
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'space-around',
+									padding: '40px 0 50px 0',
+								}}
+							>
+								<Link
+									to={{ pathname: 'https://github.com/Malessi5' }}
+									target='_blank'
+								>
+									<SvgIcon>
+										<GitHubIcon />
+									</SvgIcon>
+								</Link>
+								<Link
+									to={{
+										pathname: 'https://www.linkedin.com/in/mpalessi/',
+									}}
+									target='_blank'
+								>
+									<SvgIcon>
+										<LinkedInIcon />
+									</SvgIcon>
+								</Link>
+
+								<Link
+									to={{
+										pathname: 'https://steamcommunity.com/profiles/76561198043383017',
+									}}
+									target='_blank'
+								>
+									<img src='/pics/steam.png' height= '20px' />
+								</Link>
+							</Grid>
+						</Grid>
 					</Grid>
+					<Grid style={{ position: 'relative', paddingLeft: '300px' }}>
+						<Grid
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								paddingTop: '40px',
+								paddingBottom: '40px',
+							}}
+						>
+							<Grid
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'space-around',
+									padding: '40px 0 50px 0',
+								}}
+							>
+								<Link
+									to={{ pathname: 'https://github.com/hitaya1' }}
+									target='_blank'
+								>
+									<SvgIcon>
+										<GitHubIcon />
+									</SvgIcon>
+								</Link>
+								<Link
+									to={{
+										pathname: 'https://www.linkedin.com/in/taissiya-ugay/',
+									}}
+									target='_blank'
+								>
+									<SvgIcon>
+										<LinkedInIcon />
+									</SvgIcon>
+								</Link>
+								<Link
+									to={{
+										pathname: 'https://steamcommunity.com/id/mymomthinksimthebest',
+									}}
+									target='_blank'
+								>
+									<img src='/pics/steam.png' height= '20px' />
+								</Link>
+							</Grid>
+							<Typography className={classes.h3}>
+								Hi! I am Taya.<br /> 1v1 me bro
+							</Typography>
+							<CardMedia
+								style={{
+									// marginTop: '100px',
+									width: 300,
+									// margin: 'auto',
+									// justifyContent: 'center',
+								}}
+							>
+								<img
+									src='/pics/taya.png'
+									style={{
+										width: '350px',
+										height: '250px',
+									}}
+								/>
+							</CardMedia>
+						</Grid>
+					</Grid>
+					<Grid
+						style={{
+							display: 'flex',
+							justifyContent: 'flexStart',
+							paddingLeft: '150px',
+						}}
+					>
+						<Grid
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								paddingTop: '40px',
+								paddingBottom: '40px',
+							}}
+						>
+							<CardMedia
+								style={{
+									// marginTop: '100px',
+									width: 300,
+									// margin: 'auto',
+									// justifyContent: 'center',
+								}}
+							>
+								<img
+									src='/pics/gus.png'
+									style={{
+										width: '260px',
+										height: '240px',
+									}}
+								/>
+							</CardMedia>
+							<Typography className={classes.h3}>
+								Hi! I am Gus. <br />1v1 me bro
+							</Typography>
+							<Grid
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'space-around',
+									padding: '40px 0 50px 0',
+								}}
+							>
+								<Link
+									to={{ pathname: 'https://github.com/Gustavo-Blu' }}
+									target='_blank'
+								>
+									<SvgIcon>
+										<GitHubIcon />
+									</SvgIcon>
+								</Link>
+								<Link
+									to={{
+										pathname: 'https://www.linkedin.com/in/gustavoallen92/',
+									}}
+									target='_blank'
+								>
+									<SvgIcon>
+										<LinkedInIcon />
+									</SvgIcon>
+								</Link>
+							</Grid>
+						</Grid>
+					</Grid>
+					<Grid style={{ paddingLeft: '300px' }}>
+						<Grid
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								paddingTop: '40px',
+								paddingBottom: '120px',
+							}}
+						>
+							<Grid
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'space-around',
+									padding: '40px 0 50px 0',
+								}}
+							>
+								<Link
+									to={{ pathname: 'https://github.com/NickFasulo' }}
+									target='_blank'
+								>
+									<SvgIcon>
+										<GitHubIcon />
+									</SvgIcon>
+								</Link>
+								<Link
+									to={{
+										pathname: 'https://www.linkedin.com/in/nicholas-fasulo/',
+									}}
+									target='_blank'
+								>
+									<SvgIcon>
+										<LinkedInIcon />
+									</SvgIcon>
+								</Link>
+							</Grid>
+							<Typography className={classes.h3}>
+								Hi! I am Nick!<br />1v1 me bro
+							</Typography>
+							<CardMedia
+								style={{
+									// marginTop: '100px',
+									width: 300,
+									// margin: 'auto',
+									// justifyContent: 'center',
+								}}
+							>
+								<Image
+									src='/pics/nick.jpeg'
+									style={{
+										width: '280px',
+										height: '10%',
+									}}
+								></Image>
+							</CardMedia>
+						</Grid>
+					</Grid>
+				</Grid>
 			</React.Fragment>
 		</div>
 	);

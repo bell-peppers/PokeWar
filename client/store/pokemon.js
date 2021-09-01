@@ -154,69 +154,74 @@ export const fetchSinglePokemon = (id) => async (dispatch) => {
 
 export const applySingleMove =
   (move, playerPk, oppPk, username, soundOn) => (dispatch) => {
-    let incoming = false;
-    let PlayerPkInd = 0;
-    let OppPkInd = 0;
+    if (move.pokemon.active) {
+      let incoming = false;
+      let PlayerPkInd = 0;
+      let OppPkInd = 0;
 
-    const reportClass =
-      move.report.Class && move.report.Class !== 'Normal'
-        ? `${move.report.Class}`
-        : '';
-    const crit = move.report.isCrit ? ' Critical hit!' : '';
-    const feed = {
-      type: 'feed',
-      message:
-        `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
-        reportClass +
-        crit,
-    };
+      const reportClass =
+        move.report.Class && move.report.Class !== 'Normal'
+          ? `${move.report.Class}`
+          : '';
+      const crit = move.report.isCrit ? ' Critical hit!' : '';
+      const feed = {
+        type: 'feed',
+        message:
+          `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
+          reportClass +
+          crit,
+      };
 
-    if (move.attackedPokemon.owner === username) {
-      incoming = true;
-      playerPk.forEach((pk, i) => {
-        if (move.attackedPokemon.name === pk.name) {
-          PlayerPkInd = i;
-          pk.stats[0].base_stat -= move.report.Damage;
-          if (soundOn) {
-            slapSound.play();
+      if (move.attackedPokemon.owner === username) {
+        incoming = true;
+        playerPk.forEach((pk, i) => {
+          if (move.attackedPokemon.name === pk.name) {
+            PlayerPkInd = i;
+            pk.stats[0].base_stat -= move.report.Damage;
+            if (soundOn) {
+              slapSound.play();
+            }
+            if (pk.stats[0].base_stat <= 0 && pk.active) {
+              pk.active = false;
+              feed.message += ` ${pk.name} was killed in battle.`;
+            }
           }
-          if (pk.stats[0].base_stat <= 0 && pk.active) {
-            pk.active = false;
-            feed.message += ` ${pk.name} was killed in battle.`;
+        });
+        oppPk.forEach((pk, i) => {
+          if (move.pokemon.name === pk.name) {
+            OppPkInd = i;
           }
-        }
-      });
-      oppPk.forEach((pk, i) => {
-        if (move.pokemon.name === pk.name) {
-          OppPkInd = i;
-        }
-      });
+        });
+      } else {
+        playerPk.forEach((pk, i) => {
+          if (move.pokemon.name === pk.name) {
+            PlayerPkInd = i;
+          }
+        });
+        oppPk.forEach((pk, i) => {
+          if (move.attackedPokemon.name === pk.name) {
+            OppPkInd = i;
+            pk.stats[0].base_stat -= move.report.Damage;
+            if (soundOn) {
+              punchSound.play();
+            }
+            if (pk.stats[0].base_stat <= 0 && pk.active) {
+              pk.active = false;
+              feed.message += ` ${pk.name} was killed in battle.`;
+            }
+          }
+        });
+      }
+      const newPk = [...playerPk];
+      const newOppPk = [...oppPk];
+      console.log(oppPk);
+      dispatch(
+        _applySingleMove(PlayerPkInd, OppPkInd, incoming, newPk, newOppPk, feed)
+      );
     } else {
-      playerPk.forEach((pk, i) => {
-        if (move.pokemon.name === pk.name) {
-          PlayerPkInd = i;
-        }
-      });
-      oppPk.forEach((pk, i) => {
-        if (move.attackedPokemon.name === pk.name) {
-          OppPkInd = i;
-          pk.stats[0].base_stat -= move.report.Damage;
-          if (soundOn) {
-            punchSound.play();
-          }
-          if (pk.stats[0].base_stat <= 0 && pk.active) {
-            pk.active = false;
-            feed.message += ` ${pk.name} was killed in battle.`;
-          }
-        }
-      });
+      let feed = `${move.pokemon} has died`;
+      dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
     }
-    const newPk = [...playerPk];
-    const newOppPk = [...oppPk];
-    console.log(oppPk);
-    dispatch(
-      _applySingleMove(PlayerPkInd, OppPkInd, incoming, newPk, newOppPk, feed)
-    );
   };
 
 export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {

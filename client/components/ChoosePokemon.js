@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-
+    height: '85vh',
     maxWidth: '1200px',
     minWidth: '400px',
     minheight: '400px',
