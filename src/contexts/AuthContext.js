@@ -6,7 +6,9 @@ import firebase, { auth, FIREDB } from '../../utils/firebase';
 import { getDatabase, ref, child, get } from '../../utils/firebase';
 
 const AuthContext = React.createContext();
-const provider = new firebase.auth.GoogleAuthProvider();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+const githubProvider = new firebase.auth.GithubAuthProvider();
+
 
 export function useAuth() {
 	return useContext(AuthContext);
@@ -69,6 +71,7 @@ export function AuthProvider({ children }) {
 	}
 
 	function logout() {
+		window.location.href = '/login'
 		return auth.signOut();
 	}
 
@@ -114,7 +117,7 @@ export function AuthProvider({ children }) {
 	function googleLogin() {
 		// const auth = getAuth();
 		auth
-			.signInWithPopup(provider)
+			.signInWithPopup(googleProvider)
 			.then((result) => {
 				const token = result.credential.accessToken;
 				const user = result.user;
@@ -124,6 +127,7 @@ export function AuthProvider({ children }) {
 					.then((snapshot) => {
 						if (snapshot.exists()) {
 							console.log('welcome back');
+							window.location.href = '/'
 						} else {
 							console.log('first time>');
 							createNewAccount(
@@ -131,39 +135,52 @@ export function AuthProvider({ children }) {
 								user.email,
 								user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
 							);
+							window.location.href = '/'
 							return user;
 						}
 					})
 					.catch((error) => {
-						console.error(error);
+						console.log(error);
 					});
-				// console.log('token', token);
-				// console.log('user', user);
-				// 	FIREDB.ref(`users/${user.uid}`)
-				// .then((snapshot) => {
-				// 	if (snapshot.exists()) {
-				// 		console.log(snapshot.val());
-				// 	} else {
-				// 		console.log('No data available');
-				// 	}
-				// })
-			// 	if (FIREDB.ref(`users`).child(user.uid)) {
-			// 		console.log('welcome back');
-			// 	} else {
-			// 		console.log('first time>');
-			// 		createNewAccount(
-			// 			user.uid,
-			// 			user.email,
-			// 			user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-			// 		);
-			// 		return user;
-			// 	}
-			// })
-			// .catch((error) => {
-				// const errorCode = error.code;
-				// const errorMessage = error.message;
-				// const email = error.email;
-				// return error;
+			});
+	}
+
+	function githubLogin() {
+		// const auth = getAuth();
+		auth
+			.signInWithPopup(githubProvider)
+			.then((result) => {
+				console.log('result', result)
+				const token = result.credential.accessToken;
+				const user = result.user;
+				FIREDB.ref(`users`)
+					.child(user.uid)
+					.get()
+					.then((snapshot) => {
+						if (snapshot.exists()) {
+							console.log('welcome back');
+							window.location.href = '/'
+						} else {
+							console.log('first time>');
+							console.log(user)
+							user.displayName ? createNewAccount(
+								user.uid,
+								'',
+								user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+							) : createNewAccount(
+								user.uid,
+								'',
+								['Pickachu', 'Mew', 'Snorlax', 'Charmander', 'Bulbasaur', 'Sylveon', 'Gengar', 'Chikorita', 'Ekans'][Math.floor(Math.random()*9)] //0-8
+							);
+
+							window.location.href = '/'
+							return user;
+						}
+					})
+					.catch((error) => {
+						console.log(error);
+						// throw new error('lol');
+					});
 			});
 	}
 	//we dont want it to be in render, we want it to be in useEffect because
@@ -186,6 +203,7 @@ export function AuthProvider({ children }) {
 		findUserProfile,
 		updateImg,
 		googleLogin,
+		githubLogin
 		// getOtherUser,
 	};
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
