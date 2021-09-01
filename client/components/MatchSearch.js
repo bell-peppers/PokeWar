@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     backgroundColor: '#CC0000',
     width: '100%',
-    height: '600px',
     justifyContent: 'space-around',
     flexDirection: 'row',
     border: '2px solid #000',
@@ -195,7 +194,8 @@ const MatchSearch = (props) => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+        height: '85vh',
       }}
     >
       <h3 style={{textAlign: 'center'}}>Leaderboard position: 34532523</h3>
@@ -286,14 +286,14 @@ const MatchSearch = (props) => {
           />
         </Paper>
       </Container>
-      <Grid>
+      {/* <Grid>
         <Button
           href='/signup'
           style={{backgroundColor: 'green', position: 'absolute', left: '40%'}}
         >
           Sign Up For free today
         </Button>
-      </Grid>
+      </Grid> */}
     </div>
   );
 };

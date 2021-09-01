@@ -40,8 +40,6 @@ export default function Footer() {
           <AppBar
             position='static'
             style={{
-              position: 'absolute',
-              bottom: 0,
               background: '#1574b0',
               height: '100px',
             }}
@@ -52,7 +50,7 @@ export default function Footer() {
                   variant='body1'
                   style={{fontFamily: 'Courier New, monospace'}}
                 >
-                  © Poke Wars 2021
+                  PokeWar 2021
                 </Typography>
 
                 {/* <Link

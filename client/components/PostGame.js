@@ -36,14 +36,15 @@ function PostGame(props) {
     deleteMatch,
     resetGameState,
     resetPokemonState,
+    music,
   } = props;
   // const winner = 'mike';
   // const user = {username: 'mike'};
   const history = useHistory();
 
-  // useEffect(() => {
-  //   deleteMatch(matchId);
-  // }, []);
+  useEffect(() => {
+    music.pause();
+  }, []);
 
   function clickHandle() {
     resetGameState();
@@ -83,6 +84,7 @@ const mapState = (state) => {
     user: state.userData.user,
     opponentName: state.game.opponentInfo.username,
     matchId: state.game.matchId,
+    music: state.userData.currentSong,
   };
 };
 const mapDispatch = (dispatch) => {

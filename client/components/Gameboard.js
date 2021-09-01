@@ -238,8 +238,8 @@ const Gameboard = (props) => {
                 soundOn
               );
               if (index === moves.length - 1) {
-                animatePk(null);
-                animateOppPk(null);
+                // animatePk(null);
+                // animateOppPk(null);
                 checkForEndGame();
                 changeTurns();
               }
@@ -256,6 +256,11 @@ const Gameboard = (props) => {
         }
       }
     });
+  }
+
+  function completeAnimation() {
+    animatePk(null);
+    animateOppPk(null);
   }
 
   async function checkForEndGame() {
@@ -332,20 +337,21 @@ const Gameboard = (props) => {
                       play={i === oppAnim}
                       start={
                         incomingAtk
-                          ? {transform: 'scale(1)'}
-                          : {transform: 'translate(0px,0px) scale(1)'}
+                          ? {transform: 'translate(0px,0px) scale(1)'}
+                          : {transform: 'scale(1)'}
                       }
                       end={
                         incomingAtk
-                          ? {transform: 'scale(0.75)', backgroundColor: 'red'}
-                          : {transform: 'translate(-5px,100px) scale(1.5)'}
+                          ? {transform: 'translate(-5px,100px) scale(1.5)'}
+                          : {transform: 'scale(0.75)', backgroundColor: 'red'}
                       }
                       complete={
                         incomingAtk
-                          ? {transform: 'scale(1)'}
-                          : {transform: 'translate(0px,0px) scale(1)'}
+                          ? {transform: 'translate(0px,0px) scale(1)'}
+                          : {transform: 'scale(1)'}
                       }
                       duration={0.2}
+                      onComplete={completeAnimation}
                     >
                       <HtmlTooltip
                         title={
@@ -412,20 +418,21 @@ const Gameboard = (props) => {
                         play={i === pkAnim}
                         start={
                           incomingAtk
-                            ? {transform: 'translate(0px,0px) scale(1)'}
-                            : {transform: 'scale(1)'}
+                            ? {transform: 'scale(1)'}
+                            : {transform: 'translate(0px,0px) scale(1)'}
                         }
                         end={
                           incomingAtk
-                            ? {transform: 'translate(5px,-100px) scale(1.5)'}
-                            : {transform: 'scale(0.75)', backgroundColor: 'red'}
+                            ? {transform: 'scale(0.75)', backgroundColor: 'red'}
+                            : {transform: 'translate(5px,-100px) scale(1.5)'}
                         }
                         complete={
                           incomingAtk
-                            ? {transform: 'translate(0px,0px) scale(1)'}
-                            : {transform: 'scale(1)'}
+                            ? {transform: 'scale(1)'}
+                            : {transform: 'translate(0px,0px) scale(1)'}
                         }
                         duration={0.2}
+                        onComplete={completeAnimation}
                       >
                         <HtmlTooltip
                           title={

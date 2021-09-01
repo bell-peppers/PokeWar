@@ -214,9 +214,10 @@ const Actionbar = (props) => {
                 user.username,
                 soundOn
               );
+
               if (index === thisTurn.length - 1) {
-                animatePk(null);
-                animateOppPk(null);
+                // animatePk(null);
+                // animateOppPk(null);
                 checkForEndGame();
               }
             }, 2000 * index);
