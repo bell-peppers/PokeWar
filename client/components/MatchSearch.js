@@ -35,16 +35,17 @@ const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
-    backgroundColor: '#CC0000',
+    // backgroundColor: '#CC0000',
     width: '100%',
     justifyContent: 'space-around',
     flexDirection: 'row',
-    border: '2px solid #000',
+    // border: '2px solid #000',
     borderRadius: '25px',
   },
   root: {
     width: '400px',
     margin: '30px',
+    border: '3px solid darkBlue'
   },
   container: {
     height: 440,
@@ -101,7 +102,7 @@ const MatchSearch = (props) => {
 
   const {currentUser, leaderboardScores} = useAuth();
 
-  const rows = leaderboardScores().sort((a,b) => b.score - a.score);
+  const rows = leaderboardScores();
   const handleOpen = async () => {
     if (user.uid) {
       await findGame();

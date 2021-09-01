@@ -16,44 +16,58 @@ import {
 import Button from '@material-ui/core/Button';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
-const useStyles = makeStyles(() => ({
-	contactMe: {
-		marginTop: '150px',
-	},
-}));
+// const useStyles = makeStyles(() => ({
+// 	contactMe: {
+// 		marginTop: '150px',
+// 	},
+// }));
 
 export default function Footer() {
-	const classes = useStyles();
+	// const classes = useStyles();
 	return (
 		<React.Fragment>
 			<CssBaseline />
-			<main className={classes.main}>
-				<Grid
-					className={classes.footer}
+			<Grid
+				style={{
+					position: 'fixed',
+					bottom: 0,
+					width: '100%',
+          backgroundColor: 'royalBlue',
+					// display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					fontFamily: 'Courier New, monospace',
+				}}
+			>
+				<AppBar
+					position='static'
 					style={{
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						fontFamily: 'Courier New, monospace',
+						// backgroundColor: 'royalBlue',
+						height: '100px',
 					}}
 				>
-					<AppBar
-						position='static'
-						style={{
-							background: '#1574b0',
-							height: '100px',
-						}}
-					>
-						<Container maxWidth='md'>
-							<Toolbar>
-								<Typography
-									variant='body1'
-									style={{ fontFamily: 'Courier New, monospace', paddingRight: '20px' }}
-								>
-									PokeWar 2021
-								</Typography>
-								<Button href='/aboutus'> About us</Button>
-								{/* <Link
+					<Container maxWidth='md'>
+						<Toolbar>
+							<Typography
+								variant='body1'
+								style={{
+									fontFamily: 'Courier New, monospace',
+									paddingRight: '30px',
+								}}
+							>
+								PokeWar 2021
+							</Typography>
+							<Button
+								href='/aboutus'
+								style={{
+									color: 'inherit',
+									fontSize: '13px',
+									// padding:'0 2px 0 2px'
+								}}
+							>
+								Team
+							</Button>
+							{/* <Link
 									to={{ pathname: 'https://github.com/hitaya1' }}
 									target="_blank"
 								>
@@ -61,12 +75,34 @@ export default function Footer() {
 										label="Recents"
 										icon={<GitHubIcon />}
 									/> */}
-								{/* </Link> */}
-							</Toolbar>
-						</Container>
-					</AppBar>
-				</Grid>
-			</main>
+							{/* </Link> */}
+						</Toolbar>
+					</Container>
+					<Grid
+						style={{
+							display: 'flex',
+							justifyContent: 'flex-end',
+							paddingRight: '40px',
+						}}
+					>
+						Made with <img src='/pics/heart.png' width='25px' /> at
+						<Link
+							to={{
+								pathname:
+									'https://www.fullstackacademy.com/software-engineering-immersive',
+							}}
+							target='_blank'
+							style={{
+								color: 'inherit',
+								// padding:'0 2px 0 2px'
+							}}
+						>
+							{' '}
+							Fullstack Academy
+						</Link>
+					</Grid>
+				</AppBar>
+			</Grid>
 		</React.Fragment>
 	);
 }

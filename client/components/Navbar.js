@@ -24,10 +24,10 @@ import MusicOffIcon from '@material-ui/icons/MusicOff';
 
 const useStyles = makeStyles(() => ({
   navbar: {
-    width: '90vw',
-    margin: '0vh 5vw 0vh 5vw',
+    maxWidth: '100vw',
+    // margin: '0vh 5vw 0vh 5vw',
     borderRadius: '0px 0px 30px 30px',
-    backgroundColor: '#1574b0',
+    backgroundColor: 'royalBlue',
     color: '#3d405b',
     position: 'relative',
   },

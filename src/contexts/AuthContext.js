@@ -197,18 +197,20 @@ export function AuthProvider({ children }) {
 		const allUsers = [];
 		usersRef.on('value', (snapshot) => {
 			const users = snapshot.val();
-			let position = 0;
+			// let position = 0;
 			function createData(username, score) {
-				position += 1;
-				return { position, username, score };
+				// position += 1;
+				return { username, score };
 			}
 			for (let user in users) {
 				allUsers.push(createData(users[user].username, users[user].coins));
 				// allUsers.push([user, users[user].coins]);
 			}
-			// console.log(allUsers);
+			allUsers.sort((a, b) => b.score - a.score).map((user, idx) => {user.position = idx+1; return user});
+
 		});
-		return allUsers;
+
+			return allUsers;
 	}
 
 	//we dont want it to be in render, we want it to be in useEffect because
