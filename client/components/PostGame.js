@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     width: '85vw',
     maxWidth: '600px',
-    height: '100%',
+    height: '85vh',
     textAlign: 'center',
     borderWidth: '1px',
     borderStyle: 'solid',
@@ -43,7 +43,9 @@ function PostGame(props) {
   const history = useHistory();
 
   useEffect(() => {
-    music.pause();
+    if (music) {
+      music.pause();
+    }
   }, []);
 
   function clickHandle() {
