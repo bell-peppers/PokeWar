@@ -1,4 +1,4 @@
-import { CircularProgress } from '@material-ui/core';
+import {CircularProgress} from '@material-ui/core';
 import React from 'react';
 
 const Loading = () => {
@@ -7,6 +7,7 @@ const Loading = () => {
       style={{
         alignContent: 'center',
         marginTop: '300px',
+        height: '85vh',
       }}
     >
       <img
@@ -18,7 +19,7 @@ const Loading = () => {
           marginLeft: '50px',
         }}
       />
-      <div style={{ fontSize: '40px', fontFamily: 'Optima' }}>
+      <div style={{fontSize: '40px', fontFamily: 'Optima'}}>
         Loading <CircularProgress />
       </div>
     </div>

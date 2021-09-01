@@ -34,6 +34,7 @@ const useStyles = makeStyles(() => ({
 
 export default function LoginPage() {
 
+
 	const classes = useStyles();
 	const emailRef = useRef();
 	const passwordRef = useRef();
@@ -69,7 +70,6 @@ export default function LoginPage() {
     }
     setLoading(false);
   }
-
 
 		try {
 			setError('');
@@ -112,6 +112,7 @@ export default function LoginPage() {
 
 
 	return (
+     <div style={{height: '85vh'}}>
 		<Grid className={classes.main}>
 			<Grid style={{ display: 'flex', justifyContent: 'center' }}>
 				<h2> SIGN IN</h2>
@@ -181,6 +182,8 @@ export default function LoginPage() {
 				</Grid>
 			</Grid>
 		</Grid>
+  </div>
 	);
+
 
 }

@@ -11,6 +11,12 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {setPlayerReady} from '../store/game';
 import {useHistory} from 'react-router-dom';
+import {_toggleSound, toggleMusic} from '../store/userData';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -45,8 +51,28 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
   const history = useHistory();
   const classes = useStyles();
-  const {feed, user, opponent, matchId, role, quitGame} = props;
+  const {
+    feed,
+    user,
+    opponent,
+    matchId,
+    role,
+    quitGame,
+    toggleSound,
+    toggleMusic,
+    currentSong,
+    musicOn,
+  } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickExitOpen = () => {
+    setOpen(true);
+  };
+
+  const handleExitClose = () => {
+    setOpen(false);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -79,7 +105,11 @@ const Sidebar = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleQuitClick}>Quit game</MenuItem>
+          <MenuItem onClick={toggleSound}>Toggle Sound</MenuItem>
+          <MenuItem onClick={() => toggleMusic(currentSong, musicOn)}>
+            Toggle Music
+          </MenuItem>
+          <MenuItem onClick={handleClickExitOpen}>Quit game</MenuItem>
         </Menu>
       </div>
       <Grid className={classes.users}>
@@ -112,6 +142,29 @@ const Sidebar = (props) => {
           role={role}
         />
       </Grid>
+      <Dialog
+        open={open}
+        onClose={handleExitClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>
+          {'Are you sure you want to rage quit?'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure you want to quit?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleExitClose} color='primary'>
+            No
+          </Button>
+          <Button onClick={handleQuitClick} color='primary' autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
@@ -121,6 +174,8 @@ const mapState = (state) => {
     feed: state.pokemon.attackFeed,
     user: state.userData.user,
     opponent: state.game.opponentInfo,
+    musicOn: state.userData.musicOn,
+    currentSong: state.userData.currentSong,
   };
 };
 
@@ -128,6 +183,9 @@ const mapDispatch = (dispatch) => {
   return {
     quitGame: (matchid, role, quit) =>
       dispatch(setPlayerReady(matchid, role, quit)),
+    toggleSound: () => dispatch(_toggleSound()),
+    toggleMusic: (currentSong, musicOn) =>
+      dispatch(toggleMusic(currentSong, musicOn)),
   };
 };
 
