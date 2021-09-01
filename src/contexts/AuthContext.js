@@ -1,9 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import firebase, { auth, FIREDB } from '../../utils/firebase';
-// import Firebase from 'firebase/app';
-// import { FIREDB } from '../../utils/firebase';
 
-import { getDatabase, ref, child, get } from '../../utils/firebase';
 
 const AuthContext = React.createContext();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -12,7 +9,7 @@ const githubProvider = new firebase.auth.GithubAuthProvider();
 export function useAuth() {
 	return useContext(AuthContext);
 }
-// let count = 1;
+
 export function AuthProvider({ children }) {
 	const [currentUser, setCurrentUser] = useState(null);
 
@@ -21,7 +18,6 @@ export function AuthProvider({ children }) {
 		const user = await auth.createUserWithEmailAndPassword(email, password);
 		createNewAccount(user.user.uid, user.user.email, username);
 		return user;
-		// firebase.auth().createUserWithEmailAndPassword(email, password);
 	}
 
 	function findUserProfile(userUID) {
@@ -41,10 +37,6 @@ export function AuthProvider({ children }) {
 					targetUser.wins = users[user].wins;
 				}
 			}
-			// 	console.log(Object.keys(snapshot.val()));
-			// 	console.log('There are ' + snapshot.numChildren() + ' users');
-			// 	return snapshot.val();
-			// });
 		});
 		return targetUser;
 	}
@@ -65,7 +57,6 @@ export function AuthProvider({ children }) {
 
 	async function login(email, password) {
 		const user = await auth.signInWithEmailAndPassword(email, password);
-		//getUserData(user.user.uid);
 		return user;
 	}
 
@@ -78,8 +69,6 @@ export function AuthProvider({ children }) {
 		FIREDB.ref('users/' + user.uid).set({
 			uid: user.uid,
 			email: user.email,
-			// pokemon: user.pokemon,
-			// favPokemon: user.favPokemon,
 			username: user.username,
 			photoURL,
 			wins: user.wins,
@@ -89,32 +78,7 @@ export function AuthProvider({ children }) {
 		});
 	}
 
-	// function getUserData(uid) {
-	//   FIREDB.ref('users/' + uid).once('value', (snap) => {
-	//     console.log(snap.val());
-	//   });
-	// }
-
-	// function getOtherUser(userId) {
-	// 	FIREDB.ref('/users'),
-	// 	function(snapshot) {
-	// 	  console.log(JSON.stringify(snapshot))
-	// 	}
-	// 	const dbRef = FIREDB.ref(FIREDB.getDatabase());
-	// 	FIREDB.get(FIREDB.child(dbRef, `users/${userId}`))
-	// 		.then((snapshot) => {
-	// 			if (snapshot.exists()) {
-	// 				console.log(snapshot.val());
-	// 			} else {
-	// 				console.log('No data available');
-	// 			}
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error(error);
-	// 		});
-	// }
 	function googleLogin() {
-		// const auth = getAuth();
 		auth.signInWithPopup(googleProvider).then((result) => {
 			const token = result.credential.accessToken;
 			const user = result.user;
@@ -123,10 +87,8 @@ export function AuthProvider({ children }) {
 				.get()
 				.then((snapshot) => {
 					if (snapshot.exists()) {
-						console.log('welcome back');
 						window.location.href = '/';
 					} else {
-						console.log('first time>');
 						createNewAccount(
 							user.uid,
 							user.email,
@@ -137,7 +99,7 @@ export function AuthProvider({ children }) {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
+					console.error(error);
 				});
 		});
 	}
@@ -145,7 +107,6 @@ export function AuthProvider({ children }) {
 	function githubLogin() {
 		// const auth = getAuth();
 		auth.signInWithPopup(githubProvider).then((result) => {
-			console.log('result', result);
 			const token = result.credential.accessToken;
 			const user = result.user;
 			FIREDB.ref(`users`)
@@ -153,11 +114,8 @@ export function AuthProvider({ children }) {
 				.get()
 				.then((snapshot) => {
 					if (snapshot.exists()) {
-						console.log('welcome back');
 						window.location.href = '/';
 					} else {
-						console.log('first time>');
-						console.log(user);
 						user.displayName
 							? createNewAccount(
 									user.uid,
@@ -185,14 +143,12 @@ export function AuthProvider({ children }) {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
-					// throw new error('lol');
+					console.error(error);
 				});
 		});
 	}
 
 	function leaderboardScores() {
-		// FIREDB.
 		const usersRef = FIREDB.ref('users');
 		const allUsers = [];
 		usersRef.on('value', (snapshot) => {

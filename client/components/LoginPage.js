@@ -62,7 +62,7 @@ export default function LoginPage() {
 			await login(emailRef.current.value, passwordRef.current.value);
 			history.push('/');
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			setError('Failed to log in');
 		}
 		setLoading(false);
@@ -85,7 +85,7 @@ export default function LoginPage() {
 			await githubLogin();
 		} catch (error) {
 			setError(error.message);
-			console.log(error);
+			console.error(error);
 		}
 		setLoading(false);
 	}

@@ -214,7 +214,6 @@ export const applySingleMove =
       }
       const newPk = [...playerPk];
       const newOppPk = [...oppPk];
-      console.log(oppPk);
       dispatch(
         _applySingleMove(PlayerPkInd, OppPkInd, incoming, newPk, newOppPk, feed)
       );
@@ -269,7 +268,6 @@ export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
 
   const updatedPlayerPk = [...playerPk];
   const updatedOppPk = [...oppPk];
-  feed.forEach((f) => console.log(f.message));
   dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
 };
 
@@ -278,8 +276,6 @@ export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
     for (let i = 0; i < turn.length; i++) {
       if (turn[i].attackedPokemon === pk.name) {
         pk.stats.hp -= turn[i].attack.damage;
-        const actionString = `${turn[i].pokemon} hit ${pk.name} for ${turn[i].attack.damage}`;
-        console.log(actionString);
       }
     }
     return pk;
@@ -374,7 +370,6 @@ export const fetchMovesInfo = (pokemon) => async (dispatch) => {
       });
       return newMoves;
     });
-    console.log(updatedPk);
     return dispatch(_fetchMovesInfo(updatedPk));
   } catch (error) {
     console.error(error);
@@ -386,7 +381,6 @@ export const fetchOpponentPokemon = (matchId, role) => async (dispatch) => {
     const oppPoke = await axios.get(
       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/${matchId}/${oppRole}.json`
     );
-    console.log(oppPoke.data);
     return dispatch(_getOpponentPokemon(oppPoke.data));
   } catch (error) {
     console.error(error);

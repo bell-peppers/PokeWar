@@ -66,9 +66,6 @@ const Navbar = (props) => {
     musicOn,
   } = props;
 
-  // console.log(firebase.auth());
-  // const { currentUser } = firebase.auth();
-
   function handleToggleSound() {
     toggleSound();
   }
@@ -84,17 +81,13 @@ const Navbar = (props) => {
       await logout();
       history.push('/login');
     } catch (error) {
-      console.log(error);
       setError('Failed to log out');
     }
   }
 
   return (
     <AppBar className={classes.navbar}>
-      {/* {console.log(currentUser)} */}
-      {/* {console.log(currentUser)} */}
-      {/* {currentUser && currentUser.email} */}
-      {error && console.log(error)}
+      {error && console.error(error)}
       <Toolbar className={classes.cart}>
         <div
           style={{

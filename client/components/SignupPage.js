@@ -78,10 +78,9 @@ export default function SignupPage() {
 
       history.push('/');
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError('Failed to create an account');
     }
-    // console.log(currentUser);
     setLoading(false);
   }
 
