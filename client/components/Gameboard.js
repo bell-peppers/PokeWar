@@ -270,11 +270,6 @@ const Gameboard = (props) => {
     }
   }
 
-  // function animatePkHandle(i) {
-  //   animatePk(i);
-  //   animateOppPk(i);
-  // }
-
   function clickHandle(pk) {
     console.log(Object.keys(playerAttack));
     animatePk();
@@ -342,7 +337,11 @@ const Gameboard = (props) => {
                       }
                       end={
                         incomingAtk
-                          ? {transform: 'translate(-5px,100px) scale(1.5)'}
+                          ? {
+                              transform: `translate(${
+                                pkAnim - i * 100
+                              }px,100px) scale(1.5)`,
+                            }
                           : {transform: 'scale(0.75)', backgroundColor: 'red'}
                       }
                       complete={
@@ -408,75 +407,71 @@ const Gameboard = (props) => {
             {chosenPokemon.length > 0 &&
               chosenPokemon.map((pk, i) => {
                 return (
-                  <div>
-                    <div
-                      className={classes.pokemonContainer}
-                      key={pk.id}
-                      // onClick={() => animatePkHandle(i)}
+                  <div className={classes.pokemonContainer} key={pk.id}>
+                    <Animate
+                      play={i === pkAnim}
+                      start={
+                        incomingAtk
+                          ? {transform: 'scale(1)'}
+                          : {transform: 'translate(0px,0px) scale(1)'}
+                      }
+                      end={
+                        incomingAtk
+                          ? {transform: 'scale(0.75)', backgroundColor: 'red'}
+                          : {
+                              transform: `translate(${
+                                oppAnim - i * 100
+                              }px,-100px) scale(1.5)`,
+                            }
+                      }
+                      complete={
+                        incomingAtk
+                          ? {transform: 'scale(1)'}
+                          : {transform: 'translate(0px,0px) scale(1)'}
+                      }
+                      duration={0.2}
+                      onComplete={completeAnimation}
                     >
-                      <Animate
-                        play={i === pkAnim}
-                        start={
-                          incomingAtk
-                            ? {transform: 'scale(1)'}
-                            : {transform: 'translate(0px,0px) scale(1)'}
-                        }
-                        end={
-                          incomingAtk
-                            ? {transform: 'scale(0.75)', backgroundColor: 'red'}
-                            : {transform: 'translate(5px,-100px) scale(1.5)'}
-                        }
-                        complete={
-                          incomingAtk
-                            ? {transform: 'scale(1)'}
-                            : {transform: 'translate(0px,0px) scale(1)'}
-                        }
-                        duration={0.2}
-                        onComplete={completeAnimation}
-                      >
-                        <HtmlTooltip
-                          title={
-                            <React.Fragment>
-                              <Typography color='inherit'>
-                                {pk.owner}'s {pk.name}
-                              </Typography>
+                      <HtmlTooltip
+                        title={
+                          <React.Fragment>
+                            <Typography color='inherit'>
+                              {pk.owner}'s {pk.name}
+                            </Typography>
 
-                              <p>
-                                <b>{'Health'}</b> -{' '}
-                                {Math.floor(pk.stats[0].base_stat)} /{' '}
-                                {pk.stats[0].max}
-                              </p>
-                              <p>
-                                <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
-                                {pk.types[1] && pk.types[1].type.name}
-                              </p>
-                            </React.Fragment>
+                            <p>
+                              <b>{'Health'}</b> -{' '}
+                              {Math.floor(pk.stats[0].base_stat)} /{' '}
+                              {pk.stats[0].max}
+                            </p>
+                            <p>
+                              <b>{'Type'}</b> - {pk.types[0].type.name}{' '}
+                              {pk.types[1] && pk.types[1].type.name}
+                            </p>
+                          </React.Fragment>
+                        }
+                      >
+                        <img
+                          className={
+                            pk.active
+                              ? classes.playerSprites
+                              : classes.deadPlayerSprites
                           }
-                        >
-                          <img
-                            className={
-                              pk.active
-                                ? classes.playerSprites
-                                : classes.deadPlayerSprites
-                            }
-                            src={
-                              pk.active
-                                ? pk.sprites.backGif
-                                : pk.sprites.back_default
-                            }
-                            alt={pk.name}
-                          />
-                        </HtmlTooltip>
-                      </Animate>
-                      <div className={classes.nameBar}>
-                        <p>{pk.name}</p>
-                        <BorderLinearProgress
-                          variant='determinate'
-                          value={
-                            (pk.stats[0].base_stat / pk.stats[0].max) * 100
+                          src={
+                            pk.active
+                              ? pk.sprites.backGif
+                              : pk.sprites.back_default
                           }
+                          alt={pk.name}
                         />
-                      </div>
+                      </HtmlTooltip>
+                    </Animate>
+                    <div className={classes.nameBar}>
+                      <p>{pk.name}</p>
+                      <BorderLinearProgress
+                        variant='determinate'
+                        value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
+                      />
                     </div>
                   </div>
                 );
