@@ -47,7 +47,6 @@ export const startBattleMusic = (musicSrc) => (dispatch) => {
 };
 
 export const toggleMusic = (music, musicOn) => (dispatch) => {
-  console.log(music);
   if (music) {
     if (!musicOn) {
       music.play();
@@ -63,7 +62,6 @@ export const getUserData = (uid) => async (dispatch) => {
   try {
     await FIREDB.ref('users/' + uid).once('value', (snap) => {
       const data = snap.val();
-      // console.log(data)
       return dispatch(_getUserData(data));
     });
   } catch (error) {
@@ -75,7 +73,6 @@ export const getOtherUserData = (uid) => async (dispatch) => {
   try {
     await FIREDB.ref('users/' + uid).once('value', (snap) => {
       const data = snap.val();
-      console.log(data);
       return dispatch(_getOtherUserData(data));
     });
   } catch (error) {

@@ -41,7 +41,6 @@ export function calcDamage(move, target, attacker) {
     A = attacker.stats[1].base_stat;
     D = target.stats[2].base_stat;
   }
-  console.log(Type);
 
   let Damage =
     (((2 / 5 + 2) * Power * A) / D / 50 + 2) * crit * rand * STAB * Type;

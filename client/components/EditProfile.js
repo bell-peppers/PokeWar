@@ -116,16 +116,25 @@ function EditProfile(props) {
 			})
 			.then(async () => {
 				await updateImg(currentUser.uid, imgUrl);
-				console.log('hey', imgUrl, currentUser);
 			})
 			.catch((error) => {
-				console.log(error);
+				console.error(error);
 			});
 	};
 
 	const handleUpload = async () => {
 		const uploadTask = storage.ref(`images/${currentUser.uid}`).put(image);
-		const {uid,email,pokemon,favPokemon,username,wins,totalGames,coins,friends} = currentUser;
+		const {
+			uid,
+			email,
+			pokemon,
+			favPokemon,
+			username,
+			wins,
+			totalGames,
+			coins,
+			friends,
+		} = currentUser;
 		uploadTask.on('state_changed', () => {
 			storage
 				.ref('images/')
@@ -148,31 +157,13 @@ function EditProfile(props) {
 						})
 						.then(async () => {
 							await updateImg(currentUser, url);
-							console.log('image', image);
-							console.log('hey', url, currentUser);
 						})
 						.catch((error) => {
-							console.log(error);
+							console.error(error);
 						});
 				});
 		});
 	};
-
-	// const updateUser = (value) => {
-	// 		const uid = currentUser.uid;
-	// 			const pokemon = currentUser.pokemon;
-	// 			const email = currentUser.email;
-	// 			const username = currentUser.username;
-	// 		currentUser && 		console.log(uid, pokemon, email, username)
-
-	// 	currentUser && FIREDB.ref('users/' + currentUser.uid).set({
-	// 		email: currentUser.email,
-	// 		pokemon: currentUser.pokemon,
-	// 		uid: currentUser.uid,
-	// 		username : 'hi'
-	// 	}).then(console.log('oops'));
-	// 	console.log(value)
-	// };
 
 	useEffect(() => {
 		if (currentUser && currentUser.uid !== user.uid) {
@@ -293,18 +284,11 @@ function EditProfile(props) {
 								id='username'
 								placeholder={user.username}
 								variant='filled'
-								// value={usernameValue}
 								onChange={(e) => setUsername(e.target.value)}
-								// onChange={(e) => console.log(e.target.value)}
 							/>
-							{/* <Button onClick={updateUser(usernameValue)}>Update Username</Button> */}
 						</form>
 					</Grid>
-					{/* {playerPokemon && console.log(playerPokemon)} */}
 				</Grid>
-				{/* <Grid>
-					<Button href='/myprofile'>Save</Button>
-				</Grid> */}
 			</Grid>
 			<Grid className={classes.main}>
 				<Grid
@@ -322,7 +306,6 @@ function EditProfile(props) {
 }
 
 const mapState = (state) => {
-	// console.log(state.pokemon)
 	return {
 		playerPokemon: state.pokemon.playerOnePokemon,
 		user: state.userData.user,

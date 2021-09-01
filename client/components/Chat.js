@@ -11,9 +11,6 @@ const Chat = (props) => {
 	// const [round, setRound] = useState(1);
 	const { feed, user, opponent, matchId, role } = props;
 
-	// console.log(user);
-	// console.log(opponent);
-
 	useEffect(() => {
 		const messageRef = FIREDB.ref(`Match/${matchId}/messages`);
 		let swearCounter = 0;
@@ -43,7 +40,6 @@ const Chat = (props) => {
 						user: messages[id].user,
 						message: noSwearMessage,
 					});
-					console.log(swearCounter);
 					if (swearCounter === 15) {
 						allMessages.push({
 							user: 'admin',

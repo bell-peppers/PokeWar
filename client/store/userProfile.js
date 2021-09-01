@@ -14,7 +14,6 @@ export const getTheCards = (user) => async (dispatch) => {
 		const cardsObj = await axios.get(
 			`https://poke-war-4483c-default-rtdb.firebaseio.com/Trainers/${user}/cards/.json`
 		);
-console.log(cardsObj)
 		return dispatch(_getTheCards(cardsObj));
 	} catch (error) {
 		console.error(error);
