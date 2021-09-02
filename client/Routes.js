@@ -25,6 +25,7 @@ import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 import OtherUserProfile from './components/OtherUserProfile';
+import Profile from './components/Profile';
 
 /**
  * COMPONENT
@@ -44,10 +45,10 @@ const Routes = (props) => {
         <Route path='/allpokemon' exact component={AllPokemon} />
         <Route path='/pregame' exact component={PreGame} />
         <Route path='/game' exact component={Main} />
-        {user && (
+        {/* {user && (
           <Route path={`/users/${user.uid}`} exact component={UserProfile} />
-        )}
-
+        )} */}
+        <Route path={`/profile`} exact component={Profile} />
         <Route path='/dev/setup' component={temp} />
         <Route path='/login' component={LoginPage} />
         <Route path='/signup' component={SignupPage} />

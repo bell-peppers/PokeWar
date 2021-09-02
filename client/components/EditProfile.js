@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import {FIREDB, storage} from '../../utils/firebase';
 import {useAuth} from '../../src/contexts/AuthContext';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -81,6 +82,7 @@ function EditProfile(props) {
   // const playerPokemon = useSelector((state) => state.pokemon.playerOnePokemon);
   const {currentUser, username, updateImg} = useAuth();
   const classes = useStyles();
+  const history = useHistory();
 
   let photo = '';
   const [image, setImage] = useState(null);
@@ -128,6 +130,7 @@ function EditProfile(props) {
     };
     try {
       await FIREDB.ref('/users/' + user.uid).update(update);
+      history.push('/profile');
     } catch (error) {
       console.error(error);
     }
@@ -186,6 +189,7 @@ function EditProfile(props) {
       const update = {photoUrl: url};
       FIREDB.ref('/users/' + user.uid).update(update);
     }
+    history.push('/profile');
   };
 
   useEffect(() => {
@@ -357,6 +361,7 @@ function EditProfile(props) {
                   <TextField
                     id='username'
                     placeholder={user.username}
+                    defaultValue={user.username}
                     variant='filled'
                     onChange={(e) => setUsername(e.target.value)}
                   />

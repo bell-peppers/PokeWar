@@ -144,7 +144,10 @@ const Navbar = (props) => {
               <Link to='/allpokemon'>
                 <p className={classes.p}>All Pokemon</p>
               </Link>
-              <Link to={`/users/${currentUser.uid}`}>
+              {/* <Link to={`/users/${currentUser.uid}`}>
+                <p className={classes.p}>My Profile</p>
+              </Link> */}
+              <Link to={`/profile`}>
                 <p className={classes.p}>My Profile</p>
               </Link>
               <p onClick={handleLogout} className={classes.p}>
