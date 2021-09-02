@@ -18,6 +18,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CountDownTimer from './Timer';
+import {_resetTurn} from '../store/playerTurn';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -65,9 +67,21 @@ const Sidebar = (props) => {
     musicOn,
     resetGameState,
     resetPokemonState,
+    isTurn,
+    changeTurns,
+    soundOn,
+    setWinner,
+    resetTurn,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const [minSecs, setMinSecs] = useState({minutes: 2, seconds: 30});
+
+  // useEffect(() => {
+  //   if (isTurn) {
+  //     setMinSecs({minutes: 2, seconds: 30});
+  //   }
+  // }, [isTurn]);
 
   const handleClickExitOpen = () => {
     setOpen(true);
@@ -90,6 +104,7 @@ const Sidebar = (props) => {
     quitGame(matchId, role, false);
     resetGameState();
     resetPokemonState();
+    resetTurn();
     history.push('/');
   };
 
@@ -147,6 +162,19 @@ const Sidebar = (props) => {
           role={role}
         />
       </Grid>
+      <div>
+        <CountDownTimer
+          minSecs={minSecs}
+          isTurn={isTurn}
+          changeTurns={changeTurns}
+          matchId={matchId}
+          user={user}
+          soundOn={soundOn}
+          role={role}
+          setWinner={setWinner}
+          opponent={opponent}
+        />
+      </div>
       <Dialog
         open={open}
         onClose={handleExitClose}
@@ -193,6 +221,7 @@ const mapDispatch = (dispatch) => {
       dispatch(toggleMusic(currentSong, musicOn)),
     resetGameState: () => dispatch(_resetGameState()),
     resetPokemonState: () => dispatch(_resetPokemonState()),
+    resetTurn: () => dispatch(_resetTurn()),
   };
 };
 

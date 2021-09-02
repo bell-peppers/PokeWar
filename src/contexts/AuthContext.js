@@ -1,5 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import firebase, {auth, FIREDB} from '../../utils/firebase';
+import randomStarterPk from '../../utils/starterPokemon';
 
 const AuthContext = React.createContext();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -43,10 +44,7 @@ export function AuthProvider({children}) {
     FIREDB.ref('users/' + uid).set({
       uid: uid,
       email: email,
-      pokemon: [
-        89, 1, 24, 76, 105, 562, 33, 69, 2, 3, 16, 17, 18, 19, 20, 300, 151,
-        150, 71, 72, 73, 4, 30, 25,
-      ],
+      pokemon: randomStarterPk(),
       favPokemon: [],
       username: name,
       photoUrl: '',
@@ -128,7 +126,7 @@ export function AuthProvider({children}) {
                   user.uid,
                   '',
                   [
-                    'Pickachu',
+                    'Pikachu',
                     'Mew',
                     'Snorlax',
                     'Charmander',

@@ -101,6 +101,10 @@ const Main = (props) => {
             calculatedAttacks={calculatedAttacks}
             matchId={matchId}
             role={role}
+            isTurn={isTurn}
+            changeTurns={changeTurns}
+            soundOn={soundOn}
+            setWinner={setWinner}
           />
         </div>
       </Container>

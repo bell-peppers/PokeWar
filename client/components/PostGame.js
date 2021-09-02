@@ -5,6 +5,7 @@ import {Link, useHistory} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {_resetPokemonState} from '../store/pokemon';
 import {cancelGame, _resetGameState} from '../store/game';
+import {_resetTurn} from '../store/playerTurn';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -37,6 +38,7 @@ function PostGame(props) {
     resetGameState,
     resetPokemonState,
     music,
+    resetTurn,
   } = props;
   // const winner = 'mike';
   // const user = {username: 'mike'};
@@ -52,6 +54,7 @@ function PostGame(props) {
     resetGameState();
     resetPokemonState();
     deleteMatch(matchId);
+    resetTurn();
     history.push('/');
   }
   return (
@@ -94,6 +97,7 @@ const mapDispatch = (dispatch) => {
     deleteMatch: (matchId) => dispatch(cancelGame(matchId)),
     resetGameState: () => dispatch(_resetGameState()),
     resetPokemonState: () => dispatch(_resetPokemonState()),
+    resetTurn: () => dispatch(_resetTurn()),
   };
 };
 export default connect(mapState, mapDispatch)(PostGame);

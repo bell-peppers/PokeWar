@@ -270,6 +270,7 @@ export default function (state = initialState, action) {
         role: '',
         availableGames: [],
         playerReady: false,
+        matchId: null,
       };
     default:
       return state;
