@@ -72,6 +72,7 @@ const useStyles = makeStyles(() => ({
     maxHeight: '200px',
     objectFit: 'contain',
     alignSelf: 'flex-start',
+    imageRendering: 'pixelated',
   },
   deadPlayerSprites: {
     maxWidth: '100%',
@@ -84,7 +85,7 @@ const useStyles = makeStyles(() => ({
   },
   opponentSprites: {
     maxWidth: '100%',
-    width: '185px',
+    width: '175px',
     height: 'auto',
     maxHeight: '200px',
     objectFit: 'contain',
@@ -92,7 +93,7 @@ const useStyles = makeStyles(() => ({
   },
   opponentDeadSprites: {
     maxWidth: '100%',
-    width: '185px',
+    width: '175px',
     height: 'auto',
     maxHeight: '200px',
     objectFit: 'contain',
@@ -250,11 +251,6 @@ const Gameboard = (props) => {
               }
             }, 2000 * index);
           });
-          // animatePk(null);
-          // animateOppPk(null);
-          // //applyMoves(moves, chosenPokemon, opponentPokemon);
-          // checkForEndGame();
-          // changeTurns();
         } else if (role === 'host') {
           getOpponentMoves(moves);
           changeTurns();
