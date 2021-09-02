@@ -77,12 +77,6 @@ const Sidebar = (props) => {
   const [open, setOpen] = React.useState(false);
   const [minSecs, setMinSecs] = useState({minutes: 2, seconds: 30});
 
-  // useEffect(() => {
-  //   if (isTurn) {
-  //     setMinSecs({minutes: 2, seconds: 30});
-  //   }
-  // }, [isTurn]);
-
   const handleClickExitOpen = () => {
     setOpen(true);
   };
