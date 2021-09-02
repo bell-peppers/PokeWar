@@ -236,13 +236,16 @@ const Gameboard = (props) => {
         if (role === 'guest') {
           moves.map((move, index) => {
             setTimeout(() => {
-              applySingleMove(
-                move,
-                chosenPokemon,
-                opponentPokemon,
-                user.username,
-                soundOn
-              );
+              if (!move.skipped) {
+                applySingleMove(
+                  move,
+                  chosenPokemon,
+                  opponentPokemon,
+                  user.username,
+                  soundOn
+                );
+              }
+
               if (index === moves.length - 1) {
                 // animatePk(null);
                 // animateOppPk(null);
@@ -252,7 +255,11 @@ const Gameboard = (props) => {
             }, 2000 * index);
           });
         } else if (role === 'host') {
-          getOpponentMoves(moves);
+          if (!moves[0].skipped) {
+            getOpponentMoves(moves);
+          } else {
+            getOpponentMoves([]);
+          }
           changeTurns();
         }
       }

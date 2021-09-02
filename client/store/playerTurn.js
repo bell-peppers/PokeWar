@@ -7,6 +7,13 @@ const CLEAR_ATTACKED_POKEMON = 'CLEAR_ATTACKED_POKEMON';
 const SELECTED_PLAYER_POKEMON = 'SELECTED_PLAYER_POKEMON';
 const CHANGE_TURNS = 'CHANGE_TURNS';
 const SET_CALCULATED_ATTACKS = 'SET_CALCULATED_ATTACKS';
+const RESET_TURN = 'RESET_TURN';
+
+export const _resetTurn = () => {
+  return {
+    type: RESET_TURN,
+  };
+};
 
 export const _setCalculatedAttacks = (turn) => {
   return {
@@ -105,6 +112,8 @@ export default function (
       return {...state, isTurn: !state.isTurn};
     case SET_CALCULATED_ATTACKS:
       return {...state, calculatedAttacks: action.turn};
+    case RESET_TURN:
+      return {...state, isTurn: false};
     default:
       return state;
   }

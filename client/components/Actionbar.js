@@ -220,10 +220,6 @@ const Actionbar = (props) => {
               }
             }, 2000 * index);
           });
-          // animatePk(null);
-          // animateOppPk(null);
-          //applyMoves(thisTurn, playerPokemon, opponentPokemon);
-          // checkForEndGame();
         }
       }
       changeTurns();
@@ -405,18 +401,6 @@ const Actionbar = (props) => {
                       </Paper>
                     </Button>
                   );
-                  // <Grid key={i} item>
-                  //   <Paper
-                  //     className={
-                  //       value === playerAttack
-                  //         ? classes.selectedSkill
-                  //         : classes.skill
-                  //     }
-                  //     onClick={() => selectMove(value)}
-                  //   >
-                  //     <p>{value.move.name}</p>
-                  //   </Paper>
-                  // </Grid>
                 })
               : [1, 2, 3, 4].map((value) => (
                   <Grid key={value} item>
@@ -427,23 +411,6 @@ const Actionbar = (props) => {
                 ))}
           </Grid>
         </Grid>
-        {/* <Grid
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            maxHeight: '170px',
-          }}
-        >
-          <Button
-            variant='contained'
-            color='secondary'
-            disabled={!isTurn}
-            onClick={() => completeTurnHandler()}
-          >
-            Complete turn
-          </Button>
-        </Grid> */}
       </div>
       <div
         style={{
