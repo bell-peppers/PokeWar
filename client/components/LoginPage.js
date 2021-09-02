@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import {useAuth} from '../../src/contexts/AuthContext';
 import Alert from '@material-ui/lab/Alert';
-import {useHistory} from 'react-router-dom';
+import {useHistory, Link} from 'react-router-dom';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
@@ -147,7 +147,7 @@ export default function LoginPage() {
                 Log In
               </Button>
               <Grid style={{display: 'flex', justifyContent: 'center'}}>
-                Need an account? &nbsp; <a href='/signup'> Sign Up</a>
+                Need an account? &nbsp; <Link to='/signup'> Sign Up</Link>
               </Grid>
             </form>
             <Grid

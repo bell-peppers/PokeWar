@@ -14,7 +14,7 @@ const Chat = (props) => {
     {message: "Here's how to play:", type: 'instructions'},
     {
       message:
-        'First, select one of your pokemon by clicking on one of the bottom-right cards',
+        'First, select one of your pokemon by clicking on one of the bottom-left cards',
       type: 'instructions',
     },
     {
