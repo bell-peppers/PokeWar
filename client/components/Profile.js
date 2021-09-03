@@ -62,14 +62,34 @@ const UserProfile = (props) => {
   const {currentUser} = useAuth();
   const classes = useStyles();
 
+  // useEffect(() => {
+  //   if (currentUser && currentUser.uid !== user.uid) {
+  //     getUserData(currentUser.uid);
+  //   }
+  //   if (user.pokemon) {
+  //     fetchPokemon(user.pokemon, user.username);
+  //   }
+  // }, [user, currentUser]);
+
   useEffect(() => {
-    if (currentUser && currentUser.uid !== user.uid) {
-      getUserData(currentUser.uid);
+    if (!user.uid) {
+      const localUid = localStorage.getItem('uid');
+      const localPk = localStorage.getItem('playerPk').split(',');
+      const localName = localStorage.getItem('username');
+      getUserData(localUid);
+      if (playerPokemon.length === 0) {
+        fetchPokemon(localPk, localName);
+      }
+    } else {
+      getUserData(user.uid);
+      if (playerPokemon.length === 0) {
+        fetchPokemon(user.pokemon, user.username);
+      }
     }
-    if (user.pokemon) {
-      fetchPokemon(user.pokemon, user.username);
-    }
-  }, [user, currentUser]);
+    // if (playerPokemon.length === 0) {
+    //   fetchPokemon(user.pokemon, user.username);
+    // }
+  }, []);
 
   const [clicked, setClicked] = useState(false);
 

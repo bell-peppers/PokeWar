@@ -94,6 +94,9 @@ const Sidebar = (props) => {
   };
 
   const handleQuitClick = () => {
+    if (currentSong) {
+      currentSong.pause();
+    }
     setAnchorEl(null);
     quitGame(matchId, role, false);
     resetGameState();

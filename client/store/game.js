@@ -186,6 +186,7 @@ export const joinGame = (matchId, user) => async (dispatch) => {
 
 export const createNewGame = (userId, name, photo) => async (dispatch) => {
   try {
+    const created = new Date();
     const playerInfo = {
       host: {
         hostId: userId,
@@ -193,6 +194,7 @@ export const createNewGame = (userId, name, photo) => async (dispatch) => {
         hostPhotoUrl: photo,
       },
       status: 'open',
+      created: created,
     };
     const newGame = await axios.post(
       `https://poke-war-4483c-default-rtdb.firebaseio.com/Match/.json`,

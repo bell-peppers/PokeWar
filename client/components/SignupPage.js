@@ -56,7 +56,7 @@ export default function SignupPage() {
     event.preventDefault();
   };
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     if (usernameRef.current.value.match(/[.\[\]#$]/g)) {
       return setError(
@@ -70,7 +70,7 @@ export default function SignupPage() {
     try {
       setError('');
       setLoading(true);
-      await signup(
+      signup(
         emailRef.current.value,
         passwordRef.current.value,
         usernameRef.current.value

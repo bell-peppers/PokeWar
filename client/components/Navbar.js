@@ -86,6 +86,9 @@ const Navbar = (props) => {
 
     try {
       await logout();
+      localStorage.removeItem('uid');
+      localStorage.removeItem('username');
+      localStorage.removeItem('playerPk');
       history.push('/');
     } catch (error) {
       setError('Failed to log out');

@@ -124,7 +124,7 @@ export default function Footer() {
               alignItems: 'center',
             }}
           >
-            Made with <img src='/pics/heart.png' width='25px' /> at
+            Made with <img src='/pics/heart.png' width='25px' />
             <Link
               to={{
                 pathname:
@@ -133,11 +133,11 @@ export default function Footer() {
               target='_blank'
               style={{
                 color: 'inherit',
-                // padding:'0 2px 0 2px'
+                padding: '0 3px 0 3px',
               }}
             >
               {' '}
-              Fullstack Academy
+              at Fullstack Academy
             </Link>
           </Grid>
         </AppBar>
