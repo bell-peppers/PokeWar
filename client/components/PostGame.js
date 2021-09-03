@@ -63,7 +63,7 @@ function PostGame(props) {
         <div className={classes.main}>
           <h1>Congratulations {user.username}!</h1>
           <h2>You win!</h2>
-          <img src='pics/pktrophy.png' />
+          <img style={{maxWidth: '500px'}} src='pics/pktrophy.png' />
           <p>You have earned 100 coins!</p>
           <Button variant='contained' color='primary' onClick={clickHandle}>
             Back to Main

@@ -62,7 +62,7 @@ const CountDownTimer = ({
   }, [isTurn, mins, secs]);
 
   async function completeTurnHandler() {
-    if (playerTurn.length > 0 || opponentMoves) {
+    if (playerTurn.length > 0 || opponentMoves.length > 0) {
       if (role === 'guest') {
         if (soundOn) {
           completeTurnSound.play();
@@ -121,16 +121,17 @@ const CountDownTimer = ({
   return (
     <div
       style={{
-        borderStyle: 'solid',
-        borderWidth: '2px',
-        borderRadius: '25px',
-        borderColor: 'black',
+        // borderStyle: 'solid',
+        // borderWidth: '2px',
+        borderRadius: '15px',
+        // borderColor: 'black',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'aliceblue',
         marginTop: '10px',
         height: '55px',
+        padding: '10px',
       }}
     >
       <h1>{`${mins.toString().padStart(2, '0')}:${secs

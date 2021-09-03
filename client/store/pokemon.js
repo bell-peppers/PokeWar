@@ -174,40 +174,47 @@ export const applySingleMove =
 
       if (move.attackedPokemon.owner === username) {
         incoming = true;
+
         playerPk.forEach((pk, i) => {
           if (move.attackedPokemon.name === pk.name) {
-            PlayerPkInd = i;
-            pk.stats[0].base_stat -= move.report.Damage;
-            if (soundOn) {
-              slapSound.play();
+            if (pk.active) {
+              console.log('player', pk);
+              PlayerPkInd = i;
+              pk.stats[0].base_stat -= move.report.Damage;
+              if (soundOn) {
+                slapSound.play();
+              }
+              if (pk.stats[0].base_stat <= 0 && pk.active) {
+                pk.active = false;
+                feed.message += ` ${pk.name} was killed in battle.`;
+              }
+              oppPk.forEach((pk, i) => {
+                if (move.pokemon.name === pk.name) {
+                  OppPkInd = i;
+                }
+              });
             }
-            if (pk.stats[0].base_stat <= 0 && pk.active) {
-              pk.active = false;
-              feed.message += ` ${pk.name} was killed in battle.`;
-            }
-          }
-        });
-        oppPk.forEach((pk, i) => {
-          if (move.pokemon.name === pk.name) {
-            OppPkInd = i;
           }
         });
       } else {
-        playerPk.forEach((pk, i) => {
-          if (move.pokemon.name === pk.name) {
-            PlayerPkInd = i;
-          }
-        });
         oppPk.forEach((pk, i) => {
           if (move.attackedPokemon.name === pk.name) {
-            OppPkInd = i;
-            pk.stats[0].base_stat -= move.report.Damage;
-            if (soundOn) {
-              punchSound.play();
-            }
-            if (pk.stats[0].base_stat <= 0 && pk.active) {
-              pk.active = false;
-              feed.message += ` ${pk.name} was killed in battle.`;
+            if (pk.active) {
+              console.log('opp', pk);
+              OppPkInd = i;
+              pk.stats[0].base_stat -= move.report.Damage;
+              if (soundOn) {
+                punchSound.play();
+              }
+              if (pk.stats[0].base_stat <= 0 && pk.active) {
+                pk.active = false;
+                feed.message += ` ${pk.name} was killed in battle.`;
+              }
+              playerPk.forEach((pk, i) => {
+                if (move.pokemon.name === pk.name) {
+                  PlayerPkInd = i;
+                }
+              });
             }
           }
         });
@@ -354,6 +361,7 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
           },
         };
         pokemon.stats[0].max = pokemon.stats[0].base_stat;
+
         // pokemon.stats[0].base_stat += 100;
 
         //lowered hp for testing

@@ -24,9 +24,10 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     width: '350px',
-    border: '5px solid grey',
+    border: '3px solid grey',
     padding: '15px',
     backgroundColor: 'white',
+    borderRadius: '15px',
   },
 }));
 
@@ -89,7 +90,7 @@ export default function SignupPage() {
     <div style={{height: '85vh'}}>
       <Grid className={classes.main}>
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
-          <h2>CREATE YOUR ACCOUNT</h2>
+          <h2>CREATE A NEW ACCOUNT</h2>
         </Grid>
         {error && <Alert severity='error'>{error}</Alert>}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
@@ -127,6 +128,7 @@ export default function SignupPage() {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge='end'
+                      tabIndex='-1'
                     >
                       {values.showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
@@ -147,10 +149,11 @@ export default function SignupPage() {
                 endAdornment={
                   <InputAdornment position='end'>
                     <IconButton
-                      aria-label='toggle password vvisibility'
+                      aria-label='toggle passwordvisibility'
                       onClick={handleClickShowPasswordConf}
                       onMouseDown={handleMouseDownPassword}
                       edge='end'
+                      tabIndex='-1'
                     >
                       {values.showPasswordConf ? (
                         <Visibility />
