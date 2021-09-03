@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
     // flexDirection: 'column',
     // justifyContent: 'center',
     // margin: '0  100px 0 100px'
+
+    backgroundImage: ' linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
+    borderRadius: '25px',
   },
   root: {
     // flexWrap: 'nowrap',
@@ -199,7 +202,7 @@ function EditProfile(props) {
   }, [user, currentUser]);
 
   return (
-    <div>
+    <div style={{height: '100vh'}}>
       <Grid className={classes.main}>
         <Grid
           style={{
