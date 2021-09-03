@@ -62,7 +62,12 @@ export const getUserData = (uid) => async (dispatch) => {
   try {
     await FIREDB.ref('users/' + uid).once('value', (snap) => {
       const data = snap.val();
-      // console.log(data)
+      const localUid = localStorage.getItem('uid');
+      if (!localUid) {
+        localStorage.setItem('uid', data.uid);
+        localStorage.setItem('playerPk', data.pokemon);
+        localStorage.setItem('username', data.username);
+      }
       return dispatch(_getUserData(data));
     });
   } catch (error) {

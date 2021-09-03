@@ -139,34 +139,20 @@ function EditProfile(props) {
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     if (!url) {
       const uploadTask = storage.ref(`images/${currentUser.uid}`).put(image);
-      // const update = {photoUrl: `images/${user.uid}`};
-      // await FIREDB.ref('/users/' + user.uid).update(update);
-      // const {
-      //   uid,
-      //   email,
-      //   pokemon,
-      //   favPokemon,
-      //   username,
-      //   wins,
-      //   totalGames,
-      //   coins,
-      //   friends,
-      // } = currentUser;
 
-      uploadTask.on('state_changed', () => {
+      uploadTask.on('state_changed', async () => {
         storage
           .ref('images/')
           .child(currentUser.uid)
           .getDownloadURL()
           .then((url) => {
             setUrl(url);
-            console.log(url);
             const update = {photoUrl: url};
             FIREDB.ref('/users/' + user.uid).update(update);
-
+            history.push('/profile');
             // currentUser
             //   .updateProfile({
             //     uid,
@@ -191,8 +177,9 @@ function EditProfile(props) {
     } else if (url) {
       const update = {photoUrl: url};
       FIREDB.ref('/users/' + user.uid).update(update);
+      history.push('/profile');
     }
-    history.push('/profile');
+    //history.push('/profile');
   };
 
   useEffect(() => {
