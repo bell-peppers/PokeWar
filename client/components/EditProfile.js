@@ -133,7 +133,7 @@ function EditProfile(props) {
     };
     try {
       await FIREDB.ref('/users/' + user.uid).update(update);
-      history.push('/profile');
+      // history.push('/profile');
     } catch (error) {
       console.error(error);
     }
@@ -152,7 +152,7 @@ function EditProfile(props) {
             setUrl(url);
             const update = {photoUrl: url};
             FIREDB.ref('/users/' + user.uid).update(update);
-            history.push('/profile');
+            //history.push('/profile');
             // currentUser
             //   .updateProfile({
             //     uid,
@@ -177,7 +177,7 @@ function EditProfile(props) {
     } else if (url) {
       const update = {photoUrl: url};
       FIREDB.ref('/users/' + user.uid).update(update);
-      history.push('/profile');
+      //history.push('/profile');
     }
     //history.push('/profile');
   };
@@ -326,7 +326,13 @@ function EditProfile(props) {
                 </Button>
               </Grid> */}
             </Grid>
-            <Grid>
+            <Grid
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
+            >
               <Typography>Change your username</Typography>
               <Grid
                 style={{
@@ -360,10 +366,18 @@ function EditProfile(props) {
                     color='primary'
                     onClick={handleSubmit}
                   >
-                    Save New Username
+                    Save Username
                   </Button>
                 </form>
               </Grid>
+              <Button
+                onClick={() => history.push('/profile')}
+                variant='contained'
+                color='primary'
+                style={{marginTop: '5px'}}
+              >
+                Done
+              </Button>
             </Grid>
           </Grid>
         </Grid>

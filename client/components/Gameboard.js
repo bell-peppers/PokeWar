@@ -230,7 +230,7 @@ const Gameboard = (props) => {
     const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
     dbUpdates.limitToLast(1).on('value', (snapshot) => {
       const newMoves = snapshot.val();
-
+      console.log(newMoves);
       if (newMoves) {
         const moves = Object.values(newMoves)[0];
         if (role === 'guest') {
@@ -320,7 +320,7 @@ const Gameboard = (props) => {
                         ? classes.oppPokemonContainerMDown
                         : classes.oppPokemonContainer
                     }
-                    key={pk.id}
+                    key={pk.active ? pk.id : i}
                     onClick={() => clickHandle(pk)}
                   >
                     <div className={classes.nameBar}>

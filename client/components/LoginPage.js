@@ -25,10 +25,19 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'column',
     width: '350px',
-    border: '5px solid grey',
+    border: '3px solid grey',
     padding: '15px',
     backgroundColor: 'white',
     justifyContent: 'space-between',
+    borderRadius: '15px',
+  },
+  signIn: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '1px solid black',
+    cursor: 'pointer',
+    margin: '5px',
   },
 }));
 
@@ -53,13 +62,13 @@ export default function LoginPage() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
 
     try {
       setError('');
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
+      login(emailRef.current.value, passwordRef.current.value);
       history.push('/');
     } catch (error) {
       console.log(error);
@@ -150,32 +159,22 @@ export default function LoginPage() {
                 Need an account? &nbsp; <Link to='/signup'> Sign Up</Link>
               </Grid>
             </form>
-            <Grid
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                border: '1px solid black',
-                cursor: 'pointer',
-              }}
+            <Button
+              style={{backgroundColor: 'white'}}
+              className={classes.signIn}
               onClick={() => handleGoogleLogin()}
             >
               Sign in with Google &nbsp;
               <img src='/pics/google.png' width='35px' />
-            </Grid>
-            <Grid
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                border: '1px solid black',
-                cursor: 'pointer',
-              }}
+            </Button>
+            <Button
+              className={classes.signIn}
+              style={{color: 'white', backgroundColor: 'black'}}
               onClick={() => handleGithubLogin()}
             >
               Sign in with GitHub &nbsp;
               <img src='/pics/github.png' width='35px' />
-            </Grid>
+            </Button>
           </Grid>
         </Grid>
       </Grid>
