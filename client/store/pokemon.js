@@ -217,13 +217,13 @@ export const applySingleMove =
       dispatch(
         _applySingleMove(PlayerPkInd, OppPkInd, incoming, newPk, newOppPk, feed)
       );
-    } else if (!move.attackedPokemon.active) {
+    } else if (!move.pokemon.active) {
       let feed = {
         type: 'feed',
         message: `${move.pokemon.name} has died and cannot attack`,
       };
       dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
-    } else {
+    } else if (!move.attackedPokemon.active) {
       let feed = {
         type: 'feed',
         message: `${move.attackedPokemon.name} has died and cannot be attacked`,

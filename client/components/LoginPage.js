@@ -155,28 +155,26 @@ export default function LoginPage() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                border: '1px solid black',
+                cursor: 'pointer',
               }}
+              onClick={() => handleGoogleLogin()}
             >
               Sign in with Google &nbsp;
-              <img
-                onClick={() => handleGoogleLogin()}
-                src='/pics/google.png'
-                width='35px'
-              />
+              <img src='/pics/google.png' width='35px' />
             </Grid>
             <Grid
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                border: '1px solid black',
+                cursor: 'pointer',
               }}
+              onClick={() => handleGithubLogin()}
             >
               Sign in with GitHub &nbsp;
-              <img
-                onClick={() => handleGithubLogin()}
-                src='/pics/github.png'
-                width='35px'
-              />
+              <img src='/pics/github.png' width='35px' />
             </Grid>
           </Grid>
         </Grid>
