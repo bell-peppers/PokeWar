@@ -84,7 +84,7 @@ const Chat = (props) => {
             user: messages[id].user,
             message: noSwearMessage,
           });
-          console.log(swearCounter);
+
           if (swearCounter === 15) {
             allMessages.push({
               user: 'admin',
@@ -122,7 +122,7 @@ const Chat = (props) => {
     attackFeed.map((feed) => {
       setTimeout(() => {
         messageRef.push(feed);
-      }, 1000);
+      }, 0);
     });
   }
 

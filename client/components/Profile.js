@@ -18,15 +18,18 @@ import 'firebase/auth';
 const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
-    backgroundColor: 'royalBlue',
+    // backgroundColor: 'royalBlue',
+    backgroundImage: ' linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
     position: 'relative',
     maxWidth: '1018px',
     paddingBottom: '40px',
     margin: '25px auto',
+    borderRadius: '25px',
   },
   root: {
     width: '400px',
     margin: '30px',
+    height: '100vh',
   },
   container: {
     height: 440,
@@ -81,53 +84,54 @@ const UserProfile = (props) => {
   };
 
   return (
-    <Grid className={classes.main}>
-      <div key={playerPokemon}></div>
-      <Grid
-        style={{
-          display: 'flex',
-          justifyContent: 'space-evenly',
-          margin: '0 50px 30px 25px',
-          paddingLeft: '9px',
-          paddingTop: '50px',
-        }}
-      >
+    <div style={{height: '100vh'}}>
+      <Grid className={classes.main}>
+        <div key={playerPokemon}></div>
         <Grid
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            margin: '0 50px 30px 25px',
+            paddingLeft: '9px',
+            paddingTop: '50px',
           }}
         >
-          <Grid>
-            {user && (
-              <img
-                src={user.photoUrl || '/pics/default.png'}
-                width='180px'
-                height='180px'
-                border='5px solid blue'
-              />
-            )}
+          <Grid
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Grid>
+              {user && (
+                <img
+                  src={user.photoUrl || '/pics/default.png'}
+                  width='180px'
+                  height='180px'
+                  border='1px solid blue'
+                />
+              )}
+            </Grid>
+            <Link to='/editprofile'>
+              <Button variant='contained' color='secondary'>
+                Edit Profile
+              </Button>
+            </Link>
+            {/* <Typography style={{fontSize: '25px'}}>{user.username}</Typography> */}
           </Grid>
-          <Link to='/editprofile'>
-            <Button variant='contained' color='secondary'>
-              Edit Profile
-            </Button>
-          </Link>
-          {/* <Typography style={{fontSize: '25px'}}>{user.username}</Typography> */}
-        </Grid>
-        <Grid
-          style={{
-            display: 'flex',
-            fontSize: '25px',
-            paddingRight: '80px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-          }}
-        >
-          <Grid>
-            {/* Level
+          <Grid
+            style={{
+              display: 'flex',
+              fontSize: '25px',
+              paddingRight: '80px',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            <Grid>
+              {/* Level
             <Typography
               style={{
                 height: '35px',
@@ -144,73 +148,76 @@ const UserProfile = (props) => {
             >
               1
             </Typography> */}
-            <Typography style={{fontSize: '25px'}}>{user.username}</Typography>
-          </Grid>
-          {user && user.totalGames > 0 ? (
-            <div>
-              <Typography>Total Games: {user.totalGames}</Typography>
-              <Typography>Total Wins: {user.wins}</Typography>
-              <Typography>
-                Win rate: {Math.round((user.wins / user.totalGames) * 100)}%
+              <Typography style={{fontSize: '25px'}}>
+                {user.username}
               </Typography>
-              <Typography>Total Coins: {user.coins}</Typography>
-            </div>
-          ) : null}
-          {/* <Link to='/editprofile'>
+            </Grid>
+            {user && user.totalGames > 0 ? (
+              <div>
+                <Typography>Total Games: {user.totalGames}</Typography>
+                <Typography>Total Wins: {user.wins}</Typography>
+                <Typography>
+                  Win rate: {Math.round((user.wins / user.totalGames) * 100)}%
+                </Typography>
+                <Typography>Total Coins: {user.coins}</Typography>
+              </div>
+            ) : null}
+            {/* <Link to='/editprofile'>
             <Button variant='contained' color='secondary'>
               Edit Profile
             </Button>
           </Link> */}
+          </Grid>
+        </Grid>
+        <Grid style={{display: 'flex', justifyContent: 'space-between'}}>
+          <Grid
+            style={{
+              width: '95%',
+              marginLeft: '20px',
+              minHeight: '243px',
+              padding: '10px',
+              border: 'solid 1px black',
+            }}
+          >
+            <Typography style={{fontSize: '18px', marginBottom: '8px'}}>
+              My Pokemon
+            </Typography>
+            {playerPokemon && playerPokemon.length ? (
+              <div className={classes.imageRoot}>
+                <ImageList
+                  cols={2.5}
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    border: '5px solid royalBlue',
+                  }}
+                >
+                  {playerPokemon.map((item) => (
+                    <ImageListItem key={item.id} style={{width: '150px'}}>
+                      <img src={item.sprites.front_default} />
+                      <ImageListItemBar
+                        actionIcon={
+                          <IconButton
+                            onClick={() => handleIconClick(item)}
+                            className={classes.title}
+                          >
+                            {item.liked ? (
+                              <FavoriteIcon />
+                            ) : (
+                              <FavoriteBorderIcon />
+                            )}
+                          </IconButton>
+                        }
+                      />
+                    </ImageListItem>
+                  ))}
+                </ImageList>
+              </div>
+            ) : null}
+          </Grid>
         </Grid>
       </Grid>
-      <Grid style={{display: 'flex', justifyContent: 'space-between'}}>
-        <Grid
-          style={{
-            width: '95%',
-            marginLeft: '20px',
-            minHeight: '243px',
-            padding: '10px',
-            border: 'solid 1px black',
-          }}
-        >
-          <Typography style={{fontSize: '18px', marginBottom: '8px'}}>
-            My Pokemon
-          </Typography>
-          {playerPokemon && playerPokemon.length ? (
-            <div className={classes.imageRoot}>
-              <ImageList
-                cols={2.5}
-                style={{
-                  display: 'flex',
-                  flexWrap: 'nowrap',
-                  border: '5px solid royalBlue',
-                }}
-              >
-                {playerPokemon.map((item) => (
-                  <ImageListItem key={item.id} style={{width: '150px'}}>
-                    <img src={item.sprites.front_default} />
-                    <ImageListItemBar
-                      actionIcon={
-                        <IconButton
-                          onClick={() => handleIconClick(item)}
-                          className={classes.title}
-                        >
-                          {item.liked ? (
-                            <FavoriteIcon />
-                          ) : (
-                            <FavoriteBorderIcon />
-                          )}
-                        </IconButton>
-                      }
-                    />
-                  </ImageListItem>
-                ))}
-              </ImageList>
-            </div>
-          ) : null}
-        </Grid>
-      </Grid>
-    </Grid>
+    </div>
   );
 };
 
