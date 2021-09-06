@@ -11,8 +11,16 @@ const SET_HOSTGUEST = 'SET_HOSTGUEST';
 const SET_OPPONENT_INFO = 'SET_OPPONENT_INFO';
 const SET_PLAYER_READY = 'SET_PLAYER_READY';
 const SET_WINNER = 'SET_WINNER';
+const SET_COMPUTER_MOVES = 'SET_COMPUTER_MOVES';
 
 const RESET_GAME_STATE = 'RESET_GAME_STATE';
+
+const _setComputerMoves = (moves) => {
+  return {
+    type: SET_COMPUTER_MOVES,
+    moves,
+  };
+};
 
 export const _resetGameState = () => {
   return {
@@ -110,6 +118,17 @@ export const setWinner = (playerPk, user, oppName) => async (dispatch) => {
   return dispatch(_setWinner(winner));
 };
 
+export const setSPWinner = (playerPk, user, oppName) => async (dispatch) => {
+  const playerCheck = playerPk.filter((pk) => {
+    return pk.active;
+  }).length;
+
+  const winner = playerCheck === 0 ? oppName : user.username;
+  alert(`${winner} wins!`);
+
+  return dispatch(_setWinner(winner));
+};
+
 export const setPlayerReady = (matchId, role, ready) => async (dispatch) => {
   const update = role === 'host' ? {hostReady: ready} : {guestReady: ready};
   await FIREDB.ref('/Match/' + matchId + '/ready/').update(update);
@@ -127,6 +146,28 @@ export const setOpponentInfo = (info) => (dispatch) => {
 export const getPlayerMoves = (newMoves) => (dispatch) => {
   const opponentMoves = newMoves;
   return dispatch(_getPlayerMoves(opponentMoves));
+};
+
+export const setComputerMoves = (oppPk, playerPk) => (dispatch) => {
+  let compAlive = oppPk.filter((pk) => pk.active);
+  let playerAlive = playerPk.filter((pk) => pk.active);
+
+  function randomPk(length) {
+    return Math.floor(Math.random() * length);
+  }
+
+  let compMoves = [];
+
+  for (let i = 0; i < compAlive.length; i++) {
+    let move = {
+      pokemon: compAlive[i],
+      attackedPokemon: playerAlive[randomPk(playerAlive.length)],
+      move: compAlive[i].moves[randomPk(4)],
+    };
+    compMoves.push(move);
+  }
+
+  return dispatch(_setComputerMoves(compMoves));
 };
 
 export const cancelGame = (matchId) => async (dispatch) => {
@@ -234,6 +275,8 @@ export default function (state = initialState, action) {
     case SEND_PLAYER_MOVES:
       return {...state, playerMoves: action.moves};
     case GET_PLAYER_MOVES:
+      return {...state, opponentMoves: action.moves};
+    case SET_COMPUTER_MOVES:
       return {...state, opponentMoves: action.moves};
     case CREATE_NEW_GAME:
       return {...state, matchId: action.game};

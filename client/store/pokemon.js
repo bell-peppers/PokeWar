@@ -2,6 +2,7 @@ import axios from 'axios';
 import history from '../history';
 import {FIREDB} from '../../utils/firebase';
 import {FeedbackSharp, LensOutlined} from '@material-ui/icons';
+import {randomCompPok} from '../../utils/starterPokemon';
 
 const GET_PLAYERONE_POKEMON = 'GET_PLAYERONE_POKEMON';
 const GET_OPPONENT_POKEMON = 'GET_OPPONENT_POKEMON';
@@ -17,6 +18,8 @@ const ANIMATE_POKEMON = 'ANIMATE_POKEMON';
 const ANIMATE_OPP_POKEMON = 'ANIMATE_OPP_POKEMON';
 const INCOMING_ATTACK = 'INCOMING_ATTACK';
 const APPLY_SINGLE_MOVE = 'APPLY_SINGLE_MOVES';
+const FETCH_COMPUTER_POKEMON = 'FETCH_COMPUTER_POKEMON';
+
 import UIfx from 'uifx';
 
 const slapSoundFile = 'sounds/slap.wav';
@@ -79,6 +82,13 @@ const _choosePlayerPokemon = (pokemon) => {
 const _unchoosePlayerPokemon = (pokemon) => {
   return {
     type: UNCHOOSE_PLAYER_POKEMON,
+    pokemon,
+  };
+};
+
+const _fetchComputerPokemon = (pokemon) => {
+  return {
+    type: FETCH_COMPUTER_POKEMON,
     pokemon,
   };
 };
@@ -178,7 +188,6 @@ export const applySingleMove =
         playerPk.forEach((pk, i) => {
           if (move.attackedPokemon.name === pk.name) {
             if (pk.active) {
-              console.log('player', pk);
               PlayerPkInd = i;
               pk.stats[0].base_stat -= move.report.Damage;
               if (soundOn) {
@@ -200,7 +209,6 @@ export const applySingleMove =
         oppPk.forEach((pk, i) => {
           if (move.attackedPokemon.name === pk.name) {
             if (pk.active) {
-              console.log('opp', pk);
               OppPkInd = i;
               pk.stats[0].base_stat -= move.report.Damage;
               if (soundOn) {
@@ -239,53 +247,53 @@ export const applySingleMove =
     }
   };
 
-export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
-  const feed = [];
-  moves.forEach((move, i) => {
-    const reportClass =
-      move.report.Class && move.report.Class !== 'Normal'
-        ? `${move.report.Class}`
-        : '';
-    const crit = move.report.isCrit ? ' Critical hit!' : '';
-    const action = {
-      type: 'feed',
-      message:
-        `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
-        reportClass +
-        crit,
-    };
-    playerPk.forEach((pk) => {
-      if (
-        pk.owner === move.attackedPokemon.owner &&
-        pk.name == move.attackedPokemon.name
-      ) {
-        pk.stats[0].base_stat -= move.report.Damage;
-        if (pk.stats[0].base_stat <= 0 && pk.active) {
-          pk.active = false;
-          action.message += ` ${pk.name} was killed in battle.`;
-        }
-      }
-    });
+// export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
+//   const feed = [];
+//   moves.forEach((move, i) => {
+//     const reportClass =
+//       move.report.Class && move.report.Class !== 'Normal'
+//         ? `${move.report.Class}`
+//         : '';
+//     const crit = move.report.isCrit ? ' Critical hit!' : '';
+//     const action = {
+//       type: 'feed',
+//       message:
+//         `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
+//         reportClass +
+//         crit,
+//     };
+//     playerPk.forEach((pk) => {
+//       if (
+//         pk.owner === move.attackedPokemon.owner &&
+//         pk.name == move.attackedPokemon.name
+//       ) {
+//         pk.stats[0].base_stat -= move.report.Damage;
+//         if (pk.stats[0].base_stat <= 0 && pk.active) {
+//           pk.active = false;
+//           action.message += ` ${pk.name} was killed in battle.`;
+//         }
+//       }
+//     });
 
-    oppPk.forEach((pk) => {
-      if (
-        pk.owner === move.attackedPokemon.owner &&
-        pk.name == move.attackedPokemon.name
-      ) {
-        pk.stats[0].base_stat -= move.report.Damage;
-        if (pk.stats[0].base_stat <= 0 && pk.active) {
-          pk.active = false;
-          action.message += `${pk.name} was killed in battle.`;
-        }
-      }
-    });
-    feed.push(action);
-  });
+//     oppPk.forEach((pk) => {
+//       if (
+//         pk.owner === move.attackedPokemon.owner &&
+//         pk.name == move.attackedPokemon.name
+//       ) {
+//         pk.stats[0].base_stat -= move.report.Damage;
+//         if (pk.stats[0].base_stat <= 0 && pk.active) {
+//           pk.active = false;
+//           action.message += `${pk.name} was killed in battle.`;
+//         }
+//       }
+//     });
+//     feed.push(action);
+//   });
 
-  const updatedPlayerPk = [...playerPk];
-  const updatedOppPk = [...oppPk];
-  dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
-};
+//   const updatedPlayerPk = [...playerPk];
+//   const updatedOppPk = [...oppPk];
+//   dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
+// };
 
 export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
   const updatedPk = oppPokemon.map((pk) => {
@@ -378,6 +386,85 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
   }
 };
 
+export const fetchComputerPokemon = () => async (dispatch) => {
+  try {
+    const pkId = randomCompPok();
+    let compPk = await Promise.all(
+      pkId.map(async (id) => {
+        const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
+        const ind = pk.data.moves.length;
+        let multiplier = Math.floor(((id * 151) % ind) / 2);
+        const movesArr = [];
+        if (ind - multiplier > 20) {
+          for (let i = 0; i < 20; i++) {
+            movesArr.push(pk.data.moves[multiplier + i]);
+          }
+        } else if (ind < 10) {
+          for (let i = 0; i < ind; i++) {
+            movesArr.push(pk.data.moves[i]);
+          }
+        } else {
+          for (let i = 0; i < 20; i++) {
+            movesArr.push(pk.data.moves[i]);
+          }
+        }
+
+        const newMoves = await Promise.all(
+          movesArr.map(async (move) => {
+            const getMove = await axios.get(`${move.move.url}`);
+            return {
+              move: move.move,
+              moveData: {
+                accuracy: getMove.data.accuracy,
+                type: getMove.data.type,
+                power: getMove.data.power,
+                damage_class: getMove.data.damage_class,
+              },
+            };
+          })
+        );
+        const newerMoves = newMoves.filter(
+          (move) => move.moveData.power !== null
+        );
+
+        const newestMoves =
+          newerMoves.length < 4
+            ? newerMoves
+            : [newerMoves[0], newerMoves[1], newerMoves[2], newerMoves[3]];
+
+        const pokemon = {
+          moves: newestMoves,
+          owner: 'Team Rocket',
+          id: pk.data.id,
+          name: pk.data.name,
+          stats: pk.data.stats,
+          types: pk.data.types,
+          active: true,
+          sprites: {
+            ...pk.data.sprites,
+            frontGif: `https://img.pokemondb.net/sprites/black-white/anim/normal/${pk.data.name}.gif`,
+            backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
+          },
+        };
+        pokemon.stats[0].max = pokemon.stats[0].base_stat;
+
+        // pokemon.stats[0].base_stat += 100;
+
+        //lowered hp for testing
+        // pokemon.stats[0].max = pokemon.stats[0].base_stat / 10;
+        // pokemon.stats[0].base_stat = pokemon.stats[0].base_stat / 10;
+
+        return pokemon;
+      })
+    );
+
+    return dispatch(_fetchComputerPokemon(compPk));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchMovesInfo = (pokemon) => async (dispatch) => {
   try {
     const updatedPk = await pokemon.map(async (pk) => {
@@ -421,6 +508,8 @@ export default function (
     case GET_PLAYERONE_POKEMON:
       return {...state, playerOnePokemon: action.pokemon};
     case GET_OPPONENT_POKEMON:
+      return {...state, opponentPokemon: action.pokemon};
+    case FETCH_COMPUTER_POKEMON:
       return {...state, opponentPokemon: action.pokemon};
     case ATTACK_OPPONENT:
       return {...state, playerTwoPokemon: action.pokemon};

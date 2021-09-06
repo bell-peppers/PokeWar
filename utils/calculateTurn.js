@@ -50,3 +50,25 @@ export default function calculateTurn(playerTurn, oppTurn) {
 
   return turnReport;
 }
+
+export const computerMoves = (oppPk, playerPk) => {
+  let compAlive = oppPk.filter((pk) => pk.active);
+  let playerAlive = playerPk.filter((pk) => pk.active);
+
+  function randomPk(length) {
+    return Math.floor(Math.random() * length);
+  }
+
+  let compMoves = [];
+
+  for (let i = 0; i < compAlive.length; i++) {
+    let move = {
+      pokemon: compAlive[i],
+      attackedPokemon: playerAlive[randomPk(playerAlive.length)],
+      attack: compAlive[i].moves[randomPk(4)],
+    };
+    compMoves.push(move);
+  }
+
+  return compMoves;
+};

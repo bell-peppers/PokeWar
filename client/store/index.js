@@ -1,7 +1,7 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { createLogger } from 'redux-logger';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {createLogger} from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import {composeWithDevTools} from 'redux-devtools-extension';
 import pokemon from './pokemon';
 import game from './game';
 import playerTurn from './playerTurn';
@@ -17,9 +17,14 @@ const reducer = combineReducers({
   userData,
   legendaries,
 });
+
 const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
+  applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 );
+
+//for deploy
+// const middleware = applyMiddleware(thunkMiddleware);
+
 const store = createStore(reducer, middleware);
 
 export default store;

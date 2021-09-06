@@ -79,7 +79,7 @@ export default function SignupPage() {
 
       history.push('/');
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError(error.message);
     }
     // console.log(currentUser);
