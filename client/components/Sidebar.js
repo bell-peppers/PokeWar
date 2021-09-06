@@ -39,8 +39,10 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    //justifyContent: 'center',
     flexDirection: 'column',
+    maxWidth: '80px',
+    textAlign: 'center',
   },
   chat: {
     width: '95%',
