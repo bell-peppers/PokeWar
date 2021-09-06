@@ -24,10 +24,12 @@ import Footer from './components/Footer';
 import AboutUs from './components/AboutUs';
 import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
+import Instructions from './components/Instructions';
 import OtherUserProfile from './components/OtherUserProfile';
 import Profile from './components/Profile';
 import SinglePlayerChoose from './components/SinglePlayer/SinglePlayerChoose';
 import SPMain from './components/SinglePlayer/SPMain';
+import ContactUs from './components/ContactUs';
 
 /**
  * COMPONENT
@@ -61,6 +63,8 @@ const Routes = (props) => {
         <Route path='/spgame' component={SPMain} />
         <Route exact path='/' component={MatchSearch} />
         <Route exact path='/store' component={Store} />
+        <Route exact path='/instructions' component={Instructions} />
+        <Route exact path='/contact' component={ContactUs} />
         <Route path='*' component={FourOhFour} />
       </Switch>
       <Footer />

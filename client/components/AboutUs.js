@@ -93,11 +93,12 @@ export default function AboutUs() {
 
 								<Link
 									to={{
-										pathname: 'https://steamcommunity.com/profiles/76561198043383017',
+										pathname:
+											'https://steamcommunity.com/profiles/76561198043383017',
 									}}
 									target='_blank'
 								>
-									<img src='/pics/steam.png' height= '20px' />
+									<img src='/pics/steam.png' height='20px' />
 								</Link>
 							</Grid>
 						</Grid>
@@ -139,20 +140,22 @@ export default function AboutUs() {
 								</Link>
 								<Link
 									to={{
-										pathname: 'https://steamcommunity.com/id/mymomthinksimthebest',
+										pathname:
+											'https://steamcommunity.com/id/mymomthinksimthebest',
 									}}
 									target='_blank'
 								>
-									<img src='/pics/steam.png' height= '20px' />
+									<img src='/pics/steam.png' height='20px' />
 								</Link>
 							</Grid>
 							<Typography className={classes.h3}>
-								Hi! I am Taya.<br /> 1v1 me bro
+								Hi! I'm Taya. I hope you enjoy PokeWar as much as we do! It was such a fun project to work on
+																<br />// GAMERS RISE UP. DAYTIME POKEWAR, NIGHTTIME POKEWAR. <br/>JOIN ME
 							</Typography>
 							<CardMedia
 								style={{
 									// marginTop: '100px',
-									width: 300,
+									width: 305,
 									// margin: 'auto',
 									// justifyContent: 'center',
 								}}
@@ -199,7 +202,8 @@ export default function AboutUs() {
 								/>
 							</CardMedia>
 							<Typography className={classes.h3}>
-								Hi! I am Gus. <br />1v1 me bro
+								Hi! I am Gus. <br />
+								1v1 me bro
 							</Typography>
 							<Grid
 								style={{
@@ -267,7 +271,9 @@ export default function AboutUs() {
 								</Link>
 							</Grid>
 							<Typography className={classes.h3}>
-								Hi! I am Nick!<br />1v1 me bro
+								Hi! I am Nick!
+								<br />
+								1v1 me bro
 							</Typography>
 							<CardMedia
 								style={{
@@ -277,13 +283,10 @@ export default function AboutUs() {
 									// justifyContent: 'center',
 								}}
 							>
-								<Image
-									src='/pics/nick.jpeg'
-									style={{
-										width: '280px',
-										height: '10%',
-									}}
-								></Image>
+								<img src='/pics/nick.png' style={{
+										width: '300px',
+										height: '280px',
+									}} />
 							</CardMedia>
 						</Grid>
 					</Grid>
