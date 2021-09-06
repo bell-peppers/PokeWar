@@ -214,6 +214,15 @@ const MatchSearch = (props) => {
           >
             Join By Match Id
           </Button>
+          <Button
+            size='large'
+            color='primary'
+            variant='contained'
+            className={classes.button}
+            onClick={() => history.push('./singleplayer')}
+          >
+            Singleplayer
+          </Button>
         </Grid>
         <Modal
           open={open}

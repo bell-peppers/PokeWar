@@ -26,6 +26,8 @@ import PostGame from './components/PostGame';
 import Store from './components/PokeStore';
 import OtherUserProfile from './components/OtherUserProfile';
 import Profile from './components/Profile';
+import SinglePlayerChoose from './components/SinglePlayer/SinglePlayerChoose';
+import SPMain from './components/SinglePlayer/SPMain';
 
 /**
  * COMPONENT
@@ -55,6 +57,8 @@ const Routes = (props) => {
         <Route path='/post' component={PostGame} />
         <Route path='/editprofile' component={EditProfile} />
         <Route path='/aboutus' exact component={AboutUs} />
+        <Route path='/singleplayer' component={SinglePlayerChoose} />
+        <Route path='/spgame' component={SPMain} />
         <Route exact path='/' component={MatchSearch} />
         <Route exact path='/store' component={Store} />
         <Route path='*' component={FourOhFour} />

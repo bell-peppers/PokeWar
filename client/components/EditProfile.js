@@ -101,7 +101,6 @@ function EditProfile(props) {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
       setUrl('');
-      console.log(URL.createObjectURL(e.target.files[0]));
     }
   };
 
@@ -308,7 +307,6 @@ function EditProfile(props) {
                   alt='cute_poke'
                   // onMouseOver={() => enlargeImg()}
                   onClick={(e) => {
-                    console.log(e.target.src);
                     setUrl(
                       'https://firebasestorage.googleapis.com/v0/b/poke-war-4483c.appspot.com/o/cute_poke.png?alt=media&token=7e307fea-7cba-4b23-9f30-bbe81a9844d2'
                     );

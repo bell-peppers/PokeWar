@@ -8,19 +8,24 @@ import {
   _clearPlayerTurn,
   _clearAttackedPokemon,
   _setCalculatedAttacks,
-} from '../store/playerTurn';
-import {_selectedPlayerPokemon} from '../store/playerTurn';
+} from '../../store/playerTurn';
+import {_selectedPlayerPokemon} from '../../store/playerTurn';
 import {
   attackOpponent,
   applySingleMove,
   _animateOppPokemon,
   _animatePokemon,
-} from '../store/pokemon';
-//import MoveBlock from './MoveBlock';
-import {sendPlayerMoves, getPlayerMoves} from '../store/game';
-import calculateTurn from '../../utils/calculateTurn';
-import {winCheck} from '../../utils/calculateTurn';
-import {colorTypeGradients} from '../../utils/ColorGradientFunc';
+} from '../../store/pokemon';
+
+import {
+  sendPlayerMoves,
+  getPlayerMoves,
+  setComputerMoves,
+  setSPWinner,
+} from '../../store/game';
+import calculateTurn from '../../../utils/calculateTurn';
+import {winCheck, computerMoves} from '../../../utils/calculateTurn';
+import {colorTypeGradients} from '../../../utils/ColorGradientFunc';
 import {useHistory} from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -108,7 +113,6 @@ const Actionbar = (props) => {
     playerPokemon,
     selectAttack,
     playerTurn,
-    sendMoves,
     clearPlayerTurn,
     clearAttackedPokemon,
     opponentPokemon,
@@ -117,21 +121,14 @@ const Actionbar = (props) => {
     playerAttack,
     isTurn,
     changeTurns,
-    role,
-    user,
-    opponentMoves,
-    setCalculatedAttacks,
-
-    clearOpponentMoves,
-    matchId,
     setWinner,
+    user,
+    setCalculatedAttacks,
+    clearOpponentMoves,
     opponentName,
-    winner,
     chosenPokemon,
     soundOn,
     applySingleMove,
-    animateOppPk,
-    animatePk,
   } = props;
   const classes = useStyles();
   const [selectedPlayerPokemon, setSelectedPlayerPokemon] = useState({
@@ -140,7 +137,6 @@ const Actionbar = (props) => {
   const [open, setOpen] = React.useState(false);
   const [errMessage, setErrMessage] = useState('');
   const history = useHistory();
-  useEffect(() => {}, []);
 
   function selectPokemon(pokemon) {
     if (pokemon.active && !alreadyPickedCheck(pokemon)) {
@@ -177,51 +173,49 @@ const Actionbar = (props) => {
       selectAttack(selectedPlayerPokemon, move);
     }
   }
-  async function checkForEndGame() {
+  function checkForEndGame() {
     if (winCheck(chosenPokemon, opponentPokemon)) {
-      await setWinner(chosenPokemon, user, opponentName);
       // alert(`${winner} wins!`);
+      setWinner(chosenPokemon, user, opponentName);
       history.push('/post');
     }
   }
 
-  async function completeTurnHandler() {
+  function completeTurnHandler() {
     if (playerTurn.length > 0) {
-      if (role === 'guest') {
-        if (soundOn) {
-          completeTurnSound.play();
-        }
-        sendMoves(playerTurn, user.username, matchId);
-      } else if (role === 'host') {
-        //make sure we have moves
-        if (opponentMoves) {
-          if (soundOn) {
-            completeTurnSound.play();
-          }
-          const thisTurn = calculateTurn(playerTurn, opponentMoves);
-          setCalculatedAttacks(thisTurn);
-          await sendMoves(thisTurn, user.username, matchId);
-          //apply
-          thisTurn.map((move, index) => {
-            setTimeout(() => {
-              applySingleMove(
-                move,
-                chosenPokemon,
-                opponentPokemon,
-                user.username,
-                soundOn
-              );
-
-              if (index === thisTurn.length - 1) {
-                // animatePk(null);
-                // animateOppPk(null);
-                checkForEndGame();
-              }
-            }, 2000 * index);
-          });
-        }
-      }
       changeTurns();
+      //make sure we have moves
+      //set computer moves
+      // setComputerMoves(opponentPokemon, chosenPokemon);
+      if (soundOn) {
+        completeTurnSound.play();
+      }
+      const thisTurn = calculateTurn(
+        playerTurn,
+        computerMoves(opponentPokemon, chosenPokemon)
+      );
+      setCalculatedAttacks(thisTurn);
+
+      //apply
+      thisTurn.map((move, index) => {
+        setTimeout(() => {
+          applySingleMove(
+            move,
+            chosenPokemon,
+            opponentPokemon,
+            user.username,
+            soundOn
+          );
+
+          if (index === thisTurn.length - 1) {
+            // animatePk(null);
+            // animateOppPk(null);
+            changeTurns();
+            checkForEndGame();
+          }
+        }, 2000 * index);
+      });
+
       clearPlayerTurn();
       clearAttackedPokemon();
       selectPlayerPokemon({});
@@ -462,6 +456,10 @@ const mapDispatch = (dispatch) => {
       dispatch(applySingleMove(move, playerPk, oppPk, username, soundOn)),
     animateOppPk: (index) => dispatch(_animateOppPokemon(index)),
     animatePk: (index) => dispatch(_animatePokemon(index)),
+    setComputerMoves: (oppPk, playerPk) =>
+      dispatch(setComputerMoves(oppPk, playerPk)),
+    setWinner: (playerPk, user, oppName) =>
+      dispatch(setSPWinner(playerPk, user, oppName)),
   };
 };
 export default connect(mapState, mapDispatch)(Actionbar);

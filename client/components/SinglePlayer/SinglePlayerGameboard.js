@@ -6,15 +6,14 @@ import {
   _animatePokemon,
   incomingAttack,
   applySingleMove,
-} from '../store/pokemon';
+} from '../../store/pokemon';
 import {
   selectAttackedPokemon,
   _selectAttack,
   _selectedPlayerPokemon,
-} from '../store/playerTurn';
-import {getPlayerMoves} from '../store/game';
-import {FIREDB} from '../../utils/firebase';
-import {winCheck} from '../../utils/calculateTurn';
+} from '../../store/playerTurn';
+import {getPlayerMoves} from '../../store/game';
+import {winCheck} from '../../../utils/calculateTurn';
 import {useHistory} from 'react-router-dom';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -168,24 +167,17 @@ const Gameboard = (props) => {
   const {
     resetAttack,
     selectAttacked,
-    getOpponentMoves,
     selectedPlayerPk,
     playerAttack,
     resetPlayerPokemon,
     chosenPokemon,
-    user,
     opponentPokemon,
-    changeTurns,
-    opponentName,
-    role,
-    matchId,
-    setWinner,
     soundOn,
     pkAnim,
     oppAnim,
     animateOppPk,
     animatePk,
-    applySingleMove,
+
     incomingAtk,
   } = props;
 
@@ -194,8 +186,6 @@ const Gameboard = (props) => {
   const [oppMouseDown, setOppMouseDown] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState('');
-  // const [pk1Anim, setPk1Anim] = useState(null);
-  // const [oppPkAnim, setOppPkAnim] = useState(null);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -220,59 +210,9 @@ const Gameboard = (props) => {
     },
   }))(LinearProgress);
 
-  useEffect(() => {
-    listenForOpponentMoves();
-  }, []);
-
-  function listenForOpponentMoves() {
-    const dbUpdates = FIREDB.ref(`Match/${matchId}/moves/${opponentName}`);
-    dbUpdates.limitToLast(1).on('value', (snapshot) => {
-      const newMoves = snapshot.val();
-      if (newMoves) {
-        const moves = Object.values(newMoves)[0];
-        if (role === 'guest') {
-          moves.map((move, index) => {
-            setTimeout(() => {
-              if (!move.skipped) {
-                applySingleMove(
-                  move,
-                  chosenPokemon,
-                  opponentPokemon,
-                  user.username,
-                  soundOn
-                );
-              }
-
-              if (index === moves.length - 1) {
-                // animatePk(null);
-                // animateOppPk(null);
-                checkForEndGame();
-                changeTurns();
-              }
-            }, 2000 * index);
-          });
-        } else if (role === 'host') {
-          if (!moves[0].skipped) {
-            getOpponentMoves(moves);
-          } else {
-            getOpponentMoves([]);
-          }
-          changeTurns();
-        }
-      }
-    });
-  }
-
   function completeAnimation() {
     animatePk(null);
     animateOppPk(null);
-  }
-
-  async function checkForEndGame() {
-    if (winCheck(chosenPokemon, opponentPokemon)) {
-      await setWinner(chosenPokemon, user, opponentName);
-      history.push('/post');
-    }
   }
 
   function clickHandle(pk) {
@@ -502,7 +442,6 @@ const mapDispatch = (dispatch) => {
     selectAttacked: (atkdpk, atk, pk) =>
       dispatch(selectAttackedPokemon(atkdpk, atk, pk)),
     getOpponentMoves: (newMoves) => dispatch(getPlayerMoves(newMoves)),
-
     resetPlayerPokemon: () => dispatch(_selectedPlayerPokemon({})),
     animateOppPk: (index) => dispatch(_animateOppPokemon(index)),
     animatePk: (index) => dispatch(_animatePokemon(index)),

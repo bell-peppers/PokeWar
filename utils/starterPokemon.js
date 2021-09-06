@@ -12,3 +12,11 @@ export default function randomStarterPk() {
   }
   return pkArray;
 }
+
+export function randomCompPok() {
+  let pkArray = [];
+  while (pkArray.length < 3) {
+    pkArray.push(randomNum());
+  }
+  return pkArray;
+}

@@ -71,7 +71,7 @@ export default function LoginPage() {
       login(emailRef.current.value, passwordRef.current.value);
       history.push('/');
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError(error.message);
     }
     setLoading(false);
