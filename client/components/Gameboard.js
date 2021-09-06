@@ -398,7 +398,12 @@ const Gameboard = (props) => {
               })}
           </div>
           <div className={classes.playerSide}>
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar
+              open={open}
+              autoHideDuration={6000}
+              onClose={handleClose}
+              anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            >
               <Alert onClose={handleClose} severity='info'>
                 {message}
               </Alert>

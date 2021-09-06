@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
     maxWidth: '600px',
     height: '85vh',
     textAlign: 'center',
+    alignItems: 'center',
     // borderWidth: '1px',
     // borderStyle: 'solid',
     // borderColor: 'black',
