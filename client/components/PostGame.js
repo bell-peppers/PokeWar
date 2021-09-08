@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {_resetPokemonState} from '../store/pokemon';
 import {cancelGame, _resetGameState} from '../store/game';
 import {_resetTurn} from '../store/playerTurn';
+import {FIREDB} from '../../utils/firebase';
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -49,6 +50,10 @@ function PostGame(props) {
     if (music) {
       music.pause();
     }
+    FIREDB.ref(`Match/${matchId}/messages`).off();
+    FIREDB.ref(`Match/${matchId}/moves/${opponentName}`).off();
+    FIREDB.ref(`Match/${matchId}/guest`).off();
+    FIREDB.ref(`Match/${matchId}/ready`).off();
   }, []);
 
   function clickHandle() {

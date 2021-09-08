@@ -12,12 +12,14 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import {OutlinedInput} from '@material-ui/core';
 import {GitHub} from '@material-ui/icons';
+import Loading from './Loading';
 
 const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     height: '500px',
+    marginTop: '25px',
     flexDirection: 'column',
     justifyContent: 'space-around',
   },
@@ -30,14 +32,19 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     justifyContent: 'space-between',
     borderRadius: '15px',
+    marginBottom: '15px',
   },
   signIn: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    border: '1px solid black',
+    // border: '1px solid black',
     cursor: 'pointer',
     margin: '5px',
+  },
+  label: {
+    marginTop: '15px',
+    marginLeft: '15px',
   },
 }));
 
@@ -110,15 +117,20 @@ export default function LoginPage() {
           <Grid style={{display: 'flex', flexDirection: 'column'}}>
             <form className={classes.form} onSubmit={handleSubmit}>
               <FormControl variant='outlined'>
-                <InputLabel htmlFor='login-email'>E-mail</InputLabel>
+                <InputLabel htmlFor='login-email' className={classes.label}>
+                  E-mail
+                </InputLabel>
                 <OutlinedInput
                   id='login-email'
+                  label='e-mail'
                   inputRef={emailRef}
-                  labelWidth={70}
+                  autoFocus
                 />
               </FormControl>
               <FormControl variant='outlined'>
-                <InputLabel htmlFor='login-password'>Password</InputLabel>
+                <InputLabel htmlFor='login-password' className={classes.label}>
+                  Password
+                </InputLabel>
                 <OutlinedInput
                   label='Password'
                   id='login-password'
@@ -131,6 +143,7 @@ export default function LoginPage() {
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge='end'
+                        tabIndex='-1'
                       >
                         {values.showPassword ? (
                           <Visibility />
@@ -146,6 +159,7 @@ export default function LoginPage() {
               <Button
                 variant='contained'
                 disabled={loading}
+                color='primary'
                 type='submit'
                 style={{
                   width: '100px',
