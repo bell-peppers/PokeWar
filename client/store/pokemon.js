@@ -166,8 +166,8 @@ export const applySingleMove =
   (move, playerPk, oppPk, username, soundOn) => (dispatch) => {
     if (move.pokemon.active && move.attackedPokemon.active) {
       let incoming = false;
-      let PlayerPkInd = 0;
-      let OppPkInd = 0;
+      let PlayerPkInd = null;
+      let OppPkInd = null;
 
       const reportClass =
         move.report.Class && move.report.Class !== 'Normal'
@@ -184,48 +184,63 @@ export const applySingleMove =
 
       if (move.attackedPokemon.owner === username) {
         incoming = true;
-
-        playerPk.forEach((pk, i) => {
-          if (move.attackedPokemon.name === pk.name) {
-            if (pk.active) {
-              PlayerPkInd = i;
-              pk.stats[0].base_stat -= move.report.Damage;
-              if (soundOn) {
-                slapSound.play();
-              }
-              if (pk.stats[0].base_stat <= 0 && pk.active) {
-                pk.active = false;
-                feed.message += ` ${pk.name} was killed in battle.`;
-              }
-              oppPk.forEach((pk, i) => {
-                if (move.pokemon.name === pk.name) {
-                  OppPkInd = i;
+        const isStillAlive = oppPk.filter(
+          (pk) => move.pokemon.name === pk.name && pk.active
+        );
+        if (isStillAlive.length != 0) {
+          playerPk.forEach((pk, i) => {
+            if (move.attackedPokemon.name === pk.name) {
+              if (pk.active) {
+                PlayerPkInd = i;
+                pk.stats[0].base_stat -= move.report.Damage;
+                if (soundOn) {
+                  slapSound.play();
                 }
-              });
+                if (pk.stats[0].base_stat <= 0 && pk.active) {
+                  pk.active = false;
+                  pk.stats[0].base_stat = 0;
+                  feed.message += ` ${pk.name} was killed in battle.`;
+                }
+                oppPk.forEach((pk, i) => {
+                  if (move.pokemon.name === pk.name) {
+                    OppPkInd = i;
+                  }
+                });
+              }
             }
-          }
-        });
+          });
+        } else {
+          feed.message = `${move.pokemon.name} has fallen and cannot attack`;
+        }
       } else {
-        oppPk.forEach((pk, i) => {
-          if (move.attackedPokemon.name === pk.name) {
-            if (pk.active) {
-              OppPkInd = i;
-              pk.stats[0].base_stat -= move.report.Damage;
-              if (soundOn) {
-                punchSound.play();
-              }
-              if (pk.stats[0].base_stat <= 0 && pk.active) {
-                pk.active = false;
-                feed.message += ` ${pk.name} was killed in battle.`;
-              }
-              playerPk.forEach((pk, i) => {
-                if (move.pokemon.name === pk.name) {
-                  PlayerPkInd = i;
+        const isStillAlive = playerPk.filter(
+          (pk) => move.pokemon.name === pk.name && pk.active
+        );
+        if (isStillAlive.length != 0) {
+          oppPk.forEach((pk, i) => {
+            if (move.attackedPokemon.name === pk.name) {
+              if (pk.active) {
+                OppPkInd = i;
+                pk.stats[0].base_stat -= move.report.Damage;
+                if (soundOn) {
+                  punchSound.play();
                 }
-              });
+                if (pk.stats[0].base_stat <= 0 && pk.active) {
+                  pk.active = false;
+                  pk.stats[0].base_stat = 0;
+                  feed.message += ` ${pk.name} was killed in battle.`;
+                }
+                playerPk.forEach((pk, i) => {
+                  if (move.pokemon.name === pk.name) {
+                    PlayerPkInd = i;
+                  }
+                });
+              }
             }
-          }
-        });
+          });
+        } else {
+          feed.message = `${move.pokemon.name} has fallen and cannot attack`;
+        }
       }
       const newPk = [...playerPk];
       const newOppPk = [...oppPk];
@@ -241,7 +256,7 @@ export const applySingleMove =
     } else if (!move.attackedPokemon.active) {
       let feed = {
         type: 'feed',
-        message: `${move.attackedPokemon.name} has died and cannot be attacked`,
+        message: `${move.pokemon.name} attacks ${move.attackedPokemon.name} lifeless body...`,
       };
       dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
     }
@@ -368,13 +383,13 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
             backGif: `https://img.pokemondb.net/sprites/black-white/anim/back-normal/${pk.data.name}.gif`,
           },
         };
-        //pokemon.stats[0].max = pokemon.stats[0].base_stat;
+        pokemon.stats[0].max = pokemon.stats[0].base_stat;
 
         // pokemon.stats[0].base_stat += 100;
 
         //lowered hp for testing
-        pokemon.stats[0].max = pokemon.stats[0].base_stat / 10;
-        pokemon.stats[0].base_stat = pokemon.stats[0].base_stat / 10;
+        // pokemon.stats[0].max = pokemon.stats[0].base_stat / 10;
+        // pokemon.stats[0].base_stat = pokemon.stats[0].base_stat / 10;
 
         return pokemon;
       })
