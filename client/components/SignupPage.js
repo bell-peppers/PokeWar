@@ -29,6 +29,10 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     borderRadius: '15px',
   },
+  label: {
+    marginTop: '15px',
+    marginLeft: '15px',
+  },
 }));
 
 export default function SignupPage() {
@@ -63,27 +67,30 @@ export default function SignupPage() {
       return setError(
         'Username contains characters that are not allowed. Please try again'
       );
-    }
-    if (passwordRef.current.value !== passwordConfirmationRef.current.value) {
+    } else if (
+      passwordRef.current.value !== passwordConfirmationRef.current.value
+    ) {
       return setError('Passwords do not match');
+    } else if (passwordRef.current.value.length < 6) {
+      return setError('Passwords must be at least 6 characters in length');
+    } else {
+      try {
+        setError('');
+        setLoading(true);
+        signup(
+          emailRef.current.value,
+          passwordRef.current.value,
+          usernameRef.current.value
+        );
+        setLoading(false);
+        history.push('/');
+      } catch (error) {
+        console.error(error);
+        setError(error.message);
+      }
     }
 
-    try {
-      setError('');
-      setLoading(true);
-      signup(
-        emailRef.current.value,
-        passwordRef.current.value,
-        usernameRef.current.value
-      );
-
-      history.push('/');
-    } catch (error) {
-      console.error(error);
-      setError(error.message);
-    }
     // console.log(currentUser);
-    setLoading(false);
   }
 
   return (
@@ -92,20 +99,41 @@ export default function SignupPage() {
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <h2>CREATE A NEW ACCOUNT</h2>
         </Grid>
-        {error && <Alert severity='error'>{error}</Alert>}
+        {error && (
+          <Alert
+            severity='error'
+            style={{display: 'flex', justifyContent: 'center'}}
+          >
+            {error}
+          </Alert>
+        )}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <form className={classes.form} onSubmit={handleSubmit}>
-            <FormControl variant='outlined'>
-              <InputLabel htmlFor='signup-username'>Username</InputLabel>
+            <FormControl required variant='outlined'>
+              <InputLabel
+                htmlFor='signup-username'
+                className={classes.label}
+                required
+              >
+                Username
+              </InputLabel>
               <OutlinedInput
                 label='Username'
                 id='signup-username'
                 inputRef={usernameRef}
-                labelWidth={70}
+                autoFocus
+                //labelWidth={100}
               />
             </FormControl>
+
             <FormControl variant='outlined'>
-              <InputLabel htmlFor='signup-email'>E-mail</InputLabel>
+              <InputLabel
+                htmlFor='signup-email'
+                className={classes.label}
+                required
+              >
+                E-mail
+              </InputLabel>
               <OutlinedInput
                 label='E-mail'
                 id='signup-email'
@@ -115,7 +143,13 @@ export default function SignupPage() {
             </FormControl>
 
             <FormControl variant='outlined'>
-              <InputLabel htmlFor='signup-password'>Password</InputLabel>
+              <InputLabel
+                htmlFor='signup-password'
+                className={classes.label}
+                required
+              >
+                Password
+              </InputLabel>
               <OutlinedInput
                 label='Password'
                 id='signup-password'
@@ -138,7 +172,11 @@ export default function SignupPage() {
               />
             </FormControl>
             <FormControl variant='outlined'>
-              <InputLabel htmlFor='signup-password-confirmation'>
+              <InputLabel
+                htmlFor='signup-password-confirmation'
+                className={classes.label}
+                required
+              >
                 Password Confirmation
               </InputLabel>
               <OutlinedInput
@@ -168,6 +206,7 @@ export default function SignupPage() {
             </FormControl>
             <Button
               variant='contained'
+              color='primary'
               disabled={loading}
               type='submit'
               style={{

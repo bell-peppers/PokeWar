@@ -30,6 +30,7 @@ import Profile from './components/Profile';
 import SinglePlayerChoose from './components/SinglePlayer/SinglePlayerChoose';
 import SPMain from './components/SinglePlayer/SPMain';
 import ContactUs from './components/ContactUs';
+import Loading from './components/Loading';
 
 /**
  * COMPONENT
@@ -61,7 +62,11 @@ const Routes = (props) => {
         <Route path='/aboutus' exact component={AboutUs} />
         <Route path='/singleplayer' component={SinglePlayerChoose} />
         <Route path='/spgame' component={SPMain} />
-        <Route exact path='/' component={MatchSearch} />
+        <Route
+          exact
+          path='/'
+          component={currentUser ? MatchSearch : LoginPage}
+        />
         <Route exact path='/store' component={Store} />
         <Route exact path='/instructions' component={Instructions} />
         <Route exact path='/contact' component={ContactUs} />
