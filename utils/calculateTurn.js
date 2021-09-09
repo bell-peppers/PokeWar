@@ -19,7 +19,6 @@ export function winCheck(playerPk, oppPk) {
 
 export default function calculateTurn(playerTurn, oppTurn) {
   const fullTurn = [...playerTurn, ...oppTurn];
-  console.log(fullTurn);
   const allPokemon = fullTurn
     .map((turn) => {
       return turn.pokemon;

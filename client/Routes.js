@@ -62,6 +62,7 @@ const Routes = (props) => {
         <Route path='/aboutus' exact component={AboutUs} />
         <Route path='/singleplayer' component={SinglePlayerChoose} />
         <Route path='/spgame' component={SPMain} />
+        <Route path='/match' component={MatchSearch} />
         <Route
           exact
           path='/'

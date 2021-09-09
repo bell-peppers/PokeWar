@@ -61,7 +61,7 @@ export default function SignupPage() {
     event.preventDefault();
   };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (usernameRef.current.value.match(/[.\[\]#$]/g)) {
       return setError(
@@ -77,15 +77,15 @@ export default function SignupPage() {
       try {
         setError('');
         setLoading(true);
-        signup(
+        await signup(
           emailRef.current.value,
           passwordRef.current.value,
           usernameRef.current.value
         );
         setLoading(false);
-        history.push('/');
+        history.push('/match');
       } catch (error) {
-        console.error(error);
+        setLoading(false);
         setError(error.message);
       }
     }
@@ -135,6 +135,7 @@ export default function SignupPage() {
                 E-mail
               </InputLabel>
               <OutlinedInput
+                required
                 label='E-mail'
                 id='signup-email'
                 inputRef={emailRef}

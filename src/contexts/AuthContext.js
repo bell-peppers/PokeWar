@@ -14,10 +14,22 @@ export function AuthProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null);
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
+  // async function signup(email, password, username) {
+  //   const user = await auth.createUserWithEmailAndPassword(email, password);
+  //   createNewAccount(user.user.uid, user.user.email, username);
+  //   return user;
+  // }
+
   async function signup(email, password, username) {
-    const user = await auth.createUserWithEmailAndPassword(email, password);
-    createNewAccount(user.user.uid, user.user.email, username);
-    return user;
+    return new Promise((resolve, reject) => {
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((user) => {
+          resolve(user);
+          createNewAccount(user.user.uid, user.user.email, username);
+        })
+        .catch((reason) => reject(reason));
+    });
   }
 
   function findUserProfile(userUID) {
@@ -55,13 +67,24 @@ export function AuthProvider({children}) {
     });
   }
 
+  // async function login(email, password) {
+  //   const user = await auth.signInWithEmailAndPassword(email, password);
+  //   return user;
+  // }
+
   async function login(email, password) {
-    const user = await auth.signInWithEmailAndPassword(email, password);
-    return user;
+    return new Promise((resolve, reject) => {
+      auth
+        .signInWithEmailAndPassword(email, password)
+        .then((user) => {
+          resolve(user);
+        })
+        .catch((reason) => reject(reason));
+    });
   }
 
   function logout() {
-    window.location.href = '/';
+    //window.location.href = '/';
     return auth.signOut();
   }
 
@@ -78,75 +101,152 @@ export function AuthProvider({children}) {
     });
   }
 
-  function googleLogin() {
-    auth.signInWithPopup(googleProvider).then((result) => {
-      const token = result.credential.accessToken;
-      const user = result.user;
-      FIREDB.ref(`users`)
-        .child(user.uid)
-        .get()
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            window.location.href = '/';
-          } else {
-            createNewAccount(
-              user.uid,
-              user.email,
-              user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-            );
-            window.location.href = '/';
-            return user;
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    });
-  }
+  // function googleLogin() {
+  //   auth.signInWithPopup(googleProvider).then((result) => {
 
-  function githubLogin() {
-    // const auth = getAuth();
-    auth.signInWithPopup(githubProvider).then((result) => {
-      const token = result.credential.accessToken;
-      const user = result.user;
-      FIREDB.ref(`users`)
-        .child(user.uid)
-        .get()
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            window.location.href = '/';
-          } else {
-            user.displayName
-              ? createNewAccount(
+  //     const token = result.credential.accessToken;
+  //     const user = result.user;
+  //     FIREDB.ref(`users`)
+  //       .child(user.uid)
+  //       .get()
+  //       .then((snapshot) => {
+  //         if (snapshot.exists()) {
+  //           window.location.href = '/match';
+  //         } else {
+  //           createNewAccount(
+  //             user.uid,
+  //             user.email,
+  //             user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+  //           );
+  //           window.location.href = '/';
+  //           return user;
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       });
+  //   });
+  // }
+
+  async function googleLogin() {
+    return new Promise((resolve, reject) => {
+      auth
+        .signInWithPopup(googleProvider)
+        .then((result) => {
+          resolve(result);
+          const token = result.credential.accessToken;
+          const user = result.user;
+          FIREDB.ref(`users`)
+            .child(user.uid)
+            .get()
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                // window.location.href = '/match';
+              } else {
+                createNewAccount(
                   user.uid,
-                  '',
-                  user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-                )
-              : createNewAccount(
-                  user.uid,
-                  '',
-                  [
-                    'Pikachu',
-                    'Mew',
-                    'Snorlax',
-                    'Charmander',
-                    'Bulbasaur',
-                    'Sylveon',
-                    'Gengar',
-                    'Chikorita',
-                    'Ekans',
-                  ][Math.floor(Math.random() * 9)] //0-8
+                  user.email,
+                  user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
                 );
-
-            window.location.href = '/';
-            return user;
-          }
+                // window.location.href = '/';
+                return user;
+              }
+            });
         })
-        .catch((error) => {
-          console.error(error);
-        });
+        .catch((reason) => reject(reason));
     });
   }
+
+  async function githubLogin() {
+    // const auth = getAuth();
+    return new Promise((resolve, reject) => {
+      auth
+        .signInWithPopup(githubProvider)
+        .then((result) => {
+          resolve(result);
+          const token = result.credential.accessToken;
+          const user = result.user;
+          FIREDB.ref(`users`)
+            .child(user.uid)
+            .get()
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                //window.location.href = '/match';
+              } else {
+                user.displayName
+                  ? createNewAccount(
+                      user.uid,
+                      '',
+                      user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+                    )
+                  : createNewAccount(
+                      user.uid,
+                      '',
+                      [
+                        'Pikachu',
+                        'Mew',
+                        'Snorlax',
+                        'Charmander',
+                        'Bulbasaur',
+                        'Sylveon',
+                        'Gengar',
+                        'Chikorita',
+                        'Ekans',
+                      ][Math.floor(Math.random() * 9)] //0-8
+                    );
+
+                //window.location.href = '/match';
+                return user;
+              }
+            });
+        })
+        .catch((reason) => reject(reason));
+    });
+  }
+
+  // function githubLogin() {
+  //   // const auth = getAuth();
+  //   auth.signInWithPopup(githubProvider).then((result) => {
+  //     const token = result.credential.accessToken;
+  //     const user = result.user;
+  //     FIREDB.ref(`users`)
+  //       .child(user.uid)
+  //       .get()
+  //       .then((snapshot) => {
+  //         if (snapshot.exists()) {
+  //           window.location.href = '/match';
+  //         } else {
+  //           user.displayName
+  //             ? createNewAccount(
+  //                 user.uid,
+  //                 '',
+  //                 user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
+  //               )
+  //             : createNewAccount(
+  //                 user.uid,
+  //                 '',
+  //                 [
+  //                   'Pikachu',
+  //                   'Mew',
+  //                   'Snorlax',
+  //                   'Charmander',
+  //                   'Bulbasaur',
+  //                   'Sylveon',
+  //                   'Gengar',
+  //                   'Chikorita',
+  //                   'Ekans',
+  //                 ][Math.floor(Math.random() * 9)] //0-8
+  //               );
+
+  //           window.location.href = '/match';
+  //           return user;
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       });
+  //   });
+  // }
 
   function leaderboardScores() {
     const usersRef = FIREDB.ref('users');
