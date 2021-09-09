@@ -69,41 +69,48 @@ export default function LoginPage() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  function handleSubmit(e) {
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       setError('');
       setLoading(true);
-      login(emailRef.current.value, passwordRef.current.value);
-      history.push('/');
+      await login(emailRef.current.value, passwordRef.current.value).then(
+        () => {
+          history.push('/match');
+        }
+      );
     } catch (error) {
       console.error(error);
       setError(error.message);
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleGoogleLogin() {
     try {
       setError('');
       setLoading(true);
-      await googleLogin();
+      await googleLogin().then(() => {
+        history.push('/match');
+      });
     } catch (error) {
       setError(error);
+      setLoading(false);
     }
-    setLoading(false);
   }
   async function handleGithubLogin() {
     try {
       setError('');
       setLoading(true);
-      await githubLogin();
+      await githubLogin().then(() => {
+        history.push('/match');
+      });
     } catch (error) {
       setError(error.message);
-      console.error(error);
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -112,7 +119,14 @@ export default function LoginPage() {
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <h2> SIGN IN</h2>
         </Grid>
-        {error && <Alert severity='error'>{error}</Alert>}
+        {error && (
+          <Alert
+            severity='error'
+            style={{display: 'flex', justifyContent: 'center'}}
+          >
+            {error}
+          </Alert>
+        )}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <Grid style={{display: 'flex', flexDirection: 'column'}}>
             <form className={classes.form} onSubmit={handleSubmit}>
