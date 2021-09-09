@@ -1,33 +1,17 @@
 {
   "rules": {
-    ".read": true,  // 2021-9-18
-    ".write": true,  // 2021-9-18
-// "usernames": {
-//         ".read": true,
-//         ".write": "auth != null",
-//         "$username": {
-//         ".validate": "!root.child('usernames').hasChild($username)"
-//         }
-//       }
+    "users": {
+      ".write": false,
+          ".read":true,
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid",
+          ".read":"auth != null && auth.uid == $uid"
+      }
+    },
+      "Match":{
+         ".write": true,
+          ".read":true
+      }
   }
 }
 
-// { "rules": {
-//    ".read": true,  // 2021-9-18
-//  ".write": true,  // 2021-9-18
-//   "users": {
-//   "$uid": {
-//     // ".write": "auth !== null && auth.uid === $uid",
-//     // ".read": "auth !== null && auth.provider === 'password'",
-//     ".read": true,  // 2021-9-18
-// ".write": true,  // 2021-9-18
-//     "username": {
-//       ".validate": "
-//         !root.child('usernames').child(newData.val()).exists() ||
-//         root.child('usernames').child(newData.val()).val() == $uid"
-//     }
-//   }
-// }
-// }
-
-// }
