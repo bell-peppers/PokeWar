@@ -12,12 +12,14 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import {OutlinedInput} from '@material-ui/core';
 import {GitHub} from '@material-ui/icons';
+import Loading from './Loading';
 
 const useStyles = makeStyles(() => ({
   main: {
     fontFamily: 'Courier New, monospace',
     display: 'flex',
     height: '500px',
+    marginTop: '25px',
     flexDirection: 'column',
     justifyContent: 'space-around',
   },
@@ -30,14 +32,19 @@ const useStyles = makeStyles(() => ({
     backgroundColor: 'white',
     justifyContent: 'space-between',
     borderRadius: '15px',
+    marginBottom: '15px',
   },
   signIn: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    border: '1px solid black',
+    // border: '1px solid black',
     cursor: 'pointer',
     margin: '5px',
+  },
+  label: {
+    marginTop: '15px',
+    marginLeft: '15px',
   },
 }));
 
@@ -62,41 +69,48 @@ export default function LoginPage() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  function handleSubmit(e) {
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     try {
       setError('');
       setLoading(true);
-      login(emailRef.current.value, passwordRef.current.value);
-      history.push('/');
+      await login(emailRef.current.value, passwordRef.current.value).then(
+        () => {
+          history.push('/match');
+        }
+      );
     } catch (error) {
       console.error(error);
       setError(error.message);
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleGoogleLogin() {
     try {
       setError('');
       setLoading(true);
-      await googleLogin();
+      await googleLogin().then(() => {
+        history.push('/match');
+      });
     } catch (error) {
       setError(error);
+      setLoading(false);
     }
-    setLoading(false);
   }
   async function handleGithubLogin() {
     try {
       setError('');
       setLoading(true);
-      await githubLogin();
+      await githubLogin().then(() => {
+        history.push('/match');
+      });
     } catch (error) {
       setError(error.message);
-      console.error(error);
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -105,20 +119,32 @@ export default function LoginPage() {
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <h2> SIGN IN</h2>
         </Grid>
-        {error && <Alert severity='error'>{error}</Alert>}
+        {error && (
+          <Alert
+            severity='error'
+            style={{display: 'flex', justifyContent: 'center'}}
+          >
+            {error}
+          </Alert>
+        )}
         <Grid style={{display: 'flex', justifyContent: 'center'}}>
           <Grid style={{display: 'flex', flexDirection: 'column'}}>
             <form className={classes.form} onSubmit={handleSubmit}>
               <FormControl variant='outlined'>
-                <InputLabel htmlFor='login-email'>E-mail</InputLabel>
+                <InputLabel htmlFor='login-email' className={classes.label}>
+                  E-mail
+                </InputLabel>
                 <OutlinedInput
                   id='login-email'
+                  label='e-mail'
                   inputRef={emailRef}
-                  labelWidth={70}
+                  autoFocus
                 />
               </FormControl>
               <FormControl variant='outlined'>
-                <InputLabel htmlFor='login-password'>Password</InputLabel>
+                <InputLabel htmlFor='login-password' className={classes.label}>
+                  Password
+                </InputLabel>
                 <OutlinedInput
                   label='Password'
                   id='login-password'
@@ -131,6 +157,7 @@ export default function LoginPage() {
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge='end'
+                        tabIndex='-1'
                       >
                         {values.showPassword ? (
                           <Visibility />
@@ -146,6 +173,7 @@ export default function LoginPage() {
               <Button
                 variant='contained'
                 disabled={loading}
+                color='primary'
                 type='submit'
                 style={{
                   width: '100px',

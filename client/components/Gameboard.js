@@ -317,7 +317,7 @@ const Gameboard = (props) => {
                         ? classes.oppPokemonContainerMDown
                         : classes.oppPokemonContainer
                     }
-                    key={pk.id ? pk.id : i}
+                    key={pk.id}
                     onClick={() => clickHandle(pk)}
                   >
                     <div className={classes.nameBar}>
@@ -380,7 +380,7 @@ const Gameboard = (props) => {
                     </Animate>
                   </div>
                 ) : (
-                  <div className={classes.oppPokemonContainer}>
+                  <div className={classes.oppPokemonContainer} key={pk.id}>
                     <div className={classes.nameBar}>
                       <p>{pk.name}</p>
                       <BorderLinearProgress
@@ -398,7 +398,12 @@ const Gameboard = (props) => {
               })}
           </div>
           <div className={classes.playerSide}>
-            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Snackbar
+              open={open}
+              autoHideDuration={6000}
+              onClose={handleClose}
+              anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+            >
               <Alert onClose={handleClose} severity='info'>
                 {message}
               </Alert>

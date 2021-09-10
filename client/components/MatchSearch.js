@@ -88,6 +88,7 @@ const MatchSearch = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
+  const [rows, setRows] = useState([]);
 
   const {
     newGame,
@@ -102,7 +103,7 @@ const MatchSearch = (props) => {
   } = props;
 
   const {currentUser, leaderboardScores} = useAuth();
-  const rows = leaderboardScores();
+  //const rows = leaderboardScores();
   const handleOpen = async () => {
     if (user.uid) {
       await findGame();
@@ -168,6 +169,9 @@ const MatchSearch = (props) => {
   }
 
   useEffect(() => {
+    if (rows.length === 0) {
+      setRows(leaderboardScores());
+    }
     if (currentUser && currentUser.uid !== user.uid) {
       getUserData(currentUser.uid);
     }

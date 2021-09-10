@@ -213,8 +213,6 @@ const Actionbar = (props) => {
               );
 
               if (index === thisTurn.length - 1) {
-                // animatePk(null);
-                // animateOppPk(null);
                 checkForEndGame();
               }
             }, 2000 * index);
@@ -222,12 +220,17 @@ const Actionbar = (props) => {
         }
       }
       changeTurns();
+      setSelectedPlayerPokemon({
+        moves: [],
+      });
       clearPlayerTurn();
       clearAttackedPokemon();
       selectPlayerPokemon({});
       clearOpponentMoves();
     } else {
-      errSound.play();
+      if (soundOn) {
+        errSound.play();
+      }
       setErrMessage('You should probably choose an attack first');
       setOpen(true);
     }

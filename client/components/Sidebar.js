@@ -20,6 +20,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CountDownTimer from './Timer';
 import {_resetTurn} from '../store/playerTurn';
+import {FIREDB} from '../../utils/firebase';
 
 const useStyles = makeStyles((theme) => ({
   sidebar: {
@@ -39,8 +40,10 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    //justifyContent: 'center',
     flexDirection: 'column',
+    maxWidth: '80px',
+    textAlign: 'center',
   },
   chat: {
     width: '95%',
@@ -102,6 +105,10 @@ const Sidebar = (props) => {
     resetGameState();
     resetPokemonState();
     resetTurn();
+    FIREDB.ref(`Match/${matchId}/messages`).off();
+    FIREDB.ref(`Match/${matchId}/moves/${opponent.username}`).off();
+    FIREDB.ref(`Match/${matchId}/guest`).off();
+    FIREDB.ref(`Match/${matchId}/ready`).off();
     history.push('/');
   };
 
