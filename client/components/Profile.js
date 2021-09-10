@@ -19,12 +19,13 @@ const useStyles = makeStyles((theme) => ({
   main: {
     fontFamily: 'Courier New, monospace',
     // backgroundColor: 'royalBlue',
-    backgroundImage: ' linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
+    backgroundImage: 'linear-gradient(120deg, #B1D4E0 0%,  #000C66 100%)',
     position: 'relative',
+    height: '100vh',
     maxWidth: '1018px',
     paddingBottom: '40px',
-    margin: '25px auto',
-    borderRadius: '25px',
+    margin: '15px auto',
+    borderRadius: '10px',
   },
   root: {
     width: '400px',

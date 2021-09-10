@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     // minHeight: '224px',
     paddingBottom: '0px',
     margin: '15px auto',
+    height: '100vh',
     // flexWrap: 'nowrap',
 
     // maxWidth: '960px',
@@ -33,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
     // justifyContent: 'center',
     // margin: '0  100px 0 100px'
 
-    backgroundImage: ' linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
-    borderRadius: '25px',
+    backgroundImage: 'linear-gradient(120deg, #B1D4E0 0%,  #000C66 100%)',
+    borderRadius: '10px',
   },
   root: {
     // flexWrap: 'nowrap',
