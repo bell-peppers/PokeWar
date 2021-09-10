@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '400px',
   },
   card: {
-    height: 140,
+    height: 130,
     width: 100,
     fontWeight: 'bold',
   },
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
   },
   selected: {
-    height: 140,
+    height: 130,
     width: 100,
     fontWeight: 'bold',
     boxShadow: '1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue',
@@ -246,11 +246,12 @@ const Actionbar = (props) => {
   return (
     <div className={classes.actionBar}>
       {isTurn ? (
-        <h3 style={{textAlign: 'center'}}>Your turn - Choose your moves!</h3>
+        <h3 style={{textAlign: 'center', margin: 0}}>
+          Your turn - Choose your moves!
+        </h3>
       ) : (
-        <h3 style={{textAlign: 'center'}}>
-          Please wait for {opponentName} to complete their turn before
-          submitting your moves
+        <h3 style={{textAlign: 'center', margin: 0}}>
+          Please wait for {opponentName} to complete their turn.
         </h3>
       )}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
@@ -322,7 +323,7 @@ const Actionbar = (props) => {
                             ? classes.picked
                             : null
                         }
-                        style={{maxWidth: 100, maxHeight: 140}}
+                        style={{maxWidth: 95, maxHeight: 120}}
                         src={
                           value.active
                             ? value.sprites.other['official-artwork']

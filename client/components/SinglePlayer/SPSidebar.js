@@ -160,7 +160,7 @@ const SPSidebar = (props) => {
           role={role}
         />
       </Grid>
-      <div>
+      {/* <div>
         <CountDownTimer
           minSecs={minSecs}
           isTurn={isTurn}
@@ -172,7 +172,7 @@ const SPSidebar = (props) => {
           setWinner={setWinner}
           opponent={opponent}
         />
-      </div>
+      </div> */}
       <Dialog
         open={open}
         onClose={handleExitClose}

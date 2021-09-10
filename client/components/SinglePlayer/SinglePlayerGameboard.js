@@ -65,7 +65,7 @@ const useStyles = makeStyles(() => ({
   },
   playerSprites: {
     maxWidth: '100%',
-    width: '200px',
+    width: '180px',
     height: 'auto',
     maxHeight: '200px',
     objectFit: 'contain',
@@ -74,7 +74,7 @@ const useStyles = makeStyles(() => ({
   },
   deadPlayerSprites: {
     maxWidth: '100%',
-    width: '200px',
+    width: '180px',
     height: 'auto',
     maxHeight: '200px',
     objectFit: 'contain',
@@ -83,7 +83,7 @@ const useStyles = makeStyles(() => ({
   },
   opponentSprites: {
     maxWidth: '100%',
-    width: '175px',
+    width: '155px',
     height: 'auto',
     maxHeight: '200px',
     objectFit: 'contain',
@@ -91,7 +91,7 @@ const useStyles = makeStyles(() => ({
   },
   opponentDeadSprites: {
     maxWidth: '100%',
-    width: '175px',
+    width: '155px',
     height: 'auto',
     maxHeight: '200px',
     objectFit: 'contain',
@@ -261,7 +261,7 @@ const Gameboard = (props) => {
                     onClick={() => clickHandle(pk)}
                   >
                     <div className={classes.nameBar}>
-                      <p>{pk.name}</p>
+                      <p style={{margin: 0}}>{pk.name}</p>
                       <BorderLinearProgress
                         variant='determinate'
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}
@@ -322,7 +322,7 @@ const Gameboard = (props) => {
                 ) : (
                   <div className={classes.oppPokemonContainer}>
                     <div className={classes.nameBar}>
-                      <p>{pk.name}</p>
+                      <p style={{margin: 0}}>{pk.name}</p>
                       <BorderLinearProgress
                         variant='determinate'
                         value={(pk.stats[0].base_stat / pk.stats[0].max) * 100}

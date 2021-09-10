@@ -256,7 +256,7 @@ export const applySingleMove =
     } else if (!move.attackedPokemon.active) {
       let feed = {
         type: 'feed',
-        message: `${move.pokemon.name} attacks ${move.attackedPokemon.name} lifeless body...`,
+        message: `${move.pokemon.name} attacks ${move.attackedPokemon.name}'s lifeless body...`,
       };
       dispatch(_applySingleMove(null, null, true, playerPk, oppPk, feed));
     }
@@ -330,7 +330,7 @@ export const fetchPlayerOnePokemon = (pkId, username) => async (dispatch) => {
         const pk = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
 
         const ind = pk.data.moves.length;
-        let multiplier = Math.floor(((id * 151) % ind) / 2);
+        let multiplier = Math.floor(((id * 2160) % ind) / 2);
         const movesArr = [];
         if (ind - multiplier > 20) {
           for (let i = 0; i < 20; i++) {

@@ -83,7 +83,7 @@ export default function Footer() {
               >
                 Contact Us
               </Link>
-              <Link
+              {/* <Link
                 to={{
                   pathname: '/instructions',
                 }}
@@ -94,7 +94,7 @@ export default function Footer() {
                 }}
               >
                 Instructions
-              </Link>
+              </Link> */}
               {/* <Link
 									to={{ pathname: 'https://github.com/hitaya1' }}
 									target="_blank"
@@ -136,7 +136,7 @@ export default function Footer() {
               </div>
             </Toolbar>
           </Container>
-          <Grid
+          {/* <Grid
             style={{
               display: 'flex',
               justifyContent: 'flex-end',
@@ -159,7 +159,7 @@ export default function Footer() {
               {' '}
               at Fullstack Academy
             </Link>
-          </Grid>
+          </Grid> */}
         </AppBar>
       </Grid>
     </React.Fragment>

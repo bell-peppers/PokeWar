@@ -29,6 +29,7 @@ const useStyles = makeStyles(() => ({
     borderStyle: 'solid',
     borderColor: 'black',
     marginTop: '15px',
+    marginBottom: '35px',
   },
   board: {
     fontFamily: 'Courier New, monospace',
