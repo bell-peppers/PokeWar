@@ -3,7 +3,7 @@
 Do you want to be the very best, like one one ever was, but simply don't have the time?
 PokeWar is a 2 player online game that allows players to own Pokemon and battle another player in thrilling 3 vs 3 Pokemon battles.
 
-##Tech Stack
+## Tech Stack
 
 PokeWar was built using Material UI, React, and Redux for state management on the front-end. The back-end and database is hosted on Google's Firebase.
 
