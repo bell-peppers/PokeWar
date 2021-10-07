@@ -52,7 +52,7 @@ export default function LoginPage() {
   const classes = useStyles();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const {login, googleLogin, githubLogin} = useAuth();
+  const {login, googleLogin, githubLogin, guestSignIn} = useAuth();
   const [error, setError] = useState('');
   const [googleUser, setGoogleUser] = useState({});
   const [githubUser, setGithubUser] = useState({});
@@ -105,6 +105,19 @@ export default function LoginPage() {
       setError('');
       setLoading(true);
       await githubLogin().then(() => {
+        history.push('/match');
+      });
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  }
+
+  async function guestSignInHandle() {
+    try {
+      setError('');
+      setLoading(true);
+      await guestSignIn().then(() => {
         history.push('/match');
       });
     } catch (error) {
@@ -202,6 +215,13 @@ export default function LoginPage() {
             >
               Sign in with GitHub &nbsp;
               <img src='/pics/github.png' width='35px' />
+            </Button>
+            <Button
+              className={classes.signIn}
+              style={{color: 'white', backgroundColor: 'black'}}
+              onClick={() => guestSignInHandle()}
+            >
+              Sign in as a Guest &nbsp;
             </Button>
           </Grid>
         </Grid>
