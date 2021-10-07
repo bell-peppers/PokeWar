@@ -262,54 +262,6 @@ export const applySingleMove =
     }
   };
 
-// export const applyMoves = (moves, playerPk, oppPk) => (dispatch) => {
-//   const feed = [];
-//   moves.forEach((move, i) => {
-//     const reportClass =
-//       move.report.Class && move.report.Class !== 'Normal'
-//         ? `${move.report.Class}`
-//         : '';
-//     const crit = move.report.isCrit ? ' Critical hit!' : '';
-//     const action = {
-//       type: 'feed',
-//       message:
-//         `${move.pokemon.owner}'s ${move.pokemon.name} uses ${move.attack.move.name} on ${move.attackedPokemon.owner}'s ${move.attackedPokemon.name}. ` +
-//         reportClass +
-//         crit,
-//     };
-//     playerPk.forEach((pk) => {
-//       if (
-//         pk.owner === move.attackedPokemon.owner &&
-//         pk.name == move.attackedPokemon.name
-//       ) {
-//         pk.stats[0].base_stat -= move.report.Damage;
-//         if (pk.stats[0].base_stat <= 0 && pk.active) {
-//           pk.active = false;
-//           action.message += ` ${pk.name} was killed in battle.`;
-//         }
-//       }
-//     });
-
-//     oppPk.forEach((pk) => {
-//       if (
-//         pk.owner === move.attackedPokemon.owner &&
-//         pk.name == move.attackedPokemon.name
-//       ) {
-//         pk.stats[0].base_stat -= move.report.Damage;
-//         if (pk.stats[0].base_stat <= 0 && pk.active) {
-//           pk.active = false;
-//           action.message += `${pk.name} was killed in battle.`;
-//         }
-//       }
-//     });
-//     feed.push(action);
-//   });
-
-//   const updatedPlayerPk = [...playerPk];
-//   const updatedOppPk = [...oppPk];
-//   dispatch(_applyMoves(updatedPlayerPk, updatedOppPk, feed));
-// };
-
 export const attackOpponent = (oppPokemon, turn) => (dispatch) => {
   const updatedPk = oppPokemon.map((pk) => {
     for (let i = 0; i < turn.length; i++) {

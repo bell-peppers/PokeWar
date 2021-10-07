@@ -14,11 +14,6 @@ export function AuthProvider({children}) {
   const [currentUser, setCurrentUser] = useState(null);
 
   //when we call signup, auth.onAuthStateChanged is gonna be called for us
-  // async function signup(email, password, username) {
-  //   const user = await auth.createUserWithEmailAndPassword(email, password);
-  //   createNewAccount(user.user.uid, user.user.email, username);
-  //   return user;
-  // }
 
   async function signup(email, password, username) {
     return new Promise((resolve, reject) => {
@@ -27,6 +22,18 @@ export function AuthProvider({children}) {
         .then((user) => {
           resolve(user);
           createNewAccount(user.user.uid, user.user.email, username);
+        })
+        .catch((reason) => reject(reason));
+    });
+  }
+
+  async function guestSignIn() {
+    return new Promise((resolve, reject) => {
+      auth
+        .signInAnonymously()
+        .then((user) => {
+          resolve(user);
+          createNewAccount(user.user.uid, 'guest', 'guest');
         })
         .catch((reason) => reject(reason));
     });
@@ -67,11 +74,6 @@ export function AuthProvider({children}) {
     });
   }
 
-  // async function login(email, password) {
-  //   const user = await auth.signInWithEmailAndPassword(email, password);
-  //   return user;
-  // }
-
   async function login(email, password) {
     return new Promise((resolve, reject) => {
       auth
@@ -100,33 +102,6 @@ export function AuthProvider({children}) {
       friends: user.friends,
     });
   }
-
-  // function googleLogin() {
-  //   auth.signInWithPopup(googleProvider).then((result) => {
-
-  //     const token = result.credential.accessToken;
-  //     const user = result.user;
-  //     FIREDB.ref(`users`)
-  //       .child(user.uid)
-  //       .get()
-  //       .then((snapshot) => {
-  //         if (snapshot.exists()) {
-  //           window.location.href = '/match';
-  //         } else {
-  //           createNewAccount(
-  //             user.uid,
-  //             user.email,
-  //             user.email.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-  //           );
-  //           window.location.href = '/';
-  //           return user;
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //   });
-  // }
 
   async function googleLogin() {
     return new Promise((resolve, reject) => {
@@ -204,50 +179,6 @@ export function AuthProvider({children}) {
     });
   }
 
-  // function githubLogin() {
-  //   // const auth = getAuth();
-  //   auth.signInWithPopup(githubProvider).then((result) => {
-  //     const token = result.credential.accessToken;
-  //     const user = result.user;
-  //     FIREDB.ref(`users`)
-  //       .child(user.uid)
-  //       .get()
-  //       .then((snapshot) => {
-  //         if (snapshot.exists()) {
-  //           window.location.href = '/match';
-  //         } else {
-  //           user.displayName
-  //             ? createNewAccount(
-  //                 user.uid,
-  //                 '',
-  //                 user.displayName.replace(/[\[\].#@]/g, ' ').split(' ')[0]
-  //               )
-  //             : createNewAccount(
-  //                 user.uid,
-  //                 '',
-  //                 [
-  //                   'Pikachu',
-  //                   'Mew',
-  //                   'Snorlax',
-  //                   'Charmander',
-  //                   'Bulbasaur',
-  //                   'Sylveon',
-  //                   'Gengar',
-  //                   'Chikorita',
-  //                   'Ekans',
-  //                 ][Math.floor(Math.random() * 9)] //0-8
-  //               );
-
-  //           window.location.href = '/match';
-  //           return user;
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //   });
-  // }
-
   function leaderboardScores() {
     const usersRef = FIREDB.ref('users');
     const allUsers = [];
@@ -273,12 +204,7 @@ export function AuthProvider({children}) {
     return allUsers;
   }
 
-  //we dont want it to be in render, we want it to be in useEffect because
-  //we only want it to run once when we mount our component
   useEffect(() => {
-    //this func returns a method and when we call this method,
-    //when we call this method its gonna unsubscribe
-    //auth.onAuthStateChanged event
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
     });
@@ -295,7 +221,7 @@ export function AuthProvider({children}) {
     googleLogin,
     githubLogin,
     leaderboardScores,
-    // getOtherUser,
+    guestSignIn,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
