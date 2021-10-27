@@ -18,12 +18,12 @@ const reducer = combineReducers({
   legendaries,
 });
 
-const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
-);
+// const middleware = composeWithDevTools(
+//   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
+// );
 
 //for deploy
-// const middleware = applyMiddleware(thunkMiddleware);
+const middleware = applyMiddleware(thunkMiddleware);
 
 const store = createStore(reducer, middleware);
 
