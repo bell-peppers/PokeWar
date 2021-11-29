@@ -8,7 +8,6 @@ const App = () => {
     <div>
       <AuthProvider>
         <Routes />
-        {/* <Footer /> */}
       </AuthProvider>
     </div>
   );

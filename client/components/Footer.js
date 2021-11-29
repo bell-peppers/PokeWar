@@ -16,14 +16,7 @@ import {
 import Button from '@material-ui/core/Button';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
-// const useStyles = makeStyles(() => ({
-// 	contactMe: {
-// 		marginTop: '150px',
-// 	},
-// }));
-
 export default function Footer() {
-  // const classes = useStyles();
   return (
     <React.Fragment>
       <CssBaseline />
@@ -33,7 +26,6 @@ export default function Footer() {
           bottom: 0,
           width: '100%',
           backgroundColor: 'royalBlue',
-          // display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           fontFamily: 'Courier New, monospace',
@@ -42,7 +34,6 @@ export default function Footer() {
         <AppBar
           position='static'
           style={{
-            // backgroundColor: 'royalBlue',
             height: '50px',
           }}
         >
@@ -95,15 +86,6 @@ export default function Footer() {
               >
                 Instructions
               </Link>
-              {/* <Link
-									to={{ pathname: 'https://github.com/hitaya1' }}
-									target="_blank"
-								>
-									<BottomNavigationAction
-										label="Recents"
-										icon={<GitHubIcon />}
-									/> */}
-              {/* </Link> */}
               <div
                 style={{
                   display: 'flex',

@@ -12,7 +12,6 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Container from '@material-ui/core/Container';
 import {createNewGame, joinGame, findGame, setHostGuest} from '../store/game';
-import TextField from '@material-ui/core/TextField';
 import {useHistory} from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import FindMatch from './FindMatch';

@@ -18,9 +18,6 @@ const useStyles = makeStyles(() => ({
     height: '85vh',
     textAlign: 'center',
     alignItems: 'center',
-    // borderWidth: '1px',
-    // borderStyle: 'solid',
-    // borderColor: 'black',
   },
   root: {
     display: 'flex',

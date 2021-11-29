@@ -8,9 +8,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import Fab from '@material-ui/core/Fab';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import UIfx from 'uifx';
 
 const readySoundFile = 'sounds/ready2.wav';
